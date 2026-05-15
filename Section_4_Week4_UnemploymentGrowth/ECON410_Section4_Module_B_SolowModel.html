@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module B: Solow Model</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#0F766E;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#0F766E;color:#fff;border-color:#0F766E}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:20px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module B</h1>
+    <div class="sub">Solow Model Explorer · Mankiw Ch. 8</div>
+  </div>
+  <div class="badge">Section 4 · Module B</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('ss',this)">1. Steady-state diagram</button>
+    <button class="tab" onclick="sw('time',this)">2. Time path</button>
+    <button class="tab" onclick="sw('gold',this)">3. Golden rule</button>
+  </div>
+
+  <!-- TAB 1: STEADY STATE DIAGRAM -->
+  <div class="panel on" id="p-ss">
+    <p class="desc">Adjust s, δ, n, and α to see the Solow steady-state diagram. Cobb-Douglas: f(k) = k^α.</p>
+    <div class="formula">Δk = sf(k) − (δ + n)k &nbsp;&nbsp;<span style="opacity:.5;font-size:14px">Steady state when Δk = 0</span></div>
+
+    <div class="card">
+      <div class="slider-row"><label>Saving rate s</label><input type="range" id="s" min="0.05" max="0.50" step="0.01" value="0.30" oninput="upd1()"><div class="val" id="vs">30%</div></div>
+      <div class="slider-row"><label>Depreciation δ (per year)</label><input type="range" id="d" min="0.01" max="0.15" step="0.01" value="0.05" oninput="upd1()"><div class="val" id="vd">5%</div></div>
+      <div class="slider-row"><label>Population growth n</label><input type="range" id="n" min="0" max="0.05" step="0.005" value="0.01" oninput="upd1()"><div class="val" id="vn">1.0%</div></div>
+      <div class="slider-row"><label>Capital share α</label><input type="range" id="a" min="0.20" max="0.50" step="0.01" value="0.40" oninput="upd1()"><div class="val" id="va">0.40</div></div>
+      <canvas id="solowChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">k* (capital per worker)</div><div class="val" id="m_k">7.95</div></div>
+      <div class="metric green"><div class="lbl">y* (output per worker)</div><div class="val" id="m_y">2.32</div></div>
+      <div class="metric"><div class="lbl">c* (consumption per worker)</div><div class="val" id="m_c">1.62</div></div>
+      <div class="metric amber"><div class="lbl">Investment / break-even</div><div class="val" id="m_inv">0.70</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Try this</div>
+      <div class="body">Increase s. Both k* and y* rise — but consumption c* may NOT (you save more, consume less). Try lowering n: k* and y* rise. Try raising δ: k* falls (depreciation eats more capital).</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: TIME PATH -->
+  <div class="panel" id="p-time">
+    <p class="desc">Start the economy AWAY from steady state. Watch capital, output, and consumption converge over 100 years.</p>
+    <div class="card">
+      <div class="slider-row"><label>Initial k₀</label><input type="range" id="k0" min="0.5" max="20" step="0.5" value="2" oninput="upd2()"><div class="val" id="vk0">2.0</div></div>
+      <div class="slider-row"><label>Saving rate s</label><input type="range" id="s2" min="0.05" max="0.50" step="0.01" value="0.30" oninput="upd2()"><div class="val" id="vs2">30%</div></div>
+      <div class="slider-row"><label>δ + n</label><input type="range" id="dn" min="0.02" max="0.15" step="0.01" value="0.06" oninput="upd2()"><div class="val" id="vdn">6%</div></div>
+      <canvas id="timeChart" width="900" height="380"></canvas>
+    </div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">k after 10 yrs</div><div class="val" id="t_k10">3.4</div></div>
+      <div class="metric"><div class="lbl">k after 50 yrs</div><div class="val" id="t_k50">7.5</div></div>
+      <div class="metric green"><div class="lbl">k* (steady state)</div><div class="val" id="t_kss">7.95</div></div>
+      <div class="metric"><div class="lbl">% of k* at year 50</div><div class="val" id="t_pct">94%</div></div>
+    </div>
+    <div class="check-card">
+      <div class="lbl">Convergence speed</div>
+      <div class="body">Solow predicts CONDITIONAL convergence: countries with similar fundamentals converge to the same k*. Speed depends on (1−α)·(δ+n+g) — typically ~2%/year, meaning a 35-year half-life. Catch-up is SLOW.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: GOLDEN RULE -->
+  <div class="panel" id="p-gold">
+    <p class="desc">For each saving rate, compute steady-state c*. Find the saving rate that MAXIMIZES consumption (the Golden Rule).</p>
+    <div class="card">
+      <div class="slider-row"><label>δ</label><input type="range" id="d3" min="0.01" max="0.15" step="0.01" value="0.05" oninput="upd3()"><div class="val" id="vd3">5%</div></div>
+      <div class="slider-row"><label>n</label><input type="range" id="n3" min="0" max="0.05" step="0.005" value="0.01" oninput="upd3()"><div class="val" id="vn3">1%</div></div>
+      <div class="slider-row"><label>α</label><input type="range" id="a3" min="0.20" max="0.50" step="0.01" value="0.40" oninput="upd3()"><div class="val" id="va3">0.40</div></div>
+      <canvas id="goldChart" width="900" height="380"></canvas>
+    </div>
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Golden-rule s_GR</div><div class="val" id="g_s">0.40</div></div>
+      <div class="metric"><div class="lbl">k* at GR</div><div class="val" id="g_k">25.6</div></div>
+      <div class="metric"><div class="lbl">y* at GR</div><div class="val" id="g_y">3.73</div></div>
+      <div class="metric green"><div class="lbl">c* at GR (max)</div><div class="val" id="g_c">2.24</div></div>
+    </div>
+    <div class="check-card">
+      <div class="lbl">Cobb-Douglas result</div>
+      <div class="body">For f(k) = k^α, the Golden Rule saving rate equals the capital share: s_GR = α. With α = 0.40, s_GR = 40%. Most countries SAVE LESS than the Golden Rule — meaning they're under-saving relative to long-run consumption. China saves ~45%, U.S. ~20% — China may be ABOVE Golden Rule.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function pow(b,e){return Math.pow(b,e)}
+
+function upd1(){
+  const s = +document.getElementById('s').value;
+  const d = +document.getElementById('d').value;
+  const n = +document.getElementById('n').value;
+  const a = +document.getElementById('a').value;
+  document.getElementById('vs').textContent = (s*100).toFixed(0)+'%';
+  document.getElementById('vd').textContent = (d*100).toFixed(0)+'%';
+  document.getElementById('vn').textContent = (n*100).toFixed(1)+'%';
+  document.getElementById('va').textContent = a.toFixed(2);
+  // k* = (s/(d+n))^(1/(1-a))
+  const kStar = pow(s/(d+n), 1/(1-a));
+  const yStar = pow(kStar, a);
+  const cStar = (1-s)*yStar;
+  const inv = s*yStar;
+  document.getElementById('m_k').textContent = kStar.toFixed(2);
+  document.getElementById('m_y').textContent = yStar.toFixed(2);
+  document.getElementById('m_c').textContent = cStar.toFixed(2);
+  document.getElementById('m_inv').textContent = inv.toFixed(2);
+  drawSolow(s, d, n, a);
+}
+function drawSolow(s, d, n, a){
+  const c = document.getElementById('solowChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const kMax = Math.min(50, pow(s/(d+n), 1/(1-a)) * 1.8);
+  const fk = (k) => pow(k, a);
+  let yMax = fk(kMax) * 1.1;
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = kMax*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(xv.toFixed(1), xx-12, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(1), 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Capital per worker (k)', W/2-60, H-15);
+  ctx.save(); ctx.translate(15, H/2+50); ctx.rotate(-Math.PI/2); ctx.fillText('y, sf(k), (δ+n)k', 0, 0); ctx.restore();
+  // f(k) curve
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2.5; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const k = kMax*i/100;
+    const y = fk(k);
+    const xx = margin.l+(W-margin.l-margin.r)*k/kMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-y/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('f(k)', W-margin.r-40, margin.t+30);
+  // sf(k)
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=2.5; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const k = kMax*i/100;
+    const y = s*fk(k);
+    const xx = margin.l+(W-margin.l-margin.r)*k/kMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-y/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#0F766E'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('sf(k)', W-margin.r-40, margin.t+60);
+  // (d+n)k line
+  ctx.strokeStyle='#B91C1C'; ctx.lineWidth=2.5; ctx.beginPath();
+  ctx.moveTo(margin.l, margin.t+(H-margin.t-margin.b));
+  const yEnd = (d+n)*kMax;
+  ctx.lineTo(margin.l+(W-margin.l-margin.r), margin.t+(H-margin.t-margin.b)*(1-yEnd/yMax));
+  ctx.stroke();
+  ctx.fillStyle='#B91C1C'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('(δ+n)k', W-margin.r-50, margin.t+90);
+  // k* dot
+  const kStar = pow(s/(d+n), 1/(1-a));
+  const ySS = s*fk(kStar);
+  const px = margin.l+(W-margin.l-margin.r)*kStar/kMax;
+  const py = margin.t+(H-margin.t-margin.b)*(1-ySS/yMax);
+  ctx.fillStyle='#C8A961'; ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, H-margin.b); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('k* = '+kStar.toFixed(2), px+10, py-8);
+}
+
+function upd2(){
+  const k0 = +document.getElementById('k0').value;
+  const s = +document.getElementById('s2').value;
+  const dn = +document.getElementById('dn').value;
+  document.getElementById('vk0').textContent = k0.toFixed(1);
+  document.getElementById('vs2').textContent = (s*100).toFixed(0)+'%';
+  document.getElementById('vdn').textContent = (dn*100).toFixed(0)+'%';
+  // Simulate using Cobb-Douglas alpha=0.4
+  const a = 0.40;
+  const kStar = pow(s/dn, 1/(1-a));
+  let k = k0;
+  const path = [k];
+  for(let t=1;t<=100;t++){
+    const dk = s*pow(k,a) - dn*k;
+    k = Math.max(0.01, k + dk);
+    path.push(k);
+  }
+  document.getElementById('t_k10').textContent = path[10].toFixed(2);
+  document.getElementById('t_k50').textContent = path[50].toFixed(2);
+  document.getElementById('t_kss').textContent = kStar.toFixed(2);
+  document.getElementById('t_pct').textContent = (path[50]/kStar*100).toFixed(0)+'%';
+  drawTimePath(path, kStar);
+}
+function drawTimePath(path, kStar){
+  const c = document.getElementById('timeChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const yMax = Math.max(kStar, ...path) * 1.1;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = 100*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(xv.toFixed(0)+' yr', xx-15, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(1), 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Year', W/2-15, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Capital per worker k', 0, 0); ctx.restore();
+  // k* line
+  const yk = margin.t+(H-margin.t-margin.b)*(1-kStar/yMax);
+  ctx.strokeStyle='#047857'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(margin.l, yk); ctx.lineTo(W-margin.r, yk); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#047857'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('k* = '+kStar.toFixed(2), W-margin.r-100, yk-5);
+  // path
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<path.length;i++){
+    const xx = margin.l+(W-margin.l-margin.r)*i/100;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-path[i]/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+}
+
+function upd3(){
+  const d = +document.getElementById('d3').value;
+  const n = +document.getElementById('n3').value;
+  const a = +document.getElementById('a3').value;
+  document.getElementById('vd3').textContent = (d*100).toFixed(0)+'%';
+  document.getElementById('vn3').textContent = (n*100).toFixed(1)+'%';
+  document.getElementById('va3').textContent = a.toFixed(2);
+  // For each s, compute c*
+  // For Cobb-Douglas: s_GR = α
+  const sGR = a;
+  const kGR = pow(sGR/(d+n), 1/(1-a));
+  const yGR = pow(kGR, a);
+  const cGR = (1-sGR)*yGR;
+  document.getElementById('g_s').textContent = sGR.toFixed(2);
+  document.getElementById('g_k').textContent = kGR.toFixed(2);
+  document.getElementById('g_y').textContent = yGR.toFixed(2);
+  document.getElementById('g_c').textContent = cGR.toFixed(2);
+  drawGold(d, n, a, sGR);
+}
+function drawGold(d, n, a, sGR){
+  const c = document.getElementById('goldChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const sMax = 1.0;
+  let yMax = 0;
+  const points = [];
+  for(let i=1;i<=99;i++){
+    const s = i/100;
+    const k = pow(s/(d+n), 1/(1-a));
+    const y = pow(k, a);
+    const cv = (1-s)*y;
+    points.push({s, c:cv});
+    if(cv > yMax) yMax = cv;
+  }
+  yMax *= 1.15;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = sMax*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText((xv*100).toFixed(0)+'%', xx-15, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(2), 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Saving rate s', W/2-40, H-15);
+  ctx.save(); ctx.translate(15, H/2+50); ctx.rotate(-Math.PI/2); ctx.fillText('Steady-state consumption c*', 0, 0); ctx.restore();
+  // curve
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3; ctx.beginPath();
+  points.forEach((p, i) => {
+    const xx = margin.l+(W-margin.l-margin.r)*p.s/sMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-p.c/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  });
+  ctx.stroke();
+  // GR point
+  const kGR = pow(sGR/(d+n), 1/(1-a));
+  const cGR = (1-sGR)*pow(kGR, a);
+  const px = margin.l+(W-margin.l-margin.r)*sGR/sMax;
+  const py = margin.t+(H-margin.t-margin.b)*(1-cGR/yMax);
+  ctx.fillStyle='#C8A961'; ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, H-margin.b); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Golden rule: s_GR = '+sGR.toFixed(2), px+12, py-8);
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='ss') upd1();
+  if(id==='time') upd2();
+  if(id==='gold') upd3();
+}
+
+upd1(); upd2(); upd3();
+</script>
+</body>
+</html>

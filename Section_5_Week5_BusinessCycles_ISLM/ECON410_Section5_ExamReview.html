@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 5 · Exam Review</title>
+<style>
+:root{--navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1000px;margin:0 auto;padding:24px 32px;}
+.mode-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.mode-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;}
+.mode-btn:hover{background:var(--white);color:var(--navy);border-color:var(--navy);}
+.mode-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.mode-content{display:none;} .mode-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);} .card.amber{border-left-color:var(--amber);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+button.action{background:var(--navy);color:white;border:none;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.red{background:var(--red);color:white;}
+button.action.large{padding:14px 26px;font-size:15px;}
+.timer-bar{position:sticky;top:0;background:var(--navy);color:white;padding:14px 22px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;z-index:10;}
+.timer-bar .time{font-family:'Cambria',Georgia,serif;font-size:24px;font-weight:bold;color:var(--gold);}
+.timer-bar .progress{font-size:13px;color:#CBD5E1;}
+.timer-bar.warning{background:var(--amber);} .timer-bar.warning .time{color:white;}
+.exam-q{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:12px 0;}
+.exam-q .qnum{font-weight:bold;color:var(--gold);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.exam-q .stem{font-weight:600;color:var(--navy);margin-bottom:10px;font-size:14px;}
+.exam-q label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;font-size:13px;color:var(--dark);border-radius:4px;}
+.exam-q label:hover{background:#F1F5F9;}
+.exam-q label.selected{background:#DBEAFE;font-weight:600;}
+.exam-q input[type=radio]{margin-right:8px;}
+.exam-q .feedback{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:13px;display:none;}
+.exam-q .feedback.show{display:block;}
+.exam-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.exam-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.exam-q .topic-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;}
+.tag-kc{background:#DBEAFE;color:#1E3A5F;}
+.tag-islm{background:#D1FAE5;color:#065F46;}
+.tag-adas{background:#FEF3C7;color:#92400E;}
+.tag-fed{background:#FEE2E2;color:#991B1B;}
+.results{background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:24px;margin:20px 0;}
+.results .score{font-family:'Cambria',Georgia,serif;font-size:48px;color:var(--navy);font-weight:bold;text-align:center;margin:16px 0;}
+.results .grade{text-align:center;font-size:18px;color:var(--teal);margin-bottom:16px;}
+.results table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.results th{background:var(--navy);color:white;padding:8px;text-align:left;}
+.results td{padding:8px;border-bottom:1px solid var(--rule);}
+.start-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:32px;margin:20px 0;text-align:center;}
+.start-card h2{font-size:26px;margin-bottom:12px;}
+.start-card .stats{display:flex;justify-content:center;gap:30px;margin:20px 0;flex-wrap:wrap;}
+.start-card .stats .num{font-family:'Cambria',Georgia,serif;font-size:32px;color:var(--gold);font-weight:bold;}
+.start-card .stats .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.topic-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:10px 0;cursor:pointer;border-left:4px solid var(--navy);}
+.topic-card:hover{border-left-color:var(--gold);}
+.topic-card h3{margin:0 0 4px 0;color:var(--navy);}
+.topic-card .meta{font-size:12px;color:var(--muted);}
+.flash-card{background:var(--white);border:2px solid var(--rule);border-radius:12px;padding:30px;margin:16px 0;min-height:200px;text-align:center;cursor:pointer;}
+.flash-card .side{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.flash-card .text{font-size:18px;color:var(--navy);font-family:'Cambria',Georgia,serif;}
+.flash-card.flipped{background:#FEFCE8;border-color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 5 — Exam Review</h1>
+  <div class="sub">Keynesian Cross · IS-LM · AD-AS · Policy reactions — Mankiw Ch.10–12</div>
+</header>
+
+<div class="container">
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="home">Overview</button>
+    <button class="mode-btn" data-mode="timed">Timed Practice Exam</button>
+    <button class="mode-btn" data-mode="topics">By-Topic Practice</button>
+    <button class="mode-btn" data-mode="flash">Flashcards</button>
+  </div>
+
+  <div id="mode-home" class="mode-content active">
+    <h2>Section 5 Exam Review</h2>
+    <div class="subtitle">Three study modes — pick what fits your goal today.</div>
+    <div class="card"><h3>Mode 1 — Timed Practice Exam</h3>
+      <p style="font-size:13px;">25 questions, 45-min timer, mixed topics.</p>
+      <button class="action large" onclick="setMode('timed')">Start timed exam →</button></div>
+    <div class="card teal"><h3>Mode 2 — By-Topic Practice</h3>
+      <p style="font-size:13px;">Drill weak areas. No timer.</p>
+      <button class="action large" onclick="setMode('topics')">Pick a topic →</button></div>
+    <div class="card amber"><h3>Mode 3 — Flashcards</h3>
+      <p style="font-size:13px;">Quick review. Click to flip.</p>
+      <button class="action large" onclick="setMode('flash')">Open flashcards →</button></div>
+    <div class="card gold"><h3>What's on the exam?</h3>
+      <ul style="font-size:13px;line-height:1.7;">
+        <li><strong>Keynesian Cross</strong> (~6 Q): multipliers, equilibrium Y, fiscal shocks</li>
+        <li><strong>IS-LM</strong> (~7 Q): IS/LM curves, fiscal vs monetary policy, transmission</li>
+        <li><strong>AD-AS</strong> (~6 Q): SR vs LR, supply shocks, stagflation</li>
+        <li><strong>Fed reactions</strong> (~6 Q): hold M / r / Y outcomes, monetary-fiscal interaction</li>
+      </ul></div>
+  </div>
+
+  <div id="mode-timed" class="mode-content">
+    <div id="timed-start"><div class="start-card">
+      <h2>Timed Practice Exam — Section 5</h2>
+      <p>25 questions, randomly ordered. 45-minute timer.</p>
+      <div class="stats">
+        <div><div class="num">25</div><div class="label">Questions</div></div>
+        <div><div class="num">45</div><div class="label">Minutes</div></div>
+        <div><div class="num">4</div><div class="label">Topics</div></div>
+      </div>
+      <button class="action large gold" onclick="startTimedExam()">Begin exam</button>
+    </div></div>
+    <div id="timed-running" style="display:none;">
+      <div class="timer-bar" id="timer-bar">
+        <div><span class="time" id="timer-display">45:00</span></div>
+        <div class="progress"><span id="answered-count">0</span> of 25 answered</div>
+        <button class="action red" onclick="submitTimedExam()">Submit exam</button>
+      </div>
+      <div id="timed-questions"></div>
+      <button class="action large" onclick="submitTimedExam()" style="display:block;margin:24px auto;background:var(--green);color:white;">Submit exam</button>
+    </div>
+    <div id="timed-results" style="display:none;"></div>
+  </div>
+
+  <div id="mode-topics" class="mode-content">
+    <div id="topics-list">
+      <h2>Pick a topic to drill</h2>
+      <div class="subtitle">Instant feedback. No timer.</div>
+      <div class="topic-card" onclick="loadTopic('kc')"><h3>📐 Keynesian Cross</h3>
+        <div class="meta">Multipliers, equilibrium Y, fiscal shocks · 8 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('islm')"><h3>📈 IS-LM</h3>
+        <div class="meta">IS curve, LM curve, fiscal & monetary policy · 9 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('adas')"><h3>📊 AD-AS</h3>
+        <div class="meta">SR vs LR, supply shocks, stagflation · 8 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('fed')"><h3>🏛️ Fed reactions</h3>
+        <div class="meta">Hold M / r / Y, monetary-fiscal interaction · 8 questions</div></div>
+    </div>
+    <div id="topic-questions" style="display:none;">
+      <button class="action" onclick="backToTopics()" style="margin-bottom:16px;">← Back to topics</button>
+      <h2 id="topic-title"></h2>
+      <div class="subtitle" id="topic-subtitle"></div>
+      <div id="topic-q-list"></div>
+    </div>
+  </div>
+
+  <div id="mode-flash" class="mode-content">
+    <h2>Flashcards — Section 5 concepts</h2>
+    <div class="subtitle">Click any card to flip.</div>
+    <div style="margin-bottom:20px;">
+      <button class="action" onclick="flashPrev()">← Previous</button>
+      <span style="margin:0 16px;font-size:14px;color:var(--muted);">Card <span id="flash-idx">1</span> of <span id="flash-total">20</span></span>
+      <button class="action" onclick="flashNext()">Next →</button>
+      <button class="action gold" onclick="flashShuffle()" style="float:right;">Shuffle</button>
+    </div>
+    <div class="flash-card" id="flash-card" onclick="flashFlip()">
+      <div class="side" id="flash-side">Term</div>
+      <div class="text" id="flash-text">Click to start</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questionBank = [
+  // KEYNESIAN CROSS (8)
+  {topic:'kc',stem:'C = 200 + 0.7(Y−T), I = 100, G = 100, T = 100. Equilibrium Y:',
+    opts:['350','600','950','1,100'],a:3,exp:'PE = 200 + 0.7(Y−100) + 100 + 100 = 0.7Y + 330. Y = 0.7Y + 330 → Y = 1,100.'},
+  {topic:'kc',stem:'MPC = 0.75. A $3B tax cut raises PE by ___ and Y by ___:',
+    opts:['$3B; $9B','$2.25B; $9B','$2.25B; $2.25B','$3B; $3B'],a:1,
+    exp:'ΔPE = MPC·|ΔT| = 0.75·3 = $2.25B. ΔY = ΔT·(−MPC/(1−MPC)) = (−3)·(−3) = +$9B.'},
+  {topic:'kc',stem:'MPC = 0.75. ΔG = +$2B raises PE by ___ and Y by ___:',
+    opts:['$2B; $8B','$0.75B; $1B','$0.75B; $0.75B','$1B; $4B'],a:0,
+    exp:'ΔPE = ΔG = $2B (G enters PE directly). ΔY = ΔG/(1−MPC) = 2/0.25 = $8B.'},
+  {topic:'kc',stem:'Government-spending multiplier with MPC = 0.8:',
+    opts:['1.25','2','4','5'],a:3,exp:'Multiplier = 1/(1−MPC) = 1/0.2 = 5.'},
+  {topic:'kc',stem:'Tax multiplier with MPC = 0.8:',
+    opts:['−5','−4','−0.8','−0.2'],a:1,exp:'Tax mult = −MPC/(1−MPC) = −0.8/0.2 = −4.'},
+  {topic:'kc',stem:'Balanced-budget multiplier (ΔG = ΔT):',
+    opts:['0','1 always','1/(1−MPC)','depends on MPC'],a:1,
+    exp:'ΔY = (1 + (−MPC))/(1−MPC) · ΔG = ΔG. ALWAYS equals 1, no matter what MPC.'},
+  {topic:'kc',stem:'C = 120 + 0.8(Y−400), I = 200, G = 400, T = 400. Equilibrium Y:',
+    opts:['1,200','1,500','1,800','2,000'],a:3,
+    exp:'PE = 120 + 0.8(Y−400) + 200 + 400 = 0.8Y + 400. Y = 0.8Y + 400 → Y = 2,000.'},
+  {topic:'kc',stem:'In Keynesian Cross, equilibrium is where:',
+    opts:['Y = C','PE = Y (45° line)','S = I (loanable funds)','M = L(r,Y)'],a:1,
+    exp:'Keynesian Cross equilibrium: actual output (Y) = planned expenditure (PE). The 45° line intersection.'},
+
+  // IS-LM (9)
+  {topic:'islm',stem:'IS curve slopes:',
+    opts:['upward','downward','vertical','horizontal'],a:1,
+    exp:'Higher r → lower I → lower PE → lower Y. Downward sloping in (Y, r).'},
+  {topic:'islm',stem:'LM curve slopes:',
+    opts:['upward','downward','vertical','horizontal'],a:0,
+    exp:'Higher Y → more money demand → equilibrium r rises. Upward sloping in (Y, r).'},
+  {topic:'islm',stem:'ΔG > 0 shifts:',
+    opts:['IS right','IS left','LM right','LM left'],a:0,
+    exp:'Higher G → higher PE → higher Y at each r → IS right (by ΔG/(1−MPC)).'},
+  {topic:'islm',stem:'ΔM > 0 shifts:',
+    opts:['IS right','IS left','LM right (down)','LM left (up)'],a:2,
+    exp:'More real balances → equilibrium r falls at each Y → LM shifts right/down.'},
+  {topic:'islm',stem:'In IS-LM, an IS shock that raises C (e.g., consumer-confidence boom) causes:',
+    opts:['Y↓, r↓','Y↓, r↑','Y↑, r↓','Y↑, r↑'],a:3,
+    exp:'IS shifts right → equilibrium moves up LM → both Y and r rise.'},
+  {topic:'islm',stem:'A monetary expansion (ΔM > 0) causes:',
+    opts:['Y↑, r↑','Y↑, r↓','Y↓, r↑','Y↓, r↓'],a:1,
+    exp:'LM shifts down → equilibrium moves down IS → Y rises, r falls. Monetary transmission via I.'},
+  {topic:'islm',stem:'The downward slope of AD comes from:',
+    opts:['sticky prices','real-balance effect: P↑ → M/P↓ → r↑ → I↓ → Y↓',
+          'Fisher equation','Okun\'s law'],a:1,
+    exp:'AD slopes down because higher P shrinks real balances, raises r, cuts I, lowers Y.'},
+  {topic:'islm',stem:'Money demand function L(r, Y):',
+    opts:['L_r > 0, L_Y > 0','L_r < 0, L_Y > 0',
+          'L_r < 0, L_Y < 0','L_r = 0, L_Y > 0'],a:1,
+    exp:'Higher r → less cash held (opportunity cost). Higher Y → more transactions, more money demand.'},
+  {topic:'islm',stem:'Money demand (M/P)^d = 800 − 50r, M = 2,000, P = 5. Equilibrium r:',
+    opts:['4%','6%','8%','10%'],a:2,exp:'M/P = 400. 800 − 50r = 400 → r = 8%.'},
+
+  // AD-AS (8)
+  {topic:'adas',stem:'An expansion in AD increases ___ in the short run, only ___ in the long run.',
+    opts:['real GDP, price level','real GDP, velocity','U-rate, P','U-rate, velocity'],a:0,
+    exp:'AD↑ → SR: Y↑, P↑. LR: Y returns to potential, only P stays higher.'},
+  {topic:'adas',stem:'Stagflation — lower output AND higher prices — is caused by:',
+    opts:['AD expansion','AD contraction','favorable supply shock','adverse supply shock'],a:3,
+    exp:'Adverse supply shock: SRAS up/left → P↑ AND Y↓ simultaneously.'},
+  {topic:'adas',stem:'In the long run, the AS curve is:',
+    opts:['horizontal','downward sloping','upward sloping','vertical at potential Y'],a:3,
+    exp:'LRAS is vertical at Ȳ. Prices adjust; output set by real factors (K, L, A).'},
+  {topic:'adas',stem:'In a typical recession, consumption ___. Investment moves the same direction but proportionately ___.',
+    opts:['rises, more','rises, less','falls, more','falls, less'],a:3,
+    exp:'Both fall in recession, but investment is MORE volatile than consumption.'},
+  {topic:'adas',stem:'Okun\'s law is the ___ relationship between real GDP and the ___.',
+    opts:['negative; unemployment','negative; inflation','positive; unemployment','positive; inflation'],a:0,
+    exp:'Okun: Y 1% above trend → unemployment falls ~0.5 pp. Negative relationship.'},
+  {topic:'adas',stem:'A favorable supply shock (e.g., oil price collapse) causes in the short run:',
+    opts:['P↑, Y↑','P↑, Y↓','P↓, Y↑','P↓, Y↓'],a:2,
+    exp:'SRAS shifts down/right → lower P AND higher Y. Best of both worlds (rare).'},
+  {topic:'adas',stem:'A negative demand shock (e.g., wealth collapse) causes in the short run:',
+    opts:['P↑, Y↑','P↑, Y↓','P↓, Y↑','P↓, Y↓'],a:3,
+    exp:'AD shifts left → P falls AND Y falls. Both decline together.'},
+  {topic:'adas',stem:'Long-run self-correction from a negative demand shock occurs because:',
+    opts:['Fed always responds','wages and prices fall, shifting SRAS right',
+          'government spending rises','technology improves'],a:1,
+    exp:'In the long run, sticky prices unstick. Lower P/W → SRAS shifts right → Y returns to potential at lower P.'},
+
+  // FED REACTIONS (8)
+  {topic:'fed',stem:'If the Fed responds to an adverse supply shock by expanding M, it will:',
+    opts:['stabilize AD at previous level','make recession deeper',
+          'keep economy near natural levels (cost: higher P)','return P to pre-shock level'],a:2,
+    exp:'Accommodation: AD shifts right → Y returns toward potential. Cost: P rises further.'},
+  {topic:'fed',stem:'If the Fed responds to an adverse supply shock by tightening, it will:',
+    opts:['stabilize AD at previous level','make recession deeper (but inflation falls)',
+          'restore Y immediately','have no real effect'],a:1,
+    exp:'Tightening: AD shifts left → P falls back. But Y falls more. Volcker 1979–82 example.'},
+  {topic:'fed',stem:'ΔG > 0, Fed HOLDS M constant. Outcome:',
+    opts:['Y unchanged, r large rise','Y full Keynesian rise, r unchanged',
+          'Y partial rise, r partial rise','Y falls, r falls'],a:2,
+    exp:'Default IS-LM. IS right, LM unchanged. Y rises (less than full mult); r rises moderately.'},
+  {topic:'fed',stem:'ΔG > 0, Fed HOLDS r constant. Outcome:',
+    opts:['Y unchanged, r unchanged','Y full Keynesian rise, r unchanged',
+          'Y partial rise, r partial rise','Y falls'],a:1,
+    exp:'Fed accommodates: LM shifts down with IS. Y rises by full multiplier; r stays. No crowding out.'},
+  {topic:'fed',stem:'ΔG > 0, Fed HOLDS Y constant. Outcome:',
+    opts:['Y unchanged, r large rise','Y full Keynesian rise',
+          'Y partial rise, r partial rise','Y rises, r unchanged'],a:0,
+    exp:'Fed contracts M sharply. LM shifts up. Y stays at original; r rises a lot. Full crowding out.'},
+  {topic:'fed',stem:'The Fed can target:',
+    opts:['Y, r, and M simultaneously','only one of {Y, r, M}',
+          'Y and r but not M','M and Y but not r'],a:1,
+    exp:'One instrument (M, or equivalently r). Can target ONE of the three; model determines the rest.'},
+  {topic:'fed',stem:'The monetary transmission mechanism (ΔM > 0):',
+    opts:['↑M → ↑r → ↑I → ↑Y','↑M → ↓r → ↑I → ↑Y',
+          '↑M → ↓i → ↓C → ↓Y','↑M → ↑P → ↑Y'],a:1,
+    exp:'More money → r falls → I rises (cost of borrowing fell) → Y rises.'},
+  {topic:'fed',stem:'2020 COVID recession: Fed cut rates from 1.75% to 0–0.25% in 13 days. Diagram interpretation:',
+    opts:['IS shifts right','IS shifts left','LM shifts right/down','LM shifts left/up'],a:2,
+    exp:'Monetary expansion: LM shifts right/down. Combined with fiscal expansion (CARES Act → IS right), recovery was fast.'},
+];
+
+const topicLabels = {kc:'Keynesian Cross', islm:'IS-LM', adas:'AD-AS', fed:'Fed reactions'};
+
+document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+function setMode(m){
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('.mode-content').forEach(c => c.classList.toggle('active', c.id === 'mode-' + m));
+  if (m === 'flash') initFlash();
+}
+
+let timedQs=[], timedAnswers=[], timerInterval=null, timeLeft=0;
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+function startTimedExam(){
+  timedQs = shuffle(questionBank).slice(0, 25);
+  timedAnswers = new Array(timedQs.length).fill(null);
+  timeLeft = 45*60;
+  document.getElementById('timed-start').style.display='none';
+  document.getElementById('timed-results').style.display='none';
+  document.getElementById('timed-running').style.display='block';
+  renderTimed(); startTimer();
+}
+function renderTimed(){
+  document.getElementById('timed-questions').innerHTML = timedQs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="selectTimed(${i},${j},this)"><input type="radio" name="t${i}" ${timedAnswers[i]===j?'checked':''}> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+    </div>`).join('');
+}
+function selectTimed(i,j,el){
+  timedAnswers[i]=j;
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('answered-count').textContent = timedAnswers.filter(x=>x!==null).length;
+}
+function startTimer(){
+  updateTimer();
+  timerInterval = setInterval(()=>{timeLeft--; updateTimer(); if(timeLeft<=0) submitTimedExam();},1000);
+}
+function updateTimer(){
+  const m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('timer-bar').classList.toggle('warning', timeLeft<=5*60);
+}
+function submitTimedExam(){
+  clearInterval(timerInterval);
+  let correct=0, byTopic={};
+  timedQs.forEach((q,i)=>{
+    if (!byTopic[q.topic]) byTopic[q.topic]={c:0,t:0};
+    byTopic[q.topic].t++;
+    if (timedAnswers[i]===q.a) {correct++; byTopic[q.topic].c++;}
+  });
+  const pct=(correct/timedQs.length*100).toFixed(0);
+  let grade='F';
+  if (pct>=90) grade='A — excellent'; else if (pct>=80) grade='B — good';
+  else if (pct>=70) grade='C — pass'; else if (pct>=60) grade='D — needs work';
+  else grade='F — review carefully';
+  document.getElementById('timed-running').style.display='none';
+  const r=document.getElementById('timed-results'); r.style.display='block';
+  r.innerHTML = `<div class="results">
+    <h2>Exam Results</h2>
+    <div class="score">${correct} / ${timedQs.length}</div>
+    <div class="grade"><strong>${pct}%</strong> — ${grade}</div>
+    <h3>By topic</h3>
+    <table><tr><th>Topic</th><th>Correct</th><th>Total</th><th>%</th></tr>
+      ${Object.keys(byTopic).map(t=>`<tr><td>${topicLabels[t]}</td><td>${byTopic[t].c}</td><td>${byTopic[t].t}</td><td>${(byTopic[t].c/byTopic[t].t*100).toFixed(0)}%</td></tr>`).join('')}
+    </table>
+    <h3 style="margin-top:24px;">Review each question</h3>
+    ${timedQs.map((q,i)=>{
+      const c=timedAnswers[i]===q.a;
+      return `<div class="exam-q">
+        <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+        <div class="stem">${q.stem}</div>
+        ${q.opts.map((o,j)=>{let s='';if(j===q.a) s='background:#ECFDF5;color:#065F46;font-weight:600;'; else if(timedAnswers[i]===j) s='background:#FEF2F2;color:#991B1B;'; return `<div style="padding:6px 10px;${s};border-radius:4px;margin:2px 0;font-size:13px;">${String.fromCharCode(97+j)}) ${o}${j===q.a?' ✓':(timedAnswers[i]===j&&!c?' (your answer)':'')}</div>`;}).join('')}
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">Explanation: ${q.exp}</div>
+      </div>`;
+    }).join('')}
+    <button class="action large gold" onclick="setMode('home');document.getElementById('timed-start').style.display='block';document.getElementById('timed-results').style.display='none';" style="display:block;margin:24px auto;">Back to start</button>
+  </div>`;
+  window.scrollTo(0,0);
+}
+function loadTopic(t){
+  const qs=questionBank.filter(q=>q.topic===t);
+  document.getElementById('topics-list').style.display='none';
+  document.getElementById('topic-questions').style.display='block';
+  document.getElementById('topic-title').textContent = topicLabels[t] + ' — practice';
+  document.getElementById('topic-subtitle').textContent = qs.length + ' questions with instant feedback.';
+  document.getElementById('topic-q-list').innerHTML = qs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1}</div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="checkTopic(${i},${j},'${t}',this)"><input type="radio" name="topic-${t}-${i}"> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+      <div class="feedback" id="topic-fb-${t}-${i}"></div>
+    </div>`).join('');
+  window.scrollTo(0,0);
+}
+function checkTopic(i,chosen,t,el){
+  const q=questionBank.filter(x=>x.topic===t)[i];
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.style.pointerEvents='none');
+  const c=(chosen===q.a); el.classList.add('selected');
+  if (c) el.style.background='#ECFDF5'; else {el.style.background='#FEF2F2'; card.querySelectorAll('label')[q.a].style.background='#ECFDF5'; card.querySelectorAll('label')[q.a].style.fontWeight='600';}
+  const fb=document.getElementById(`topic-fb-${t}-${i}`);
+  fb.className='feedback show ' + (c?'correct':'wrong');
+  fb.innerHTML = (c?'✓ Correct. ':`✗ Correct: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+}
+function backToTopics(){
+  document.getElementById('topic-questions').style.display='none';
+  document.getElementById('topics-list').style.display='block';
+}
+
+const flashCards = [
+  {term:'Planned expenditure', def:'PE = a + MPC·(Y − T̄) + Ī + Ḡ. What buyers want to spend at each Y.'},
+  {term:'Keynesian Cross equilibrium', def:'Y = PE. Where actual output equals planned expenditure (45° line).'},
+  {term:'Government-spending multiplier', def:'ΔY/ΔG = 1/(1 − MPC). With MPC = 0.8, multiplier = 5.'},
+  {term:'Tax multiplier', def:'ΔY/ΔT = −MPC/(1 − MPC). With MPC = 0.8, tax multiplier = −4.'},
+  {term:'Balanced-budget multiplier', def:'ΔG = ΔT → ΔY = ΔG. Equals 1, no matter what MPC.'},
+  {term:'IS curve', def:'Locus of (Y, r) where goods market clears. Slopes DOWN. Shifts with fiscal policy and IS shocks.'},
+  {term:'LM curve', def:'Locus of (Y, r) where money market clears. Slopes UP. Shifts with ΔM, ΔP.'},
+  {term:'IS shift right', def:'ΔG > 0 (by ΔG/(1−MPC)) or ΔT < 0 (by MPC·|ΔT|/(1−MPC)) or animal-spirits boom.'},
+  {term:'LM shift down/right', def:'ΔM > 0 (more real balances) or ΔP < 0. At each Y, equilibrium r falls.'},
+  {term:'Fed holds M', def:'Default IS-LM. Fiscal shock has partial effect on Y; partial crowding out.'},
+  {term:'Fed holds r', def:'Accommodates fiscal shock by adjusting M. Y gets FULL Keynesian multiplier effect. No crowding out.'},
+  {term:'Fed holds Y', def:'Offsets fiscal shock entirely. r moves a lot. Full crowding out via monetary tightening.'},
+  {term:'Monetary transmission', def:'↑M → ↓r → ↑I → ↑Y. Channel through interest rates and investment.'},
+  {term:'AD curve', def:'Locus of (Y, P) consistent with IS-LM equilibrium. Slopes DOWN (real-balance effect).'},
+  {term:'SRAS', def:'Short-run aggregate supply. Flat or upward sloping. Prices sticky in short run.'},
+  {term:'LRAS', def:'Long-run aggregate supply. Vertical at potential Ȳ. Prices fully adjust.'},
+  {term:'Demand shock', def:'AD shifts. Y and P move in the SAME direction. Self-corrects to potential in long run.'},
+  {term:'Supply shock (adverse)', def:'SRAS shifts UP/LEFT. P↑ AND Y↓ together — STAGFLATION.'},
+  {term:'Stagflation policy choice', def:'Accommodate → restore Y but P rises further. Tighten → restore P but Y falls more. Trade-off.'},
+  {term:'Okun\'s law', def:'Negative relationship between real GDP and unemployment. Y 1% above trend → U falls ~0.5 pp.'},
+];
+
+let flashIdx=0, flashFlipped=false, flashOrder=flashCards.map((_,i)=>i);
+function initFlash(){document.getElementById('flash-total').textContent=flashCards.length; showFlash();}
+function showFlash(){
+  const c=flashCards[flashOrder[flashIdx]];
+  document.getElementById('flash-idx').textContent=flashIdx+1;
+  document.getElementById('flash-card').classList.toggle('flipped',flashFlipped);
+  document.getElementById('flash-side').textContent = flashFlipped?'Definition':'Term';
+  document.getElementById('flash-text').textContent = flashFlipped?c.def:c.term;
+}
+function flashFlip(){flashFlipped=!flashFlipped; showFlash();}
+function flashNext(){if(flashIdx<flashCards.length-1) flashIdx++; flashFlipped=false; showFlash();}
+function flashPrev(){if(flashIdx>0) flashIdx--; flashFlipped=false; showFlash();}
+function flashShuffle(){flashOrder=shuffle(flashCards.map((_,i)=>i)); flashIdx=0; flashFlipped=false; showFlash();}
+</script>
+
+</body>
+</html>

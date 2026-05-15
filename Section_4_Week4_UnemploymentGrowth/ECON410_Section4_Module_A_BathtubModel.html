@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module A: Bathtub Model of Unemployment</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#1E3A5F;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #C8A961}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .metric.red .val{color:#B91C1C}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:22px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .scen-btn{padding:8px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module A</h1>
+    <div class="sub">Bathtub Model of Unemployment · Mankiw Ch. 7</div>
+  </div>
+  <div class="badge">Section 4 · Module A</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('eq',this)">1. Steady state u*</button>
+    <button class="tab" onclick="sw('dyn',this)">2. Path to steady state</button>
+    <button class="tab" onclick="sw('shocks',this)">3. Recession shocks</button>
+  </div>
+
+  <!-- TAB 1: STEADY STATE -->
+  <div class="panel on" id="p-eq">
+    <p class="desc">Set the monthly job-separation rate s and job-finding rate f. Watch the steady-state u* and average duration of unemployment update live.</p>
+    <div class="formula">u* = <span class="accent">s</span> / (<span class="accent">s</span> + <span class="accent">f</span>)</div>
+
+    <div class="card">
+      <div class="slider-row"><label>Separation rate s (per month)</label><input type="range" id="s" min="0.005" max="0.05" step="0.001" value="0.02" oninput="upd1()"><div class="val" id="vs">0.020</div></div>
+      <div class="slider-row"><label>Finding rate f (per month)</label><input type="range" id="f" min="0.05" max="0.50" step="0.01" value="0.30" oninput="upd1()"><div class="val" id="vf">0.30</div></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">u* (steady-state)</div><div class="val" id="m_u">6.25%</div></div>
+      <div class="metric green"><div class="lbl">Avg job duration (1/s)</div><div class="val" id="m_jdur">50.0 mo</div></div>
+      <div class="metric amber"><div class="lbl">Avg unemp duration (1/f)</div><div class="val" id="m_udur">3.3 mo</div></div>
+      <div class="metric"><div class="lbl">Per-month flow share</div><div class="val" id="m_flow">1.9%</div></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;color:#1E3A5F;font-weight:600;margin-bottom:8px;letter-spacing:1px">QUICK SCENARIOS</div>
+      <div class="scen-row">
+        <button class="scen-btn" onclick="setS(0.020,0.40,this)">Healthy (s=2%, f=40%)</button>
+        <button class="scen-btn on" onclick="setS(0.020,0.30,this)">Average (s=2%, f=30%)</button>
+        <button class="scen-btn" onclick="setS(0.030,0.20,this)">Mild recession</button>
+        <button class="scen-btn" onclick="setS(0.040,0.15,this)">Severe recession</button>
+        <button class="scen-btn" onclick="setS(0.015,0.45,this)">Tight labor market (2022)</button>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Concept check</div>
+      <div class="body">U.S. monthly s ≈ 1.5–2.5%, f ≈ 25–40%. With s=2%, f=30%: u* ≈ 6%. To get to 4% (full employment): s must drop to ~1.5% AND f rise to ~35%. Both must improve — labor markets are two-sided.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: DYNAMICS -->
+  <div class="panel" id="p-dyn">
+    <p class="desc">Start the economy at u₀ and watch it converge to u*. The convergence speed depends on (s+f).</p>
+    <div class="card">
+      <div class="slider-row"><label>Initial unemployment u₀ (%)</label><input type="range" id="u0" min="2" max="15" step="0.5" value="10" oninput="upd2()"><div class="val" id="vu0">10.0%</div></div>
+      <div class="slider-row"><label>s (per month)</label><input type="range" id="s2" min="0.005" max="0.05" step="0.001" value="0.02" oninput="upd2()"><div class="val" id="vs2">0.020</div></div>
+      <div class="slider-row"><label>f (per month)</label><input type="range" id="f2" min="0.05" max="0.50" step="0.01" value="0.30" oninput="upd2()"><div class="val" id="vf2">0.30</div></div>
+      <canvas id="dynChart" width="900" height="380"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Steady-state u*</div><div class="val" id="m2_u">6.25%</div></div>
+      <div class="metric"><div class="lbl">u after 6 months</div><div class="val" id="m2_u6">7.16%</div></div>
+      <div class="metric"><div class="lbl">u after 24 months</div><div class="val" id="m2_u24">6.26%</div></div>
+      <div class="metric"><div class="lbl">Half-life of gap</div><div class="val" id="m2_hl">2.2 mo</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Speed of adjustment</div>
+      <div class="body">The unemployment gap (u − u*) decays exponentially at rate (s+f) per month. So if (s+f) = 0.32, the half-life is ln(2)/0.32 ≈ 2.2 months. After ~6 months, the economy is mostly back to steady state.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: SHOCKS -->
+  <div class="panel" id="p-shocks">
+    <p class="desc">Apply a recession shock at month 0 and see how u responds over 36 months.</p>
+    <div class="card">
+      <div style="font-size:12px;color:#1E3A5F;font-weight:600;margin-bottom:8px;letter-spacing:1px">PICK A SHOCK</div>
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setShock(0,this)">Baseline (no shock)</button>
+        <button class="scen-btn" onclick="setShock(1,this)">2008 Great Recession</button>
+        <button class="scen-btn" onclick="setShock(2,this)">2020 COVID-19</button>
+        <button class="scen-btn" onclick="setShock(3,this)">1970s stagflation</button>
+        <button class="scen-btn" onclick="setShock(4,this)">2022 tightening</button>
+      </div>
+      <canvas id="shockChart" width="900" height="380"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Pre-shock u</div><div class="val" id="m3_pre">5.0%</div></div>
+      <div class="metric red"><div class="lbl">Peak u</div><div class="val" id="m3_peak">5.0%</div></div>
+      <div class="metric"><div class="lbl">Time to peak</div><div class="val" id="m3_tpeak">0 mo</div></div>
+      <div class="metric"><div class="lbl">Time to recover (90%)</div><div class="val" id="m3_rec">0 mo</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Recession asymmetry</div>
+      <div class="body">In real life, s rises sharply at recession onset (mass layoffs) AND f falls (firms stop hiring). u jumps quickly. Recovery is asymmetric — s normalizes faster than f, so u falls slowly. This is why "jobless recoveries" happen.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function upd1(){
+  const s = +document.getElementById('s').value;
+  const f = +document.getElementById('f').value;
+  document.getElementById('vs').textContent = s.toFixed(3);
+  document.getElementById('vf').textContent = f.toFixed(2);
+  const u = s/(s+f);
+  document.getElementById('m_u').textContent = (u*100).toFixed(2)+'%';
+  document.getElementById('m_jdur').textContent = (1/s).toFixed(1)+' mo';
+  document.getElementById('m_udur').textContent = (1/f).toFixed(1)+' mo';
+  document.getElementById('m_flow').textContent = (s*100).toFixed(1)+'%';
+}
+function setS(s, f, btn){
+  document.querySelectorAll('#p-eq .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  document.getElementById('s').value = s;
+  document.getElementById('f').value = f;
+  upd1();
+}
+
+function upd2(){
+  const u0 = +document.getElementById('u0').value/100;
+  const s = +document.getElementById('s2').value;
+  const f = +document.getElementById('f2').value;
+  document.getElementById('vu0').textContent = (u0*100).toFixed(1)+'%';
+  document.getElementById('vs2').textContent = s.toFixed(3);
+  document.getElementById('vf2').textContent = f.toFixed(2);
+  const ust = s/(s+f);
+  // u(t) = u* + (u0 - u*)·exp(-(s+f)t)
+  const ut = (t) => ust + (u0 - ust) * Math.exp(-(s+f)*t);
+  document.getElementById('m2_u').textContent = (ust*100).toFixed(2)+'%';
+  document.getElementById('m2_u6').textContent = (ut(6)*100).toFixed(2)+'%';
+  document.getElementById('m2_u24').textContent = (ut(24)*100).toFixed(2)+'%';
+  document.getElementById('m2_hl').textContent = (Math.log(2)/(s+f)).toFixed(1)+' mo';
+  drawDyn(u0, ust, s+f);
+}
+function drawDyn(u0, ust, lambda){
+  const c = document.getElementById('dynChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const xMax = 36, yMax = Math.max(0.15, u0*1.1, ust*1.1);
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=6;i++){
+    const xv = (xMax)*i/6;
+    const xx = margin.l+(W-margin.l-margin.r)*i/6;
+    ctx.fillText(xv.toFixed(0)+' mo', xx-15, H-margin.b+15);
+  }
+  for(let i=0;i<=5;i++){
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText((yv*100).toFixed(1)+'%', 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Months', W/2-30, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Unemployment rate', 0, 0); ctx.restore();
+  // Steady state line
+  const yy_st = margin.t+(H-margin.t-margin.b)*(1-ust/yMax);
+  ctx.strokeStyle='#047857'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(margin.l, yy_st); ctx.lineTo(W-margin.r, yy_st); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#047857'; ctx.font='bold 11px sans-serif';
+  ctx.fillText('u* = '+(ust*100).toFixed(2)+'%', W-margin.r-110, yy_st-5);
+  // Path
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const t = xMax*i/100;
+    const ut = ust + (u0-ust)*Math.exp(-lambda*t);
+    const xx = margin.l+(W-margin.l-margin.r)*t/xMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-ut/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+}
+
+// SHOCKS
+const shocks = [
+  { name: "Baseline (no shock)", pre:5, peak:5, tpeak:0, ru:5, ruTime:0, lambda:0.32 },
+  { name: "2008 Great Recession", pre:5, peak:10, tpeak:18, ru:5.5, ruTime:60, lambda:0.18 },
+  { name: "2020 COVID-19", pre:3.5, peak:14.7, tpeak:2, ru:4, ruTime:24, lambda:0.40 },
+  { name: "1970s stagflation", pre:5.5, peak:9, tpeak:24, ru:6, ruTime:48, lambda:0.20 },
+  { name: "2022 tightening", pre:3.6, peak:4.5, tpeak:24, ru:4, ruTime:36, lambda:0.30 }
+];
+function setShock(idx, btn){
+  document.querySelectorAll('#p-shocks .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const sc = shocks[idx];
+  document.getElementById('m3_pre').textContent = sc.pre.toFixed(1)+'%';
+  document.getElementById('m3_peak').textContent = sc.peak.toFixed(1)+'%';
+  document.getElementById('m3_tpeak').textContent = sc.tpeak+' mo';
+  document.getElementById('m3_rec').textContent = sc.ruTime+' mo';
+  drawShock(sc);
+}
+function drawShock(sc){
+  const c = document.getElementById('shockChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const xMax = 60, yMax = 16;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=6;i++){
+    const xv = (xMax)*i/6;
+    const xx = margin.l+(W-margin.l-margin.r)*i/6;
+    ctx.fillText(xv.toFixed(0)+' mo', xx-15, H-margin.b+15);
+  }
+  for(let i=0;i<=5;i++){
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(0)+'%', 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Months since shock', W/2-50, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Unemployment rate', 0, 0); ctx.restore();
+  // Curve: rise from pre to peak, then decay
+  ctx.strokeStyle='#B91C1C'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=120;i++){
+    const t = xMax*i/120;
+    let u;
+    if(t < sc.tpeak){
+      // Linear rise to peak
+      u = sc.pre + (sc.peak - sc.pre) * (t / Math.max(sc.tpeak, 0.1));
+    } else {
+      // Exponential decay back to ru
+      const tafter = t - sc.tpeak;
+      u = sc.ru + (sc.peak - sc.ru) * Math.exp(-sc.lambda * tafter);
+    }
+    u = u/100;
+    const xx = margin.l+(W-margin.l-margin.r)*t/xMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-u/(yMax/100));
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  // Title label
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText(sc.name, margin.l+10, margin.t+15);
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='dyn') upd2();
+  if(id==='shocks') setShock(0, document.querySelector('#p-shocks .scen-btn.on'));
+}
+
+upd1(); upd2(); setShock(0, document.querySelector('#p-shocks .scen-btn.on'));
+</script>
+</body>
+</html>

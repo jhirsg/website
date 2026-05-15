@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module E: Exam Prep & Common Mistakes</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#C8A961;color:#0F2540;font-size:11px;font-weight:700;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .definition-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .term-card{padding:10px 14px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:grab;font-size:13px;margin:6px 0;font-weight:600;color:#1E3A5F}
+  .term-card:hover{background:#f5f5f5}
+  .term-card.dragging{opacity:.4}
+  .def-slot{min-height:60px;border:2px dashed #ccc;border-radius:8px;padding:8px;margin:6px 0;background:#FCFAF6;font-size:12px;color:#374151}
+  .def-slot.over{background:#ECFDF5;border-color:#047857}
+  .def-slot .placed{background:#fff;padding:6px 10px;border-radius:5px;border:1px solid #C8A961;font-weight:600;color:#1E3A5F}
+  .def-text{font-size:12.5px;color:#374151;margin-bottom:6px;line-height:1.45}
+  .btn{padding:8px 18px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn.primary{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .btn.primary:hover{background:#0F2540}
+  .quiz-card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .quiz-q{font-size:14px;font-weight:600;color:#1E3A5F;margin-bottom:12px;line-height:1.5}
+  .quiz-opt{padding:10px 14px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;text-align:left;color:#1F2937;display:block;width:100%;margin:5px 0;font-family:inherit;line-height:1.4}
+  .quiz-opt:hover{background:#f5f5f5}
+  .quiz-opt.ok{background:#ECFDF5;border-color:#047857;color:#1a6b34;font-weight:600}
+  .quiz-opt.no{background:#FEF2F2;border-color:#B91C1C;color:#791f1f}
+  .fb{font-size:13px;padding:10px 14px;border-radius:7px;margin-top:10px;display:none;line-height:1.5}
+  .fb.ok{background:#ECFDF5;color:#047857;display:block;border-left:4px solid #047857}
+  .fb.no{background:#FEF2F2;color:#B91C1C;display:block;border-left:4px solid #B91C1C}
+  .timer{display:inline-block;padding:6px 14px;background:#1E3A5F;color:#C8A961;font-family:Consolas,monospace;font-weight:700;font-size:14px;border-radius:6px;margin-bottom:8px}
+  .progress{height:6px;background:#E5E7EB;border-radius:3px;overflow:hidden;margin:12px 0}
+  .progress-fill{height:100%;background:#C8A961;transition:width .3s}
+  .score-badge{display:inline-block;padding:14px 24px;background:#C8A961;color:#0F2540;border-radius:10px;font-size:24px;font-weight:700;font-family:Cambria,Georgia,serif;margin:14px 0}
+  .input-row{display:grid;grid-template-columns:1fr 200px 100px;gap:10px;align-items:center;margin:8px 0}
+  .input-row .question{font-size:13px;color:#1F2937}
+  .input-row input{padding:8px 12px;font-size:13px;border:1px solid #ccc;border-radius:6px;font-family:Consolas,monospace;font-weight:600;text-align:center}
+  .input-row .verdict{font-size:13px;font-weight:700}
+  .verdict.ok{color:#047857}
+  .verdict.no{color:#B91C1C}
+  .mistake-card{background:#FEF2F2;border:1px solid #B91C1C;border-left:4px solid #B91C1C;padding:14px 18px;margin:10px 0;border-radius:6px}
+  .mistake-card .myth{font-style:italic;color:#1F2937;font-weight:600;margin-bottom:8px}
+  .mistake-card .options{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .mistake-card button{padding:6px 12px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .mistake-card button:hover{background:#FCFAF6}
+  .mistake-card button.ok{background:#ECFDF5;border-color:#047857;color:#047857}
+  .mistake-card button.no{background:#FEF2F2;border-color:#B91C1C;color:#B91C1C}
+  .mistake-card .explain{font-size:12px;color:#374151;margin-top:8px;display:none}
+  .mistake-card .explain.show{display:block;background:#FFF;padding:10px 14px;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Module E: Exam Prep & Common Mistakes</h1>
+    <div class="sub">Section 1 — Comprehensive review · Mankiw Ch. 1–2</div>
+  </div>
+  <div class="badge">SECTION 1 v2 · NEW</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('defs',this)">1. Definitions match-up</button>
+    <button class="tab" onclick="sw('classify',this)">2. GDP rapid classify</button>
+    <button class="tab" onclick="sw('numeric',this)">3. Numerical practice</button>
+    <button class="tab" onclick="sw('mistakes',this)">4. Mistake diagnostic</button>
+    <button class="tab" onclick="sw('quiz',this)">5. Mock quiz (timed)</button>
+  </div>
+
+  <!-- TAB 1: DEFINITIONS MATCH-UP -->
+  <div class="panel on" id="p-defs">
+    <p class="desc">Drag each TERM into the correct DEFINITION slot. Tests whether you know the formal language exam questions use.</p>
+    <div class="card">
+      <div class="definition-row">
+        <div>
+          <div style="font-size:11px;color:#6B7280;font-weight:600;margin-bottom:8px;letter-spacing:1px">TERMS (drag these)</div>
+          <div id="terms-pool"></div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:#6B7280;font-weight:600;margin-bottom:8px;letter-spacing:1px">DEFINITIONS (drop into slot above each)</div>
+          <div id="defs-pool"></div>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <button class="btn primary" onclick="checkDefs()">Check answers</button>
+        <button class="btn" onclick="resetDefs()">Reset</button>
+        <span id="defScore" style="margin-left:14px;font-size:13px;color:#1E3A5F;font-weight:600"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: GDP RAPID CLASSIFY -->
+  <div class="panel" id="p-classify">
+    <p class="desc">For each transaction, click whether it's IN GDP and which component (C, I, G, NX) — or EXCLUDED. You have 60 seconds!</p>
+    <div class="card">
+      <div class="timer" id="classifyTimer">⏱  60 s</div>
+      <div class="progress"><div class="progress-fill" id="classifyProgress" style="width:0%"></div></div>
+      <div id="classifyArea"></div>
+      <div style="margin-top:14px;display:flex;gap:8px;align-items:center">
+        <button class="btn primary" onclick="startClassify()" id="classifyStartBtn">Start (60 s)</button>
+        <button class="btn" onclick="resetClassify()">Reset</button>
+        <span id="classifyScore" style="margin-left:14px;font-size:13px;color:#1E3A5F;font-weight:600"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: NUMERICAL PRACTICE -->
+  <div class="panel" id="p-numeric">
+    <p class="desc">Type your answer (numerical only — no $ or %). Press Enter or click Check. Tests every formula in Section 1.</p>
+    <div class="card" id="numericArea"></div>
+    <div style="margin-top:14px">
+      <button class="btn primary" onclick="checkNumeric()">Check all</button>
+      <button class="btn" onclick="newNumericSet()">New question set</button>
+      <span id="numericScore" style="margin-left:14px;font-size:13px;color:#1E3A5F;font-weight:600"></span>
+    </div>
+  </div>
+
+  <!-- TAB 4: MISTAKE DIAGNOSTIC -->
+  <div class="panel" id="p-mistakes">
+    <p class="desc">Read each false statement. Decide which TYPE of common mistake it represents. Click your answer.</p>
+    <div id="mistakesArea"></div>
+    <button class="btn" onclick="resetMistakes()">Reset</button>
+    <span id="mistakeScore" style="margin-left:14px;font-size:13px;color:#1E3A5F;font-weight:600"></span>
+  </div>
+
+  <!-- TAB 5: MOCK QUIZ -->
+  <div class="panel" id="p-quiz">
+    <p class="desc">15 multiple-choice questions covering all of Section 1. 12 minutes. Score yourself like Quiz 1.</p>
+    <div class="card">
+      <div class="timer" id="quizTimer">⏱  12:00</div>
+      <div class="progress"><div class="progress-fill" id="quizProgress" style="width:0%"></div></div>
+      <div id="quizArea"></div>
+      <div style="margin-top:14px">
+        <button class="btn primary" onclick="startQuiz()" id="quizStartBtn">Start the quiz</button>
+        <button class="btn" onclick="resetQuiz()" id="quizResetBtn" style="display:none">Reset</button>
+      </div>
+      <div id="quizResult" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ TAB 1: DEFINITIONS MATCH-UP ============
+const defPairs = [
+  { term: "Macroeconomics",          def: "The study of the economy as a whole — aggregate output, employment, prices, growth." },
+  { term: "Final good",              def: "A good sold to its end user; not resold or transformed before sale." },
+  { term: "Intermediate good",       def: "A good used as an input in the production of another good. Excluded from GDP." },
+  { term: "Transfer payment",        def: "A payment for which no good or service is received in exchange. Excluded from GDP." },
+  { term: "Nominal GDP",             def: "Total output valued at current-year prices: Σ (P_t × Q_t)." },
+  { term: "Real GDP",                def: "Total output valued at base-year prices: Σ (P_base × Q_t)." },
+  { term: "GDP deflator",            def: "(Nominal GDP / Real GDP) × 100. Economy-wide price index using current quantities." },
+  { term: "Inflation rate",          def: "Percent change in the price level over time." },
+  { term: "Labor force",             def: "L = E + U. People aged 16+ who are employed or actively searching for work." },
+  { term: "Unemployment rate (U-3)", def: "u = U / L × 100. The headline rate published monthly by BLS." }
+];
+let defState = {};
+function buildDefs(){
+  defState = {};
+  const tp = document.getElementById('terms-pool'); tp.innerHTML = '';
+  const dp = document.getElementById('defs-pool'); dp.innerHTML = '';
+  // shuffle terms
+  const shuffled = [...defPairs].sort(() => Math.random() - 0.5);
+  shuffled.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'term-card'; d.draggable = true; d.id = 'tc-' + p.term;
+    d.textContent = p.term;
+    d.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', p.term); d.classList.add('dragging'); });
+    d.addEventListener('dragend', () => d.classList.remove('dragging'));
+    tp.appendChild(d);
+  });
+  defPairs.forEach(p => {
+    const ds = document.createElement('div');
+    ds.className = 'def-slot'; ds.dataset.target = p.term;
+    ds.innerHTML = '<div class="def-text">' + p.def + '</div>';
+    ds.ondragover = e => { e.preventDefault(); ds.classList.add('over'); };
+    ds.ondragleave = () => ds.classList.remove('over');
+    ds.ondrop = e => {
+      e.preventDefault(); ds.classList.remove('over');
+      const term = e.dataTransfer.getData('text/plain');
+      const tcEl = document.getElementById('tc-' + term);
+      if(!tcEl) return;
+      // Remove existing placed term
+      const existing = ds.querySelector('.placed');
+      if(existing){
+        document.getElementById('terms-pool').appendChild(document.getElementById('tc-' + existing.textContent));
+        existing.remove();
+      }
+      // Add placed
+      const placed = document.createElement('div');
+      placed.className = 'placed'; placed.textContent = term;
+      ds.appendChild(placed);
+      tcEl.remove();
+      defState[ds.dataset.target] = term;
+    };
+    dp.appendChild(ds);
+  });
+  document.getElementById('defScore').textContent = '';
+}
+function checkDefs(){
+  let correct = 0;
+  document.querySelectorAll('.def-slot').forEach(ds => {
+    const placed = ds.querySelector('.placed');
+    if(placed && placed.textContent === ds.dataset.target){
+      correct++;
+      ds.style.borderColor = '#047857';
+      ds.style.background = '#ECFDF5';
+    } else {
+      ds.style.borderColor = '#B91C1C';
+      ds.style.background = '#FEF2F2';
+    }
+  });
+  document.getElementById('defScore').textContent = correct + ' / ' + defPairs.length + ' correct';
+}
+function resetDefs(){
+  document.querySelectorAll('.def-slot').forEach(ds => {
+    ds.style.borderColor = '#ccc';
+    ds.style.background = '#FCFAF6';
+  });
+  buildDefs();
+}
+
+// ============ TAB 2: RAPID CLASSIFY ============
+const classifyItems = [
+  { t: "Family buys groceries at supermarket",        a: "C" },
+  { t: "Toyota builds factory in Texas",                a: "I" },
+  { t: "Federal gov't pays soldier's salary",           a: "G" },
+  { t: "U.S. exports software to Germany",              a: "NX" },
+  { t: "Social Security check to retiree",              a: "EX" },
+  { t: "Used car sold on Craigslist",                  a: "EX" },
+  { t: "New home built and sold",                       a: "I" },
+  { t: "Buying 100 shares of Apple stock",             a: "EX" },
+  { t: "City repaves roads",                            a: "G" },
+  { t: "Starbucks barista's wages",                     a: "C (component of services)" },
+  { t: "Consumer buys imported BMW",                    a: "C minus NX (offsetting)" },
+  { t: "Apple builds R&D lab in Cupertino",             a: "I" }
+];
+let classifyState = { active: false, score: 0, idx: 0, total: 0, timeLeft: 60, timer: null };
+
+function startClassify(){
+  classifyState = { active: true, score: 0, idx: 0, total: 0, timeLeft: 60, timer: null };
+  document.getElementById('classifyStartBtn').textContent = 'Running...';
+  document.getElementById('classifyStartBtn').disabled = true;
+  classifyState.timer = setInterval(() => {
+    classifyState.timeLeft--;
+    document.getElementById('classifyTimer').textContent = '⏱  ' + classifyState.timeLeft + ' s';
+    document.getElementById('classifyProgress').style.width = ((60-classifyState.timeLeft)/60*100) + '%';
+    if(classifyState.timeLeft <= 0) endClassify();
+  }, 1000);
+  showNextClassify();
+}
+function showNextClassify(){
+  const area = document.getElementById('classifyArea');
+  // pick a random item
+  const it = classifyItems[Math.floor(Math.random() * classifyItems.length)];
+  classifyState.current = it;
+  classifyState.total++;
+  const expected = it.a.split(' ')[0]; // just the first letter group
+  area.innerHTML = `
+    <div style="font-size:16px;font-weight:600;color:#1E3A5F;text-align:center;padding:20px 10px;background:#FCFAF6;border-radius:8px;margin:8px 0">
+      ${it.t}
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px">
+      <button class="btn" onclick="ansClassify('C')">In C</button>
+      <button class="btn" onclick="ansClassify('I')">In I</button>
+      <button class="btn" onclick="ansClassify('G')">In G</button>
+      <button class="btn" onclick="ansClassify('NX')">In NX</button>
+      <button class="btn" onclick="ansClassify('EX')">EXCLUDED</button>
+    </div>
+  `;
+}
+function ansClassify(ans){
+  if(!classifyState.active) return;
+  const expected = classifyState.current.a.split(' ')[0];
+  if(ans === expected) classifyState.score++;
+  document.getElementById('classifyScore').textContent =
+    'Score: ' + classifyState.score + ' / ' + classifyState.total + '  ·  Pace: ' + (classifyState.total / (60-classifyState.timeLeft || 1)).toFixed(1) + '/sec';
+  showNextClassify();
+}
+function endClassify(){
+  clearInterval(classifyState.timer);
+  classifyState.active = false;
+  document.getElementById('classifyArea').innerHTML = `
+    <div style="text-align:center;padding:30px">
+      <div class="score-badge">${classifyState.score} correct out of ${classifyState.total}</div>
+      <div style="font-size:13px;color:#374151;margin-top:14px">${classifyState.score >= 12 ? 'Excellent — exam-ready!' : classifyState.score >= 8 ? 'Good — review weak items' : 'Practice more — re-read slide 11 of v2'}</div>
+    </div>
+  `;
+  document.getElementById('classifyStartBtn').textContent = 'Start (60 s)';
+  document.getElementById('classifyStartBtn').disabled = false;
+  document.getElementById('classifyTimer').textContent = '⏱  60 s';
+}
+function resetClassify(){ endClassify(); document.getElementById('classifyScore').textContent = ''; document.getElementById('classifyProgress').style.width = '0%'; document.getElementById('classifyArea').innerHTML = ''; }
+
+// ============ TAB 3: NUMERICAL PRACTICE ============
+function genNumericQ(){
+  const types = ['gdp','deflator','inflation','unemployment','u6','lfpr'];
+  const t = types[Math.floor(Math.random()*types.length)];
+  if(t === 'gdp'){
+    const C = Math.floor(Math.random()*8) + 12;
+    const I = Math.floor(Math.random()*4) + 2;
+    const G = Math.floor(Math.random()*3) + 2;
+    const X = Math.floor(Math.random()*4) + 2;
+    const M = Math.floor(Math.random()*4) + 2;
+    return { q: `C=$${C}T, I=$${I}T, G=$${G}T, Exports=$${X}T, Imports=$${M}T. Find GDP.`, a: C+I+G+X-M, unit: 'T' };
+  }
+  if(t === 'deflator'){
+    const N = Math.floor(Math.random()*15) + 20;
+    const R = Math.floor(Math.random()*10) + 18;
+    const def = ((N/R)*100).toFixed(1);
+    return { q: `Nominal GDP = $${N}T, Real GDP = $${R}T. Find the GDP deflator (1 decimal).`, a: parseFloat(def), unit: '' };
+  }
+  if(t === 'inflation'){
+    const p1 = Math.floor(Math.random()*40) + 100;
+    const p2 = p1 + Math.floor(Math.random()*8) + 1;
+    const inf = ((p2-p1)/p1*100).toFixed(1);
+    return { q: `Last year's CPI = ${p1}, this year's CPI = ${p2}. Find inflation rate (% to 1 decimal).`, a: parseFloat(inf), unit: '%' };
+  }
+  if(t === 'unemployment'){
+    const E = Math.floor(Math.random()*30) + 130;
+    const U = Math.floor(Math.random()*8) + 5;
+    const u = (U/(E+U)*100).toFixed(1);
+    return { q: `Employed = ${E}M, Unemployed = ${U}M. Find u rate (% to 1 decimal).`, a: parseFloat(u), unit: '%' };
+  }
+  if(t === 'lfpr'){
+    const E = Math.floor(Math.random()*30) + 130;
+    const U = Math.floor(Math.random()*8) + 5;
+    const Pop = E + U + Math.floor(Math.random()*60) + 70;
+    const lfpr = ((E+U)/Pop*100).toFixed(1);
+    return { q: `Adult pop = ${Pop}M, Employed = ${E}M, Unemployed = ${U}M. Find LFPR (% to 1 decimal).`, a: parseFloat(lfpr), unit: '%' };
+  }
+  if(t === 'u6'){
+    const E = Math.floor(Math.random()*20) + 140;
+    const U = Math.floor(Math.random()*5) + 6;
+    const dis = Math.floor(Math.random()*3) + 2;
+    const pt = Math.floor(Math.random()*4) + 3;
+    const u6 = ((U+dis+pt)/(E+U+dis)*100).toFixed(1);
+    return { q: `E=${E}M, U=${U}M, discouraged=${dis}M, part-time=${pt}M. Find U-6 (% to 1 decimal).`, a: parseFloat(u6), unit: '%' };
+  }
+}
+
+let numericQs = [];
+function newNumericSet(){
+  numericQs = [];
+  for(let i=0;i<6;i++) numericQs.push(genNumericQ());
+  renderNumeric();
+}
+function renderNumeric(){
+  const a = document.getElementById('numericArea');
+  a.innerHTML = '';
+  numericQs.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'input-row';
+    div.innerHTML = `
+      <div class="question"><strong>${i+1}.</strong> ${q.q}</div>
+      <input id="nq-${i}" type="number" step="any" placeholder="answer" />
+      <span class="verdict" id="nv-${i}"></span>`;
+    a.appendChild(div);
+  });
+  document.getElementById('numericScore').textContent = '';
+}
+function checkNumeric(){
+  let correct = 0;
+  numericQs.forEach((q, i) => {
+    const inp = document.getElementById('nq-' + i);
+    const v = parseFloat(inp.value);
+    const ok = !isNaN(v) && Math.abs(v - q.a) <= 0.15;
+    const verd = document.getElementById('nv-' + i);
+    if(ok){ verd.textContent = '✓ ' + q.a + (q.unit ? ' '+q.unit : ''); verd.className = 'verdict ok'; correct++; }
+    else { verd.textContent = '✗ → ' + q.a + (q.unit ? ' '+q.unit : ''); verd.className = 'verdict no'; }
+  });
+  document.getElementById('numericScore').textContent = 'Score: ' + correct + ' / ' + numericQs.length;
+}
+
+// ============ TAB 4: MISTAKE DIAGNOSTIC ============
+const mistakeItems = [
+  { stmt: "If everyone saved 50% more, the U.S. economy would be much wealthier.", types: ["Fallacy of composition", "Confusing real and nominal", "Forgetting time horizon", "Stock vs flow confusion"], answer: 0,
+    expl: "Fallacy of composition. What works for one household (more saving = more wealth) fails when ALL households save more (Paradox of Thrift)." },
+  { stmt: "U.S. GDP grew 7% last year — Americans are 7% richer.", types: ["Stock vs flow", "Real vs nominal", "Per-capita vs aggregate", "Underground economy"], answer: 1,
+    expl: "Real vs nominal. 7% nominal growth could be ALL inflation. Need to subtract inflation to get real growth. Also: aggregate ≠ per-capita." },
+  { stmt: "Buying Apple stock counts in GDP because money changed hands.", types: ["Final vs intermediate", "Financial vs real transaction", "Transfer payment", "Resale rule"], answer: 1,
+    expl: "Financial vs real transaction. Stock sales transfer ownership of an existing asset — they don't represent NEW production. NOT in GDP." },
+  { stmt: "Unemployment fell from 7% to 5% — the labor market improved.", types: ["Discouraged-worker effect", "U-3 vs U-6", "LFPR not measured", "All of the above"], answer: 3,
+    expl: "All three matter. u could fall because workers gave up (LFPR fell). Always check LFPR and U-6 alongside u." },
+  { stmt: "Government must balance its budget like a household.", types: ["Fallacy of composition", "Long vs short run", "Stock vs flow (debt vs deficit)", "Currency-issuer asymmetry"], answer: 3,
+    expl: "Currency-issuer asymmetry. Sovereign government with its own currency can roll over debt indefinitely; households cannot. Misapplied micro logic." },
+  { stmt: "If the Fed prints money, prices double overnight.", types: ["Confusing money with prices", "Confusing speed of adjustment", "Velocity assumption", "All — short-run is sticky"], answer: 3,
+    expl: "All apply. Prices are sticky in the SR; quantity equation requires V to remain stable. Post-2008 Fed expanded MB 4× without comparable inflation." }
+];
+let mistakeAns = {};
+function buildMistakes(){
+  mistakeAns = {};
+  const a = document.getElementById('mistakesArea'); a.innerHTML = '';
+  mistakeItems.forEach((m, i) => {
+    const card = document.createElement('div'); card.className = 'mistake-card';
+    let html = `<div class="myth">"${m.stmt}"</div><div style="font-size:11px;color:#6B7280;margin-bottom:6px">Which type of mistake is this?</div><div class="options" id="mopts-${i}">`;
+    m.types.forEach((t, j) => {
+      html += `<button onclick="ansMistake(${i}, ${j})">${t}</button>`;
+    });
+    html += `</div><div class="explain" id="mexp-${i}"></div>`;
+    card.innerHTML = html;
+    a.appendChild(card);
+  });
+  document.getElementById('mistakeScore').textContent = '';
+}
+function ansMistake(i, j){
+  if(mistakeAns[i] !== undefined) return;
+  const m = mistakeItems[i];
+  const ok = j === m.answer;
+  mistakeAns[i] = ok;
+  document.querySelectorAll('#mopts-' + i + ' button').forEach((btn, k) => {
+    if(k === m.answer) btn.classList.add('ok');
+    else if(k === j) btn.classList.add('no');
+    btn.disabled = true;
+  });
+  const ex = document.getElementById('mexp-' + i);
+  ex.textContent = (ok ? '✓ Correct. ' : '✗ Not quite. ') + m.expl;
+  ex.classList.add('show');
+  const correct = Object.values(mistakeAns).filter(Boolean).length;
+  document.getElementById('mistakeScore').textContent = 'Score: ' + correct + ' / ' + Object.keys(mistakeAns).length;
+}
+function resetMistakes(){ buildMistakes(); }
+
+// ============ TAB 5: MOCK QUIZ ============
+const quizQs = [
+  { q: "GDP measures:", opts: ["Total income earned", "Total spending on final goods", "Total wealth in the country", "Both A and B"], a: 3, exp: "GDP is identical from income, spending, or value-added approaches." },
+  { q: "Which is NOT in U.S. GDP?", opts: ["A new home built in Dallas", "Toyota factory in Texas", "Pension payment to retiree", "Wages of TX teachers"], a: 2, exp: "Pension is a transfer payment — no new production." },
+  { q: "If nominal GDP rises 6% and real GDP rises 2%, inflation ≈?", opts: ["3%", "4%", "8%", "12%"], a: 1, exp: "Approximate: π = nominal − real = 4%." },
+  { q: "U-3 measures:", opts: ["All people without jobs", "Unemployed/Labor force", "Unemployed/Adult population", "Discouraged + unemployed"], a: 1, exp: "u = U/L. Standard headline rate." },
+  { q: "If 2M discouraged workers re-enter L without finding jobs, u:", opts: ["Falls", "Rises", "Stays the same", "Depends on E"], a: 1, exp: "Both U and L rise; u = U/L rises." },
+  { q: "Best example of intermediate good:", opts: ["A car for personal use", "Wheat sold to a bakery", "A pension check", "A used home"], a: 1, exp: "Wheat is INPUT to bread production — value captured in bread price." },
+  { q: "GDP deflator equals:", opts: ["(Real/Nominal)·100", "(Nominal/Real)·100", "(Nominal − Real)/Real·100", "(Real − Nominal)/Nominal·100"], a: 1, exp: "(Nominal/Real)·100 — economy-wide price index." },
+  { q: "Fallacy of composition means:", opts: ["A statement is true if popular", "Adding micro doesn't give macro", "Rich people influence GDP", "Inflation hurts everyone"], a: 1, exp: "Aggregating individual behavior can change conclusions (e.g., Paradox of Thrift)." },
+  { q: "Real GDP:", opts: ["Uses current-year prices", "Uses base-year prices", "Equals nominal × CPI", "Cannot be negative"], a: 1, exp: "Real holds prices fixed at base-year." },
+  { q: "Net exports = ?", opts: ["Exports + imports", "Exports − imports", "Imports − exports", "Foreign GDP × exchange rate"], a: 1, exp: "NX = X − M." },
+  { q: "Frictional unemployment:", opts: ["Always > 0 in any economy", "Counted in cyclical u", "Equals 0 at NRU", "Disappears in recessions"], a: 0, exp: "Job search is unavoidable in any dynamic economy." },
+  { q: "Imputed rent IS counted because:", opts: ["Owner-occupiers have implicit income", "It's a transfer", "It's an intermediate good", "BLS forgot to exclude it"], a: 0, exp: "BEA imputes rental value of owner-occupied housing for comparability with renters." },
+  { q: "If V (velocity) is constant, gM = 5%, gY = 2%, then π ≈?", opts: ["1%", "3%", "7%", "10%"], a: 1, exp: "π = gM − gY = 3% (preview of Section 3 / QTM)." },
+  { q: "LFPR has FALLEN since 2000 in the U.S. because:", opts: ["Aging population (boomers retiring)", "Declining male prime-age participation", "Both A and B", "More immigration"], a: 2, exp: "Both A and B are documented; immigration actually adds to L." },
+  { q: "Best measure of welfare:", opts: ["Nominal GDP", "Real GDP per capita", "GDP plus imputed leisure", "GDP is NOT a welfare measure"], a: 3, exp: "GDP measures market output, not welfare. Watch lectures for nuance." }
+];
+let quizState = { active: false, idx: 0, score: 0, timeLeft: 720, timer: null, answers: [] };
+function startQuiz(){
+  quizState = { active: true, idx: 0, score: 0, timeLeft: 720, timer: null, answers: [] };
+  document.getElementById('quizStartBtn').style.display = 'none';
+  document.getElementById('quizResetBtn').style.display = 'inline-block';
+  document.getElementById('quizResult').innerHTML = '';
+  quizState.timer = setInterval(() => {
+    quizState.timeLeft--;
+    const m = Math.floor(quizState.timeLeft/60), s = quizState.timeLeft % 60;
+    document.getElementById('quizTimer').textContent = '⏱  ' + m + ':' + (s<10?'0':'') + s;
+    if(quizState.timeLeft <= 0) endQuiz();
+  }, 1000);
+  showQuizQ();
+}
+function showQuizQ(){
+  if(quizState.idx >= quizQs.length){ endQuiz(); return; }
+  const q = quizQs[quizState.idx];
+  document.getElementById('quizProgress').style.width = (quizState.idx/quizQs.length*100)+'%';
+  let html = `<div class="quiz-card"><div style="font-size:11px;color:#6B7280;margin-bottom:6px">QUESTION ${quizState.idx+1} OF ${quizQs.length}</div><div class="quiz-q">${q.q}</div>`;
+  q.opts.forEach((o, i) => {
+    html += `<button class="quiz-opt" onclick="ansQuizQ(${i})">${o}</button>`;
+  });
+  html += `<div class="fb" id="qfb-${quizState.idx}"></div></div>`;
+  document.getElementById('quizArea').innerHTML = html;
+}
+function ansQuizQ(i){
+  const q = quizQs[quizState.idx];
+  const ok = i === q.a;
+  if(ok) quizState.score++;
+  quizState.answers.push({ q: quizState.idx, ans: i, ok });
+  const fb = document.getElementById('qfb-' + quizState.idx);
+  fb.className = 'fb ' + (ok ? 'ok' : 'no');
+  fb.innerHTML = '<strong>' + (ok ? '✓ Correct.' : '✗ Not quite — correct answer: ' + q.opts[q.a] + '.') + '</strong> ' + q.exp;
+  setTimeout(() => { quizState.idx++; showQuizQ(); }, 1800);
+}
+function endQuiz(){
+  clearInterval(quizState.timer);
+  quizState.active = false;
+  document.getElementById('quizArea').innerHTML = '';
+  document.getElementById('quizProgress').style.width = '100%';
+  const pct = Math.round(quizState.score / quizQs.length * 100);
+  let grade = pct >= 90 ? 'A' : pct >= 80 ? 'B' : pct >= 70 ? 'C' : pct >= 60 ? 'D' : 'F';
+  let msg = pct >= 80 ? 'Excellent — exam-ready!' : pct >= 65 ? 'Solid — review weak topics.' : 'Re-study Section 1 v1 + v2 slides.';
+  document.getElementById('quizResult').innerHTML = `
+    <div style="text-align:center;padding:30px">
+      <div class="score-badge">${quizState.score} / ${quizQs.length}  ·  Grade: ${grade}</div>
+      <div style="font-size:14px;color:#374151;margin-top:14px">${msg}</div>
+    </div>
+  `;
+}
+function resetQuiz(){
+  if(quizState.timer) clearInterval(quizState.timer);
+  document.getElementById('quizStartBtn').style.display = 'inline-block';
+  document.getElementById('quizResetBtn').style.display = 'none';
+  document.getElementById('quizArea').innerHTML = '';
+  document.getElementById('quizResult').innerHTML = '';
+  document.getElementById('quizTimer').textContent = '⏱  12:00';
+  document.getElementById('quizProgress').style.width = '0%';
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+buildDefs(); newNumericSet(); buildMistakes();
+</script>
+</body>
+</html>

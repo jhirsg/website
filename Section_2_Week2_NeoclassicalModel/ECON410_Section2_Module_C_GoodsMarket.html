@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module C: Goods-Market Equilibrium</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#B45309;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#B45309;color:#fff;border-color:#B45309}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:160px 1fr 80px;gap:14px;align-items:center;margin:10px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.red .val{color:#B91C1C}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#FEF3C7;border:1px solid #B45309;border-left:4px solid #B45309;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#B45309;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+  .scen-btn{padding:8px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#B45309;color:#fff;border-color:#B45309}
+  .delta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .delta{background:#fff;border:1px solid #E5E7EB;border-radius:6px;padding:10px 14px;border-left:4px solid #6B7280}
+  .delta.up{border-left-color:#047857}
+  .delta.down{border-left-color:#B91C1C}
+  .delta .lbl{font-size:11px;color:#6B7280;letter-spacing:.5px;font-weight:600;text-transform:uppercase}
+  .delta .val{font-size:16px;font-weight:700;color:#1F2937;font-family:Consolas,monospace;margin-top:2px}
+  .delta .change{font-size:11px;font-weight:600;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module C</h1>
+    <div class="sub">Goods-Market Equilibrium · Mankiw Ch. 3 §3.3–3.4</div>
+  </div>
+  <div class="badge">Section 2 · Module C</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('eq',this)">1. Find r*</button>
+    <button class="tab" onclick="sw('crowd',this)">2. Crowding out</button>
+    <button class="tab" onclick="sw('shocks',this)">3. Investment shocks</button>
+  </div>
+
+  <!-- TAB 1: EQUILIBRIUM -->
+  <div class="panel on" id="p-eq">
+    <p class="desc">Set Y, T, G, and the consumption parameters. The real interest rate r* adjusts so that S = I(r*).</p>
+    <div class="formula">S = Y − C(Y−T) − G &nbsp;&nbsp;=&nbsp;&nbsp; <span class="accent">I(r*)</span></div>
+
+    <div class="card">
+      <div class="slider-row"><label>Output Y</label><input type="range" id="Y" min="10" max="40" step="1" value="20" oninput="upd1()"><div class="val" id="vY">20</div></div>
+      <div class="slider-row"><label>Taxes T</label><input type="range" id="T" min="0" max="15" step="0.5" value="3.5" oninput="upd1()"><div class="val" id="vT">3.5</div></div>
+      <div class="slider-row"><label>Gov't G</label><input type="range" id="G" min="0" max="15" step="0.5" value="3" oninput="upd1()"><div class="val" id="vG">3</div></div>
+      <div class="slider-row"><label>MPC</label><input type="range" id="mpc" min="0.3" max="0.95" step="0.01" value="0.70" oninput="upd1()"><div class="val" id="vmpc">0.70</div></div>
+      <div class="slider-row"><label>Auto. C₀</label><input type="range" id="c0" min="0" max="3" step="0.1" value="1.0" oninput="upd1()"><div class="val" id="vc0">1.0</div></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Consumption C</div><div class="val" id="m1C">12.55</div></div>
+      <div class="metric"><div class="lbl">Private saving</div><div class="val" id="m1Sp">3.95</div></div>
+      <div class="metric"><div class="lbl">Public saving</div><div class="val" id="m1Sg">0.50</div></div>
+      <div class="metric"><div class="lbl">National saving S</div><div class="val" id="m1S">4.45</div></div>
+      <div class="metric green"><div class="lbl">Equilibrium r*</div><div class="val" id="m1r">5.55%</div></div>
+    </div>
+
+    <div class="card">
+      <canvas id="eqChart" width="800" height="380"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">How to read it</div>
+      <div class="body">National saving S is fixed (vertical green line) because Y is fixed and consumption depends only on disposable income. Investment I(r) is downward-sloping in r. The real rate r* clears the loanable funds market at the intersection. Try moving G — see how S shifts and r changes.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: CROWDING OUT -->
+  <div class="panel" id="p-crowd">
+    <p class="desc">Watch crowding out happen step by step. Apply a fiscal shock and trace through the four effects on S, r, I, and C.</p>
+
+    <div class="card">
+      <div style="font-size:13px;color:#1F2937;margin-bottom:10px">Baseline: Y=$20T, T=$3.5T, G=$3T, MPC=0.70, C₀=$1T</div>
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setShock(0,this)">Baseline (Δ = 0)</button>
+        <button class="scen-btn" onclick="setShock(1,this)">ΔG = +$1T</button>
+        <button class="scen-btn" onclick="setShock(2,this)">ΔG = +$2T</button>
+        <button class="scen-btn" onclick="setShock(3,this)">ΔT = −$1T (tax cut)</button>
+        <button class="scen-btn" onclick="setShock(4,this)">ΔT = +$1T (tax hike)</button>
+      </div>
+    </div>
+
+    <div class="delta-grid" id="deltaGrid"></div>
+
+    <div class="card">
+      <canvas id="crowdChart" width="800" height="380"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Step-by-step logic</div>
+      <div class="body">
+        <strong>ΔG > 0:</strong> Public saving falls (T−G ↓) → national S ↓ → loanable funds get scarcer → r* ↑ → I(r*) ↓.
+        <strong>Full crowding out</strong> in this LR model: ΔI exactly = −ΔG. C is unchanged (Y, T fixed).<br>
+        <strong>ΔT &lt; 0:</strong> Disposable income ↑ → C rises by MPC·|ΔT|. Private saving falls (since C ↑ by more than disposable income up by MPC less than full). Public saving falls. National S ↓ → r ↑ → I ↓.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: INVESTMENT SHOCKS -->
+  <div class="panel" id="p-shocks">
+    <p class="desc">Now shock investment demand instead. With S fixed, the equilibrium QUANTITY of I doesn't change — only the price (r).</p>
+
+    <div class="card">
+      <div class="slider-row"><label>Investment shift (Δb)</label><input type="range" id="ishift" min="-2" max="2" step="0.1" value="0" oninput="updShock()"><div class="val" id="vshift">0.0</div></div>
+      <div style="font-size:12px;color:#6B7280;margin-top:8px">Positive = animal spirits / new tech / tax credit. Negative = pessimism / tighter credit / policy uncertainty.</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">National saving S</div><div class="val" id="m3S">4.45</div></div>
+      <div class="metric green"><div class="lbl">New r*</div><div class="val" id="m3r">5.55%</div></div>
+      <div class="metric"><div class="lbl">Equilibrium I</div><div class="val" id="m3I">4.45</div></div>
+      <div class="metric"><div class="lbl">Δr from baseline</div><div class="val" id="m3dr">0.00 pp</div></div>
+    </div>
+
+    <div class="card">
+      <canvas id="shockChart" width="800" height="380"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Key insight</div>
+      <div class="body">Investment-demand shocks change r* but NOT total I. With S fixed, total I = S regardless of where the I curve sits. The market clears via the price (r), not the quantity. This is fundamentally different from short-run models with sticky prices, where I shifts can change output.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// I(r) = b - 5*r,  where b is investment demand intercept (in $T)
+const Ibase = 8;     // baseline intercept
+const Islope = 60;   // I = b - Islope*r, so r in decimal
+function I_at(r, b=Ibase){ return b - Islope*r; }
+function r_for(S, b=Ibase){ return (b - S)/Islope; }
+
+function compute(Y, T, G, mpc, c0){
+  const C = c0 + mpc*(Y - T);
+  const Sp = (Y - T) - C;
+  const Sg = T - G;
+  const S = Sp + Sg;
+  const r = r_for(S);
+  return {C, Sp, Sg, S, r};
+}
+
+function upd1(){
+  const Y = +document.getElementById('Y').value; vY.textContent=Y;
+  const T = +document.getElementById('T').value; vT.textContent=T.toFixed(1);
+  const G = +document.getElementById('G').value; vG.textContent=G.toFixed(1);
+  const mpc = +document.getElementById('mpc').value; vmpc.textContent=mpc.toFixed(2);
+  const c0 = +document.getElementById('c0').value; vc0.textContent=c0.toFixed(1);
+  const r = compute(Y, T, G, mpc, c0);
+  m1C.textContent = r.C.toFixed(2);
+  m1Sp.textContent = r.Sp.toFixed(2);
+  m1Sg.textContent = r.Sg.toFixed(2);
+  m1S.textContent = r.S.toFixed(2);
+  m1r.textContent = (r.r*100).toFixed(2)+'%';
+  drawEq(r.S, r.r);
+}
+
+function drawLoanableFunds(canvasId, S, r, opts={}){
+  const c = document.getElementById(canvasId); if(!c.getContext) return;
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const xMin=0, xMax=10, rMin=0, rMax=0.15;
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  // labels
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMin+(xMax-xMin)*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText('$'+xv.toFixed(0)+'T', xx-15, H-margin.b+18);
+  }
+  for(let i=0;i<=5;i++){
+    const rv = rMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText((rv*100).toFixed(1)+'%', 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Loanable funds  S, I  ($T)', W/2-90, H-15);
+  ctx.save(); ctx.translate(15, H/2+50); ctx.rotate(-Math.PI/2); ctx.fillText('Real interest rate r', 0, 0); ctx.restore();
+
+  // Saving curve (vertical) at S
+  const Sx = margin.l+(W-margin.l-margin.r)*S/(xMax-xMin);
+  ctx.strokeStyle='#047857'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(Sx, margin.t); ctx.lineTo(Sx, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#047857'; ctx.font='bold 13px sans-serif'; ctx.fillText('S', Sx+5, margin.t+15);
+
+  // Old saving (if shifted)
+  if(opts.S0!=null && Math.abs(opts.S0-S)>0.01){
+    const S0x = margin.l+(W-margin.l-margin.r)*opts.S0/(xMax-xMin);
+    ctx.strokeStyle='#047857'; ctx.lineWidth=2; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(S0x, margin.t); ctx.lineTo(S0x, H-margin.b); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#047857'; ctx.fillText("S₀", S0x+5, margin.t+30);
+  }
+
+  // Investment curve I(r) = b - Islope*r => I-axis vs r-axis (we plot I horizontally, r vertically)
+  const b = opts.b!=null ? opts.b : Ibase;
+  ctx.strokeStyle='#2563EB'; ctx.lineWidth=3;
+  ctx.beginPath();
+  for(let rv=rMin; rv<=rMax; rv+=rMax/40){
+    const Iv = b - Islope*rv;
+    if(Iv<xMin||Iv>xMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*(Iv-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(1-rv/rMax);
+    if(rv===rMin) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#2563EB'; ctx.font='bold 13px sans-serif'; ctx.fillText('I(r)', W-margin.r-30, H-margin.b-25);
+
+  // Old I if shifted
+  if(opts.b0!=null && Math.abs(opts.b0-b)>0.01){
+    ctx.strokeStyle='#2563EB'; ctx.lineWidth=2; ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    for(let rv=rMin; rv<=rMax; rv+=rMax/40){
+      const Iv = opts.b0 - Islope*rv;
+      if(Iv<xMin||Iv>xMax) continue;
+      const xx = margin.l+(W-margin.l-margin.r)*(Iv-xMin)/(xMax-xMin);
+      const yy = margin.t+(H-margin.t-margin.b)*(1-rv/rMax);
+      if(rv===rMin) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Equilibrium dot
+  const ry = margin.t+(H-margin.t-margin.b)*(1-r/rMax);
+  ctx.fillStyle='#B91C1C'; ctx.beginPath(); ctx.arc(Sx, ry, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('r* = '+(r*100).toFixed(2)+'%', Sx+10, ry-8);
+  // Old equilibrium dot
+  if(opts.r0!=null && Math.abs(opts.r0-r)>0.001){
+    const S0x = opts.S0!=null ? margin.l+(W-margin.l-margin.r)*opts.S0/(xMax-xMin) : Sx;
+    const ry0 = margin.t+(H-margin.t-margin.b)*(1-opts.r0/rMax);
+    ctx.fillStyle='#6B7280'; ctx.beginPath(); ctx.arc(S0x, ry0, 5, 0, Math.PI*2); ctx.fill();
+  }
+}
+function drawEq(S, r){ drawLoanableFunds('eqChart', S, r); }
+
+// Crowding out
+const baseline = compute(20, 3.5, 3, 0.70, 1.0);
+const shocks = [
+  {label:"Baseline", Y:20, T:3.5, G:3, mpc:0.70, c0:1.0},
+  {label:"ΔG = +1", Y:20, T:3.5, G:4.0, mpc:0.70, c0:1.0},
+  {label:"ΔG = +2", Y:20, T:3.5, G:5.0, mpc:0.70, c0:1.0},
+  {label:"ΔT = -1 (cut)", Y:20, T:2.5, G:3, mpc:0.70, c0:1.0},
+  {label:"ΔT = +1 (hike)", Y:20, T:4.5, G:3, mpc:0.70, c0:1.0}
+];
+function setShock(i, btn){
+  document.querySelectorAll('.scen-btn').forEach(el=>el.classList.remove('on'));
+  btn.classList.add('on');
+  const s = shocks[i];
+  const r = compute(s.Y, s.T, s.G, s.mpc, s.c0);
+  const dG = s.G - 3;
+  const dT = s.T - 3.5;
+  const dC = r.C - baseline.C;
+  const dS = r.S - baseline.S;
+  const dr = (r.r - baseline.r)*100;
+  const dI = (8 - Islope*r.r) - (8 - Islope*baseline.r); // ΔI = -ΔS for fixed I curve
+  const grid = document.getElementById('deltaGrid');
+  function fmtDelta(v, unit, dp=2){
+    const sgn = v>=0?'+':'';
+    return sgn+v.toFixed(dp)+unit;
+  }
+  function dCard(lbl, val, change){
+    const cls = change.startsWith('+')&&change!=='+0.00'?'up':(change.startsWith('-')?'down':'');
+    return `<div class="delta ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="change">${change}</div></div>`;
+  }
+  grid.innerHTML =
+    dCard('Government G', '$'+s.G.toFixed(1)+'T', fmtDelta(dG,'T',1)) +
+    dCard('Taxes T', '$'+s.T.toFixed(1)+'T', fmtDelta(dT,'T',1)) +
+    dCard('Consumption C', '$'+r.C.toFixed(2)+'T', fmtDelta(dC,'T',2)) +
+    dCard('National saving S', '$'+r.S.toFixed(2)+'T', fmtDelta(dS,'T',2)) +
+    dCard('Real rate r*', (r.r*100).toFixed(2)+'%', fmtDelta(dr,' pp',2)) +
+    dCard('Investment I', '$'+r.S.toFixed(2)+'T', fmtDelta(dI,'T',2));
+  drawLoanableFunds('crowdChart', r.S, r.r, {S0: baseline.S, r0: baseline.r});
+}
+
+// Investment shocks
+function updShock(){
+  const sh = +document.getElementById('ishift').value;
+  vshift.textContent = (sh>=0?'+':'')+sh.toFixed(1);
+  const newB = Ibase + sh;
+  const r2 = r_for(baseline.S, newB);
+  m3S.textContent = '$'+baseline.S.toFixed(2)+'T';
+  m3r.textContent = (r2*100).toFixed(2)+'%';
+  m3I.textContent = '$'+baseline.S.toFixed(2)+'T';
+  m3dr.textContent = ((r2-baseline.r)*100>=0?'+':'') + ((r2-baseline.r)*100).toFixed(2)+' pp';
+  drawLoanableFunds('shockChart', baseline.S, r2, {b: newB, b0: Ibase, r0: baseline.r});
+}
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='eq') drawEq(+m1S.textContent, +m1r.textContent.replace('%','')/100);
+  if(id==='crowd') drawLoanableFunds('crowdChart', baseline.S, baseline.r);
+  if(id==='shocks') updShock();
+}
+
+upd1(); setShock(0, document.querySelector('.scen-btn.on'));
+</script>
+</body>
+</html>

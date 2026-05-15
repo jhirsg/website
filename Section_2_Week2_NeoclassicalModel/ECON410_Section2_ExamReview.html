@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 2 · Exam Review</title>
+<style>
+:root{--navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1000px;margin:0 auto;padding:24px 32px;}
+.mode-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.mode-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;}
+.mode-btn:hover{background:var(--white);color:var(--navy);border-color:var(--navy);}
+.mode-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.mode-content{display:none;}
+.mode-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);}
+.card.amber{border-left-color:var(--amber);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+button.action{background:var(--navy);color:white;border:none;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.red{background:var(--red);color:white;}
+button.action.large{padding:14px 26px;font-size:15px;}
+.timer-bar{position:sticky;top:0;background:var(--navy);color:white;padding:14px 22px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;z-index:10;}
+.timer-bar .time{font-family:'Cambria',Georgia,serif;font-size:24px;font-weight:bold;color:var(--gold);}
+.timer-bar .progress{font-size:13px;color:#CBD5E1;}
+.timer-bar.warning{background:var(--amber);}
+.timer-bar.warning .time{color:white;}
+.exam-q{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:12px 0;}
+.exam-q .qnum{font-weight:bold;color:var(--gold);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.exam-q .stem{font-weight:600;color:var(--navy);margin-bottom:10px;font-size:14px;}
+.exam-q label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;font-size:13px;color:var(--dark);border-radius:4px;}
+.exam-q label:hover{background:#F1F5F9;}
+.exam-q label.selected{background:#DBEAFE;font-weight:600;}
+.exam-q input[type=radio]{margin-right:8px;}
+.exam-q .feedback{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:13px;display:none;}
+.exam-q .feedback.show{display:block;}
+.exam-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.exam-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.exam-q .topic-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;}
+.tag-prod{background:#DBEAFE;color:#1E3A5F;}
+.tag-fac{background:#D1FAE5;color:#065F46;}
+.tag-goods{background:#FEF3C7;color:#92400E;}
+.tag-crowd{background:#FEE2E2;color:#991B1B;}
+.results{background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:24px;margin:20px 0;}
+.results h2{margin-top:0;}
+.results .score{font-family:'Cambria',Georgia,serif;font-size:48px;color:var(--navy);font-weight:bold;text-align:center;margin:16px 0;}
+.results .grade{text-align:center;font-size:18px;color:var(--teal);margin-bottom:16px;}
+.results table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.results th{background:var(--navy);color:white;padding:8px;text-align:left;}
+.results td{padding:8px;border-bottom:1px solid var(--rule);}
+.start-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:32px;margin:20px 0;text-align:center;}
+.start-card h2{font-size:26px;margin-bottom:12px;}
+.start-card p{font-size:14px;color:var(--slate);margin-bottom:20px;}
+.start-card .stats{display:flex;justify-content:center;gap:30px;margin:20px 0;flex-wrap:wrap;}
+.start-card .stats .num{font-family:'Cambria',Georgia,serif;font-size:32px;color:var(--gold);font-weight:bold;}
+.start-card .stats .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.topic-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:10px 0;cursor:pointer;border-left:4px solid var(--navy);transition:transform 0.15s;}
+.topic-card:hover{transform:translateX(4px);border-left-color:var(--gold);}
+.topic-card h3{margin:0 0 4px 0;color:var(--navy);}
+.topic-card .meta{font-size:12px;color:var(--muted);}
+.flash-card{background:var(--white);border:2px solid var(--rule);border-radius:12px;padding:30px;margin:16px 0;min-height:200px;text-align:center;cursor:pointer;}
+.flash-card .side{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.flash-card .text{font-size:18px;color:var(--navy);font-family:'Cambria',Georgia,serif;}
+.flash-card.flipped{background:#FEFCE8;border-color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 2 — Exam Review</h1>
+  <div class="sub">Production · Factor Markets · Goods Market · Crowding Out — Mankiw Ch.3</div>
+</header>
+
+<div class="container">
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="home">Overview</button>
+    <button class="mode-btn" data-mode="timed">Timed Practice Exam</button>
+    <button class="mode-btn" data-mode="topics">By-Topic Practice</button>
+    <button class="mode-btn" data-mode="flash">Flashcards</button>
+  </div>
+
+  <div id="mode-home" class="mode-content active">
+    <h2>Section 2 Exam Review</h2>
+    <div class="subtitle">Three study modes — pick what fits your goal today.</div>
+    <div class="card">
+      <h3>Mode 1 — Timed Practice Exam</h3>
+      <p style="font-size:13px;">25 questions, 45-minute timer, mixed topics. Use after you've studied.</p>
+      <button class="action large" onclick="setMode('timed')">Start timed exam →</button>
+    </div>
+    <div class="card teal">
+      <h3>Mode 2 — By-Topic Practice</h3>
+      <p style="font-size:13px;">Drill specific weak areas — production, factor markets, goods market, crowding out. No timer.</p>
+      <button class="action large" onclick="setMode('topics')">Pick a topic →</button>
+    </div>
+    <div class="card amber">
+      <h3>Mode 3 — Flashcards</h3>
+      <p style="font-size:13px;">Quick concept review. Click to flip. Last-minute prep.</p>
+      <button class="action large" onclick="setMode('flash')">Open flashcards →</button>
+    </div>
+    <div class="card gold">
+      <h3>What's on the exam?</h3>
+      <ul style="font-size:13px;line-height:1.7;">
+        <li><strong>Production function</strong> (~7 Q): CRS, MPL/MPK, Cobb-Douglas algebra</li>
+        <li><strong>Factor markets</strong> (~6 Q): W/P = MPL, R/P = MPK, factor shares, Euler</li>
+        <li><strong>Goods market</strong> (~6 Q): C, I, G, S = I, finding r*</li>
+        <li><strong>Crowding out</strong> (~6 Q): ΔG vs ΔT, partial vs full crowding out, comparative statics</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="mode-timed" class="mode-content">
+    <div id="timed-start">
+      <div class="start-card">
+        <h2>Timed Practice Exam — Section 2</h2>
+        <p>25 questions, randomly ordered. 45-minute timer.</p>
+        <div class="stats">
+          <div><div class="num">25</div><div class="label">Questions</div></div>
+          <div><div class="num">45</div><div class="label">Minutes</div></div>
+          <div><div class="num">4</div><div class="label">Topics</div></div>
+        </div>
+        <button class="action large gold" onclick="startTimedExam()">Begin exam</button>
+      </div>
+    </div>
+    <div id="timed-running" style="display:none;">
+      <div class="timer-bar" id="timer-bar">
+        <div><span class="time" id="timer-display">45:00</span></div>
+        <div class="progress"><span id="answered-count">0</span> of 25 answered</div>
+        <button class="action red" onclick="submitTimedExam()">Submit exam</button>
+      </div>
+      <div id="timed-questions"></div>
+      <button class="action large" onclick="submitTimedExam()" style="display:block;margin:24px auto;background:var(--green);color:white;">Submit exam</button>
+    </div>
+    <div id="timed-results" style="display:none;"></div>
+  </div>
+
+  <div id="mode-topics" class="mode-content">
+    <div id="topics-list">
+      <h2>Pick a topic to drill</h2>
+      <div class="subtitle">8–10 questions per topic. Instant feedback.</div>
+      <div class="topic-card" onclick="loadTopic('prod')">
+        <h3>⚙️ Production function</h3>
+        <div class="meta">CRS, marginal products, Cobb-Douglas algebra · 10 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('fac')">
+        <h3>👷 Factor markets</h3>
+        <div class="meta">Real wage, real rental rate, factor shares, Euler · 9 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('goods')">
+        <h3>💰 Goods market</h3>
+        <div class="meta">C, I, G, saving, finding r* · 8 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('crowd')">
+        <h3>🏛️ Crowding out</h3>
+        <div class="meta">ΔG vs ΔT, partial vs full crowding out · 8 questions</div>
+      </div>
+    </div>
+    <div id="topic-questions" style="display:none;">
+      <button class="action" onclick="backToTopics()" style="margin-bottom:16px;">← Back to topics</button>
+      <h2 id="topic-title"></h2>
+      <div class="subtitle" id="topic-subtitle"></div>
+      <div id="topic-q-list"></div>
+    </div>
+  </div>
+
+  <div id="mode-flash" class="mode-content">
+    <h2>Flashcards — Section 2 concepts</h2>
+    <div class="subtitle">Click any card to flip.</div>
+    <div style="margin-bottom:20px;">
+      <button class="action" onclick="flashPrev()">← Previous</button>
+      <span style="margin:0 16px;font-size:14px;color:var(--muted);">Card <span id="flash-idx">1</span> of <span id="flash-total">20</span></span>
+      <button class="action" onclick="flashNext()">Next →</button>
+      <button class="action gold" onclick="flashShuffle()" style="float:right;">Shuffle</button>
+    </div>
+    <div class="flash-card" id="flash-card" onclick="flashFlip()">
+      <div class="side" id="flash-side">Term</div>
+      <div class="text" id="flash-text">Click to start</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// QUESTION BANK
+const questionBank = [
+  // PRODUCTION (10)
+  {topic:'prod',stem:'In Y = G(K, L), G(·) is:',
+    opts:['the growth rate of real GDP','indicates K and L are endogenous',
+          'government input into production','the function showing how K and L determine Y'],a:3,
+    exp:'G(·) is the production technology mapping inputs to output.'},
+  {topic:'prod',stem:'F(K, L) = K + L. Returns to scale are:',
+    opts:['increasing','constant','decreasing','depends on K, L'],a:1,
+    exp:'F(zK, zL) = zK + zL = z(K+L) = z·F(K,L). CRS.'},
+  {topic:'prod',stem:'F(K, L) = K^0.3·L^0.5. Returns to scale:',
+    opts:['constant','increasing','decreasing','depends on values'],a:2,
+    exp:'Exponents sum to 0.8 < 1. F(zK,zL) = z^0.8·F(K,L). DECREASING.'},
+  {topic:'prod',stem:'Y = 10·K^(1/3)·L^(2/3), K = 27. MPL when L = 8:',
+    opts:['(20/3)·(27/8)^(1/3)','5','10','15'],a:0,
+    exp:'MPL = (2/3)·Y/L = (2/3)·10·27^(1/3)·8^(2/3)/8 = (2/3)·10·3·4/8 = (20/3)·(27/8)^(1/3). Numerically ≈ 5.5.'},
+  {topic:'prod',stem:'Diminishing MPL means:',
+    opts:['MPL is negative','MPL falls as L rises (holding K)',
+          'output is bounded','wages can\'t rise'],a:1,
+    exp:'Definition: ∂²Y/∂L² < 0. Each new worker adds less than previous.'},
+  {topic:'prod',stem:'Under Cobb-Douglas Y = AK^0.4·L^0.6, MPK equals:',
+    opts:['0.4·Y/K','0.6·Y/K','0.4·Y/L','0.4·A·K^0.4·L^0.6'],a:0,
+    exp:'MPK = ∂Y/∂K = 0.4·A·K^(-0.6)·L^0.6 = 0.4·Y/K.'},
+  {topic:'prod',stem:'Y = K^0.5·L^0.5, K = L = 100. Y equals:',
+    opts:['50','100','200','10,000'],a:1,
+    exp:'Y = 100^0.5·100^0.5 = 10·10 = 100.'},
+  {topic:'prod',stem:'F(K,L) = 2K + 15L. Diminishing MPL?',
+    opts:['Yes','No','Sometimes','Only with K small'],a:1,
+    exp:'MPL = 15 (constant). NO diminishing returns.'},
+  {topic:'prod',stem:'F(K,L) = √(KL). MPL equals:',
+    opts:['0.5·√(K/L)','0.5·√(L/K)','√K','K/(2√L)'],a:0,
+    exp:'MPL = ∂(K^0.5·L^0.5)/∂L = 0.5·K^0.5·L^(-0.5) = 0.5·√(K/L).'},
+  {topic:'prod',stem:'Y = A·K^0.3·L^0.7. If A doubles, holding K, L:',
+    opts:['Y doubles, MPL doubles','Y doubles, MPL unchanged',
+          'Y unchanged, MPL doubles','Y stays, MPL stays'],a:0,
+    exp:'Y = A·K^0.3·L^0.7 → doubles. MPL = 0.7·Y/L → doubles.'},
+
+  // FACTOR MARKETS (9)
+  {topic:'fac',stem:'Profit-max firm hires labor up to:',
+    opts:['MPL = W','MPL = R','MPL = W/P','MPL = W·P'],a:2,
+    exp:'FOC: P·MPL − W = 0 → MPL = W/P (real wage).'},
+  {topic:'fac',stem:'Manager observes MPL = 5, MPK = 40, W = $20/hr, R = $120/machine, P = $5/unit. Hire ___ labor, rent ___ capital.',
+    opts:['more, more','more, less','less, more','less, less'],a:0,
+    exp:'P·MPL = $25 > W = $20 → MORE labor. P·MPK = $200 > R = $120 → MORE capital.'},
+  {topic:'fac',stem:'Under CRS + perfect competition, economic profit is:',
+    opts:['positive and proportional to scale','negative','zero','indeterminate'],a:2,
+    exp:'Euler: Y = MPL·L + MPK·K. Total factor payments = total output. Profit = 0.'},
+  {topic:'fac',stem:'Cobb-Douglas Y = 10·K^(1/3)·L^(2/3). If K doubles, capital share:',
+    opts:['increases 10%','increases 1/3','increases 2/3','stays the same'],a:3,
+    exp:'Cobb-Douglas: capital share = α = 1/3, ALWAYS constant.'},
+  {topic:'fac',stem:'If MPK = α·Y/K and α = 0.3, capital income MPK·K equals:',
+    opts:['α','α·Y','Y','(1−α)·Y'],a:1,
+    exp:'MPK·K = (α·Y/K)·K = α·Y.'},
+  {topic:'fac',stem:'Immigration raises L by 10%, K unchanged, Y = K^0.3·L^0.7. Y rises by ~:',
+    opts:['3%','7%','10%','13%'],a:1,
+    exp:'dlnY = 0.7·dlnL = 0.7·10% = 7%. Output elasticity equals exponent.'},
+  {topic:'fac',stem:'Same scenario. MPL changes by ~:',
+    opts:['+10%','+3%','−3%','−7%'],a:2,
+    exp:'MPL = 0.7·Y/L. Y up 7%, L up 10% → MPL falls ~3%.'},
+  {topic:'fac',stem:'U.S. labor share has fallen from ~65% to ~58% since 1980. Cobb-Douglas predicts:',
+    opts:['rising labor share','falling labor share','constant labor share','depends on A'],a:2,
+    exp:'Cobb-Douglas: labor share = (1−α), constant. Real-world deviation is a known empirical puzzle.'},
+  {topic:'fac',stem:'In a closed economy with CRS, total labor income equals:',
+    opts:['W·L','MPL·L = (1−α)·Y under Cobb-Douglas','R/P·L','MPK·L'],a:1,
+    exp:'Labor income = MPL·L = (1−α)·Y in Cobb-Douglas.'},
+
+  // GOODS MARKET (8)
+  {topic:'goods',stem:'Y = 5,000, T = 1,000, G = 1,000. C = 250 + 0.75(Y−T). Private saving:',
+    opts:['750','1,000','1,250','3,250'],a:0,
+    exp:'C = 250 + 0.75·4,000 = 3,250. S_priv = (Y−T)−C = 4,000−3,250 = 750.'},
+  {topic:'goods',stem:'Same scenario. National saving:',
+    opts:['500','750','1,000','1,500'],a:1,
+    exp:'S_priv = 750, S_pub = T−G = 0, S = 750.'},
+  {topic:'goods',stem:'Same scenario. I(r) = 1,000 − 50r. Equilibrium r*:',
+    opts:['3%','5%','7%','10%'],a:1,
+    exp:'S = I: 750 = 1,000 − 50r → r = 5%.'},
+  {topic:'goods',stem:'Increase in ___ interest rate ___ investment.',
+    opts:['nominal, increases','nominal, decreases','real, increases','real, decreases'],a:3,
+    exp:'I depends on real r. Higher r → fewer profitable projects → I falls.'},
+  {topic:'goods',stem:'Under classical assumptions, Y is set by:',
+    opts:['aggregate demand only','money supply',
+          'factor supplies and technology','government spending'],a:2,
+    exp:'Y = F(K, L). Real factors only. Demand determines allocation (C, I, G).'},
+  {topic:'goods',stem:'Y = $20T, C = $13T, G = $4T. National saving equals:',
+    opts:['$2T','$3T','$7T','$17T'],a:1,
+    exp:'S = Y − C − G = 20 − 13 − 4 = $3T.'},
+  {topic:'goods',stem:'Investment demand shifts right (tech). With S fixed, r* and I*:',
+    opts:['r* up, I* up','r* up, I* unchanged','r* unchanged, I* up','both down'],a:1,
+    exp:'S vertical. Demand shift only moves r upward; I quantity = S, unchanged.'},
+  {topic:'goods',stem:'In a closed economy, S equals:',
+    opts:['Y − C','Y − C − G','Y − C − G − NX','C + G'],a:1,
+    exp:'Closed economy: NX = 0. S = Y − C − G.'},
+
+  // CROWDING OUT (8)
+  {topic:'crowd',stem:'Decrease in G (T constant) will ___ r and ___ I:',
+    opts:['increase, increase','increase, decrease','decrease, increase','decrease, decrease'],a:2,
+    exp:'↓G → ↑S_pub → S right → ↓r → ↑I.'},
+  {topic:'crowd',stem:'Tax cut of $100 with MPC = 0.75 changes national saving by:',
+    opts:['+$25','−$25','−$75','−$100'],a:2,
+    exp:'C↑ MPC·100 = 75. S_priv ↑ (1−MPC)·100 = 25. S_pub ↓ 100. Net ΔS = −75.'},
+  {topic:'crowd',stem:'ΔG = +$100 in closed classical economy → ΔI equals:',
+    opts:['+$100','−$100','0','−$50 (depends on MPC)'],a:1,
+    exp:'Full crowding out: ΔS = −ΔG → ΔI = −$100 (one-for-one).'},
+  {topic:'crowd',stem:'Crowding out is BIGGER when MPC is:',
+    opts:['lower','higher','exactly 1','negative'],a:1,
+    exp:'For tax cuts: higher MPC → bigger C response → bigger fall in national S → more crowding out.'},
+  {topic:'crowd',stem:'If S_priv = $1,200 and S_pub = −$400, national saving is:',
+    opts:['$800','$1,200','$1,600','−$400'],a:0,
+    exp:'S = S_priv + S_pub = 1200 − 400 = $800.'},
+  {topic:'crowd',stem:'Balanced-budget increase ΔG = ΔT = +$100, MPC = 0.75:',
+    opts:['S unchanged','S falls by $25','S falls by $75','S falls by $100'],a:1,
+    exp:'C↓ MPC·100 = 75. S_priv ↑ (1−MPC)·100 = 25. S_pub unchanged. Net ΔS = −25.'},
+  {topic:'crowd',stem:'I = 1,800 − 80r. At r = 5%, I equals:',
+    opts:['$1,400','$1,420','$1,640','$1,720'],a:0,
+    exp:'I = 1,800 − 80·5 = 1,800 − 400 = $1,400.'},
+  {topic:'crowd',stem:'Reagan-era twin deficits (1981–86): the empirical pattern was:',
+    opts:['↑G + ↑T → low r','↑G + ↓T → r rose to 14% real, NX collapsed',
+          '↑G alone → S rose','no observable pattern'],a:1,
+    exp:'Tax cuts + spending → S↓, r rose dramatically (10-yr Treasury 14% real in 1981), high dollar → big trade deficit. Twin deficits.'},
+];
+
+const topicLabels = {prod:'Production', fac:'Factor markets', goods:'Goods market', crowd:'Crowding out'};
+
+// NAVIGATION
+document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+function setMode(m) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('.mode-content').forEach(c => c.classList.toggle('active', c.id === 'mode-' + m));
+  if (m === 'flash') initFlash();
+}
+
+// TIMED
+let timedQs=[], timedAnswers=[], timerInterval=null, timeLeft=0;
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+function startTimedExam(){
+  timedQs = shuffle(questionBank).slice(0, 25);
+  timedAnswers = new Array(timedQs.length).fill(null);
+  timeLeft = 45 * 60;
+  document.getElementById('timed-start').style.display = 'none';
+  document.getElementById('timed-results').style.display = 'none';
+  document.getElementById('timed-running').style.display = 'block';
+  renderTimed();
+  startTimer();
+}
+
+function renderTimed(){
+  document.getElementById('timed-questions').innerHTML = timedQs.map((q,i) => `
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j) => `
+        <label data-opt="${j}" onclick="selectTimed(${i},${j},this)">
+          <input type="radio" name="t${i}" ${timedAnswers[i]===j?'checked':''}> ${String.fromCharCode(97+j)}) ${o}
+        </label>`).join('')}
+    </div>`).join('');
+}
+
+function selectTimed(i,j,el){
+  timedAnswers[i]=j;
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('answered-count').textContent = timedAnswers.filter(x=>x!==null).length;
+}
+
+function startTimer(){
+  updateTimer();
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    updateTimer();
+    if (timeLeft<=0) submitTimedExam();
+  },1000);
+}
+
+function updateTimer(){
+  const m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('timer-bar').classList.toggle('warning', timeLeft<=5*60);
+}
+
+function submitTimedExam(){
+  clearInterval(timerInterval);
+  let correct=0, byTopic={};
+  timedQs.forEach((q,i)=>{
+    if (!byTopic[q.topic]) byTopic[q.topic]={c:0,t:0};
+    byTopic[q.topic].t++;
+    if (timedAnswers[i]===q.a) { correct++; byTopic[q.topic].c++; }
+  });
+  const pct = (correct/timedQs.length*100).toFixed(0);
+  let grade='F';
+  if (pct>=90) grade='A — excellent';
+  else if (pct>=80) grade='B — good';
+  else if (pct>=70) grade='C — pass';
+  else if (pct>=60) grade='D — needs work';
+  else grade='F — review carefully';
+
+  document.getElementById('timed-running').style.display='none';
+  const r=document.getElementById('timed-results'); r.style.display='block';
+  r.innerHTML = `
+    <div class="results">
+      <h2>Exam Results</h2>
+      <div class="score">${correct} / ${timedQs.length}</div>
+      <div class="grade"><strong>${pct}%</strong> — ${grade}</div>
+      <h3>By topic</h3>
+      <table><tr><th>Topic</th><th>Correct</th><th>Total</th><th>%</th></tr>
+        ${Object.keys(byTopic).map(t=>`<tr><td>${topicLabels[t]}</td><td>${byTopic[t].c}</td><td>${byTopic[t].t}</td><td>${(byTopic[t].c/byTopic[t].t*100).toFixed(0)}%</td></tr>`).join('')}
+      </table>
+      <h3 style="margin-top:24px;">Review each question</h3>
+      ${timedQs.map((q,i)=>{
+        const c=timedAnswers[i]===q.a;
+        return `<div class="exam-q">
+          <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+          <div class="stem">${q.stem}</div>
+          ${q.opts.map((o,j)=>{
+            let s='';
+            if (j===q.a) s='background:#ECFDF5;color:#065F46;font-weight:600;';
+            else if (timedAnswers[i]===j) s='background:#FEF2F2;color:#991B1B;';
+            return `<div style="padding:6px 10px;${s};border-radius:4px;margin:2px 0;font-size:13px;">${String.fromCharCode(97+j)}) ${o}${j===q.a?' ✓':(timedAnswers[i]===j&&!c?' (your answer)':'')}</div>`;
+          }).join('')}
+          <div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">Explanation: ${q.exp}</div>
+        </div>`;
+      }).join('')}
+      <button class="action large gold" onclick="setMode('home');document.getElementById('timed-start').style.display='block';document.getElementById('timed-results').style.display='none';" style="display:block;margin:24px auto;">Back to start</button>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+// TOPICS
+function loadTopic(t){
+  const qs = questionBank.filter(q=>q.topic===t);
+  document.getElementById('topics-list').style.display='none';
+  document.getElementById('topic-questions').style.display='block';
+  document.getElementById('topic-title').textContent = topicLabels[t] + ' — practice';
+  document.getElementById('topic-subtitle').textContent = qs.length + ' questions with instant feedback. No timer.';
+  document.getElementById('topic-q-list').innerHTML = qs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1}</div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="checkTopic(${i},${j},'${t}',this)"><input type="radio" name="topic-${t}-${i}"> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+      <div class="feedback" id="topic-fb-${t}-${i}"></div>
+    </div>`).join('');
+  window.scrollTo(0,0);
+}
+
+function checkTopic(i,chosen,t,el){
+  const q=questionBank.filter(x=>x.topic===t)[i];
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.style.pointerEvents='none');
+  const c=(chosen===q.a);
+  el.classList.add('selected');
+  if (c) el.style.background='#ECFDF5'; else {el.style.background='#FEF2F2'; card.querySelectorAll('label')[q.a].style.background='#ECFDF5'; card.querySelectorAll('label')[q.a].style.fontWeight='600';}
+  const fb=document.getElementById(`topic-fb-${t}-${i}`);
+  fb.className='feedback show ' + (c?'correct':'wrong');
+  fb.innerHTML = (c?'✓ Correct. ':`✗ Correct: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+}
+
+function backToTopics(){
+  document.getElementById('topic-questions').style.display='none';
+  document.getElementById('topics-list').style.display='block';
+}
+
+// FLASHCARDS
+const flashCards = [
+  {term:'Production function', def:'Y = F(K, L). Maps capital and labor into output. Cobb-Douglas: Y = A·K^α·L^(1−α).'},
+  {term:'CRS (constant returns to scale)', def:'F(zK, zL) = z·F(K, L) for any z > 0. Doubling K and L exactly doubles Y.'},
+  {term:'Cobb-Douglas CRS rule', def:'Y = A·K^α·L^β has CRS iff α + β = 1.'},
+  {term:'Marginal product of labor (MPL)', def:'∂Y/∂L. Under Cobb-Douglas: MPL = (1−α)·Y/L.'},
+  {term:'Marginal product of capital (MPK)', def:'∂Y/∂K. Under Cobb-Douglas: MPK = α·Y/K.'},
+  {term:'Diminishing marginal returns', def:'Holding K fixed, MPL falls as L rises. Required for profit max to have a finite solution.'},
+  {term:'Real wage', def:'W/P. In competitive equilibrium W/P = MPL. Firms hire until MPL = W/P.'},
+  {term:'Real rental rate', def:'R/P. In equilibrium R/P = MPK.'},
+  {term:'Euler\'s theorem (CRS)', def:'Y = MPK·K + MPL·L. Total payments to factors = total output. Economic profit = 0.'},
+  {term:'Cobb-Douglas labor share', def:'MPL·L/Y = (1−α). CONSTANT regardless of K, L, A.'},
+  {term:'Cobb-Douglas capital share', def:'MPK·K/Y = α. CONSTANT regardless of K, L, A.'},
+  {term:'National saving', def:'S = Y − C − G = (Y−T−C) + (T−G) = S_private + S_public.'},
+  {term:'Consumption function', def:'C = a + MPC·(Y − T). MPC is the marginal propensity to consume, 0 < MPC < 1.'},
+  {term:'Investment function', def:'I = I(r). ∂I/∂r < 0. Higher r → fewer profitable projects → lower I.'},
+  {term:'Loanable funds equilibrium', def:'S = I(r). r* adjusts so desired saving = desired investment.'},
+  {term:'Crowding out (full)', def:'ΔG = +X → ΔI = −X. One-for-one in the classical long run.'},
+  {term:'Tax-cut crowding out', def:'ΔT = −X → C↑ MPC·X, S↓ MPC·X, r↑, I↓ by MPC·X. PARTIAL crowding out.'},
+  {term:'Investment-demand shift', def:'With S vertical, shifting I-demand moves r but NOT I quantity. I = S regardless.'},
+  {term:'Capital deepening', def:'↑K → ↑Y, ↑MPL, ↓MPK, ↑W/P, ↓R/P. Shares unchanged under Cobb-Douglas.'},
+  {term:'TFP shock', def:'↑A → ↑Y, ↑MPL, ↑MPK proportionally. Labor and capital shares unchanged.'},
+];
+
+let flashIdx=0, flashFlipped=false, flashOrder=flashCards.map((_,i)=>i);
+function initFlash(){document.getElementById('flash-total').textContent=flashCards.length; showFlash();}
+function showFlash(){
+  const c=flashCards[flashOrder[flashIdx]];
+  document.getElementById('flash-idx').textContent=flashIdx+1;
+  document.getElementById('flash-card').classList.toggle('flipped',flashFlipped);
+  document.getElementById('flash-side').textContent = flashFlipped?'Definition':'Term';
+  document.getElementById('flash-text').textContent = flashFlipped?c.def:c.term;
+}
+function flashFlip(){flashFlipped=!flashFlipped; showFlash();}
+function flashNext(){if(flashIdx<flashCards.length-1) flashIdx++; flashFlipped=false; showFlash();}
+function flashPrev(){if(flashIdx>0) flashIdx--; flashFlipped=false; showFlash();}
+function flashShuffle(){flashOrder=shuffle(flashCards.map((_,i)=>i)); flashIdx=0; flashFlipped=false; showFlash();}
+</script>
+
+</body>
+</html>

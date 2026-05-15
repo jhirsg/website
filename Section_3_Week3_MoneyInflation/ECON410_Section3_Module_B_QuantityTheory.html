@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module B: Quantity Theory</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#0F766E;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#0F766E;color:#fff;border-color:#0F766E}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .metric.red .val{color:#B91C1C}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:22px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .country-row{display:grid;grid-template-columns:160px 100px 100px 1fr;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #E5E7EB;font-size:12px}
+  .country-row.head{background:#1E3A5F;color:#C8A961;font-weight:600;border:none;border-radius:6px;letter-spacing:1px}
+  .country-row.head > div{font-size:11px}
+  .country-row.head:first-child{border-radius:6px 6px 0 0}
+  .country-name{font-weight:600;color:#1E3A5F}
+  .bar-cell{position:relative;height:14px;background:#E5E7EB;border-radius:3px;overflow:hidden}
+  .bar-cell .fill{position:absolute;left:0;top:0;bottom:0;background:#0F766E}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .scen-btn{padding:8px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#0F766E;color:#fff;border-color:#0F766E}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module B</h1>
+    <div class="sub">Quantity Theory of Money · Mankiw Ch. 5</div>
+  </div>
+  <div class="badge">Section 3 · Module B</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('eq',this)">1. M·V = P·Y</button>
+    <button class="tab" onclick="sw('inflation',this)">2. Inflation = gM − gY</button>
+    <button class="tab" onclick="sw('cross',this)">3. Cross-country evidence</button>
+  </div>
+
+  <!-- TAB 1: EQUATION -->
+  <div class="panel on" id="p-eq">
+    <p class="desc">The quantity equation is an accounting identity. Move the sliders to see how M, V, P, and Y interact. The QTM adds the assumption that V is roughly constant.</p>
+    <div class="formula"><span class="accent">M</span> · <span class="accent">V</span> &nbsp;=&nbsp; <span class="accent">P</span> · <span class="accent">Y</span></div>
+
+    <div class="card">
+      <div class="slider-row"><label>M (money supply, $T)</label><input type="range" id="M" min="1" max="20" step="0.1" value="5" oninput="upd1()"><div class="val" id="vM">$5.0T</div></div>
+      <div class="slider-row"><label>V (velocity, /year)</label><input type="range" id="V" min="1" max="6" step="0.1" value="4" oninput="upd1()"><div class="val" id="vV">4.0</div></div>
+      <div class="slider-row"><label>Y (real GDP, $T)</label><input type="range" id="Y" min="5" max="40" step="0.5" value="20" oninput="upd1()"><div class="val" id="vY">$20.0T</div></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Nominal GDP (M·V)</div><div class="val" id="mNGDP">$20.0T</div></div>
+      <div class="metric green"><div class="lbl">Implied price level P</div><div class="val" id="mP">1.00</div></div>
+      <div class="metric"><div class="lbl">Real money M/P</div><div class="val" id="mRealM">$5.0T</div></div>
+      <div class="metric"><div class="lbl">Money / GDP ratio</div><div class="val" id="mMY">25%</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Try this</div>
+      <div class="body">Hold V and Y constant; double M. P should also double — that's the heart of QTM. Now try dropping V (financial-crisis behavior). With M fixed, P falls — quantity equation still holds, but velocity, not money, is moving the price level.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: INFLATION -->
+  <div class="panel" id="p-inflation">
+    <p class="desc">Take logs and time-derivatives of M·V = P·Y to get π = gM − gY (when V is roughly constant). Adjust money growth and real growth.</p>
+    <div class="formula">π = g<sub>M</sub> − g<sub>Y</sub> &nbsp;&nbsp;<span style="opacity:.5;font-size:14px">(if g<sub>V</sub> ≈ 0)</span></div>
+
+    <div class="card">
+      <div class="slider-row"><label>Money growth gM (%/yr)</label><input type="range" id="gM" min="-2" max="20" step="0.5" value="6" oninput="upd2()"><div class="val" id="vgM">6.0%</div></div>
+      <div class="slider-row"><label>Real GDP growth gY (%/yr)</label><input type="range" id="gY" min="-3" max="8" step="0.25" value="3" oninput="upd2()"><div class="val" id="vgY">3.0%</div></div>
+      <div class="slider-row"><label>Velocity growth gV (%/yr)</label><input type="range" id="gV" min="-3" max="3" step="0.25" value="0" oninput="upd2()"><div class="val" id="vgV">0.0%</div></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">gM</div><div class="val" id="mGM">6.0%</div></div>
+      <div class="metric"><div class="lbl">+ gV</div><div class="val" id="mGV">0.0%</div></div>
+      <div class="metric"><div class="lbl">− gY</div><div class="val" id="mGYneg">−3.0%</div></div>
+      <div class="metric green"><div class="lbl">= Inflation π</div><div class="val" id="mPi">3.0%</div></div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:12px;color:#1E3A5F;font-weight:600;margin-bottom:8px;letter-spacing:1px">QUICK SCENARIOS</div>
+      <div class="scen-row">
+        <button class="scen-btn" onclick="setScen(2,2,0,this)">Healthy (gM=2, gY=2)</button>
+        <button class="scen-btn on" onclick="setScen(6,3,0,this)">Default (gM=6, gY=3)</button>
+        <button class="scen-btn" onclick="setScen(15,3,0,this)">High inflation (gM=15)</button>
+        <button class="scen-btn" onclick="setScen(50,3,0,this)">Hyperinflation precursor</button>
+        <button class="scen-btn" onclick="setScen(2,3,-2,this)">Velocity collapse</button>
+      </div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Concept check</div>
+      <div class="body">For the Fed to hit a 2% inflation target with gY ≈ 2%/year, money growth should be ≈ 4%/year (with stable V). When V drops (e.g., 2008–09), the same gM produces lower π — and policy needs to inject more M to compensate.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: CROSS-COUNTRY -->
+  <div class="panel" id="p-cross">
+    <p class="desc">Cross-country data: countries with high money growth tend to have high inflation. The relationship is approximately one-for-one — confirming the QTM.</p>
+    <div class="card">
+      <canvas id="scatter" width="900" height="450"></canvas>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;color:#1E3A5F;font-weight:600;margin-bottom:8px;letter-spacing:1px">DATA TABLE</div>
+      <div class="country-row head"><div>Country</div><div>gM (%/yr)</div><div>π (%/yr)</div><div>Comparison</div></div>
+      <div id="ctyTable"></div>
+    </div>
+    <div class="check-card">
+      <div class="lbl">Reading the chart</div>
+      <div class="body">Each dot is one country averaged over 10–20 years. The dashed 45° line is "perfect Fisher" (π = gM exactly). Most points cluster near it. At low gM (advanced economies), the data scatter more — velocity moves matter. At high gM (Argentina, Venezuela), the relationship is tight.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function upd1(){
+  const M = +document.getElementById('M').value;
+  const V = +document.getElementById('V').value;
+  const Y = +document.getElementById('Y').value;
+  document.getElementById('vM').textContent = '$'+M.toFixed(1)+'T';
+  document.getElementById('vV').textContent = V.toFixed(1);
+  document.getElementById('vY').textContent = '$'+Y.toFixed(1)+'T';
+  const NGDP = M*V;
+  const P = NGDP/Y;
+  document.getElementById('mNGDP').textContent = '$'+NGDP.toFixed(1)+'T';
+  document.getElementById('mP').textContent = P.toFixed(2);
+  document.getElementById('mRealM').textContent = '$'+(M/P).toFixed(1)+'T';
+  document.getElementById('mMY').textContent = (M/Y*100).toFixed(0)+'%';
+}
+
+function upd2(){
+  const gM = +document.getElementById('gM').value;
+  const gY = +document.getElementById('gY').value;
+  const gV = +document.getElementById('gV').value;
+  document.getElementById('vgM').textContent = gM.toFixed(1)+'%';
+  document.getElementById('vgY').textContent = gY.toFixed(1)+'%';
+  document.getElementById('vgV').textContent = gV.toFixed(1)+'%';
+  const pi = gM + gV - gY;
+  document.getElementById('mGM').textContent = (gM>=0?'+':'')+gM.toFixed(1)+'%';
+  document.getElementById('mGV').textContent = (gV>=0?'+':'')+gV.toFixed(1)+'%';
+  document.getElementById('mGYneg').textContent = (gY>=0?'−':'+')+Math.abs(gY).toFixed(1)+'%';
+  document.getElementById('mPi').textContent = (pi>=0?'+':'')+pi.toFixed(1)+'%';
+  // color: red if hyperinflation territory
+  const m = document.getElementById('mPi');
+  m.parentElement.querySelector('.val').style.color = pi > 30 ? '#B91C1C' : (pi > 5 ? '#B45309' : '#047857');
+}
+function setScen(gM, gY, gV, btn){
+  document.querySelectorAll('.scen-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('gM').value = gM;
+  document.getElementById('gY').value = gY;
+  document.getElementById('gV').value = gV;
+  upd2();
+}
+
+const countries = [
+  {name:"Switzerland", gM: 2.0, pi: 1.5},
+  {name:"Japan",       gM: 2.5, pi: 1.0},
+  {name:"Germany",     gM: 3.5, pi: 2.0},
+  {name:"USA",         gM: 5.5, pi: 3.0},
+  {name:"UK",          gM: 5.0, pi: 4.5},
+  {name:"Mexico",      gM: 8.5, pi: 5.5},
+  {name:"India",       gM: 12,  pi: 7},
+  {name:"Argentina",   gM: 55,  pi: 50},
+  {name:"Turkey",      gM: 70,  pi: 60},
+  {name:"Venezuela",   gM: 130, pi: 100}
+];
+function buildScatter(){
+  const c = document.getElementById('scatter');
+  if(!c.getContext) return;
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:40,t:30,b:60};
+  const xMin=0, xMax=140, yMin=0, yMax=110;
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+    const xx = margin.l+(W-margin.l-margin.r)*g/5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  // labels
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMin+(xMax-xMin)*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(xv.toFixed(0)+'%', xx-12, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(0)+'%', 12, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Money growth (gM, % per year)', W/2-90, H-15);
+  ctx.save(); ctx.translate(15, H/2+60); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Inflation rate (π, % per year)', 0, 0); ctx.restore();
+  // 45° line
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1.5; ctx.setLineDash([6,6]);
+  const x0=margin.l, y0=H-margin.b;
+  const limMin = Math.min(xMax, yMax);
+  const x1=margin.l+(W-margin.l-margin.r)*limMin/(xMax-xMin);
+  const y1=margin.t+(H-margin.t-margin.b)*(1-limMin/yMax);
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#6B7280'; ctx.font='italic 11px sans-serif';
+  ctx.fillText('45° line: π = gM', W-margin.r-110, margin.t+15);
+  // points
+  countries.forEach(c => {
+    const xx = margin.l+(W-margin.l-margin.r)*(c.gM-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(1-c.pi/yMax);
+    ctx.fillStyle='#0F766E'; ctx.beginPath(); ctx.arc(xx, yy, 7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1F2937'; ctx.font='11px sans-serif';
+    ctx.fillText(c.name, xx+10, yy+4);
+  });
+}
+function buildTable(){
+  const t = document.getElementById('ctyTable');
+  t.innerHTML='';
+  const maxG = Math.max(...countries.map(c => Math.max(c.gM, c.pi)));
+  countries.forEach(c => {
+    const d = document.createElement('div'); d.className='country-row';
+    d.innerHTML = `<div class="country-name">${c.name}</div>
+      <div>${c.gM.toFixed(1)}%</div>
+      <div>${c.pi.toFixed(1)}%</div>
+      <div><div class="bar-cell"><div class="fill" style="width:${(c.gM/maxG)*100}%;background:#C8A961"></div></div>
+           <div class="bar-cell" style="margin-top:4px"><div class="fill" style="width:${(c.pi/maxG)*100}%;background:#0F766E"></div></div></div>`;
+    t.appendChild(d);
+  });
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='cross') buildScatter();
+}
+
+upd1(); upd2(); buildScatter(); buildTable();
+</script>
+</body>
+</html>

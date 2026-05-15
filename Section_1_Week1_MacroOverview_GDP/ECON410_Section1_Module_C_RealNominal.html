@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module C: Real vs. Nominal GDP</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f7f5;color:#1a1a1a}
+  .header{background:#500000;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#e8c87a;margin-top:2px}
+  .badge{background:#1a2a5e;color:#c8a96e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:7px 15px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:16px 18px;margin:10px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .ctrl{display:flex;align-items:center;gap:10px;margin:7px 0;flex-wrap:wrap}
+  .ctrl label{font-size:13px;color:#555;min-width:220px}
+  .ctrl input[type=range]{flex:1;min-width:100px}
+  .ctrl .out{font-size:13px;font-weight:600;min-width:60px;text-align:right;color:#1a1a1a}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:14px 0}
+  .metric{background:#f4f4f4;border-radius:8px;padding:10px 14px}
+  .metric .lbl{font-size:11px;color:#666;margin-bottom:4px}
+  .metric .val{font-size:19px;font-weight:600;color:#1a1a1a}
+  .bar-wrap{margin:5px 0}
+  .bar-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:3px}
+  .bar-track{height:22px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;transition:width .3s;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:#fff;min-width:2px}
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  .tbl th{background:#f4f4f4;padding:8px 10px;font-weight:600;text-align:left;font-size:12px;color:#555;border-bottom:1px solid #e0e0e0}
+  .tbl td{padding:7px 10px;border-bottom:1px solid #f0f0f0;color:#1a1a1a}
+  .tbl tr:last-child td{border:none}
+  .quiz-opt{padding:9px 13px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;text-align:left;color:#1a1a1a;display:block;width:100%;margin:5px 0;font-family:inherit;line-height:1.4;transition:background .15s}
+  .quiz-opt:hover{background:#f5f5f5}
+  .quiz-opt.ok{background:#e6f4ea;border-color:#3b6d11;color:#27500a}
+  .quiz-opt.no{background:#fde8e8;border-color:#a32d2d;color:#791f1f}
+  .fb{font-size:12px;padding:8px 12px;border-radius:7px;margin-top:6px;line-height:1.5;color:#555}
+  .btn{padding:7px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#f0f0f0}
+  .btn.primary{background:#500000;color:#fff;border-color:#500000}
+  .btn.primary:hover{background:#6a0000}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:580px){.two-col{grid-template-columns:1fr}}
+  .note{font-size:11px;color:#888;margin-top:6px;line-height:1.5}
+  .interp-box{background:#f0f4ff;border:1px solid #c5d5f5;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;color:#1a3a8a;line-height:1.6}
+  .score-row{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .score-row span{font-size:13px;color:#555}
+  .score-row strong{color:#1a1a1a}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header h1">ECON 410 — Interactive Module C</div>
+    <div class="sub">Real vs. Nominal GDP &amp; the GDP Deflator · Texas A&M University</div>
+  </div>
+  <div class="badge">Section C · Ch. 2</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('defl',this)">Deflator calculator</button>
+    <button class="tab" onclick="sw('decomp',this)">Price vs. quantity decomposition</button>
+    <button class="tab" onclick="sw('quiz',this)">Concept quiz</button>
+  </div>
+
+  <!-- TAB 1: DEFLATOR -->
+  <div class="panel on" id="p-defl">
+    <p class="desc">Set real GDP and inflation to compute the deflator and see exactly how nominal GDP growth is split between real output and price changes.</p>
+    <div class="ctrl"><label>Base year Real GDP ($B)</label><input type="range" id="real0" min="10000" max="25000" step="100" value="18000" oninput="calcDefl()"><span class="out" id="r0-o">$18,000B</span></div>
+    <div class="ctrl"><label>Real GDP growth rate (%)</label><input type="range" id="rgr" min="-4" max="8" step="0.1" value="2.5" oninput="calcDefl()"><span class="out" id="rgr-o">2.5%</span></div>
+    <div class="ctrl"><label>Inflation rate (%)</label><input type="range" id="infl" min="0" max="15" step="0.1" value="3.5" oninput="calcDefl()"><span class="out" id="infl-o">3.5%</span></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Real GDP</div><div class="val" id="d-real" style="color:#3B6D11">$18,450B</div></div>
+      <div class="metric"><div class="lbl">Nominal GDP</div><div class="val" id="d-nom" style="color:#185FA5">$19,096B</div></div>
+      <div class="metric"><div class="lbl">GDP Deflator</div><div class="val" id="d-defl" style="color:#854F0B">103.5</div></div>
+      <div class="metric"><div class="lbl">Price level change</div><div class="val" id="d-pct" style="color:#854F0B">+3.5%</div></div>
+    </div>
+    <div class="interp-box" id="d-interp"></div>
+    <div class="divider"></div>
+    <p style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Where does nominal GDP growth come from?</p>
+    <div class="bar-wrap"><div class="bar-label"><span>Real output growth</span><span id="bg-real">2.5%</span></div><div class="bar-track"><div class="bar-fill" id="b-real" style="background:#3B6D11;width:25%">real</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Price effect (inflation)</span><span id="bg-inf">3.5%</span></div><div class="bar-track"><div class="bar-fill" id="b-inf" style="background:#A32D2D;width:35%">inflation</div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Total nominal growth</span><span id="bg-nom">6.1%</span></div><div class="bar-track"><div class="bar-fill" id="b-nom" style="background:#185FA5;width:61%">nominal</div></div></div>
+    <p class="note">Formula: GDP Deflator = (Nominal GDP / Real GDP) × 100. Deflator = 100 in base year; each point above 100 = 1% above base-year prices.</p>
+  </div>
+
+  <!-- TAB 2: DECOMPOSITION -->
+  <div class="panel" id="p-decomp">
+    <p class="desc">A simple 2-good economy. Adjust prices and quantities to see exactly how nominal and real GDP diverge over time.</p>
+    <div class="two-col">
+      <div>
+        <p style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Good 1 — Apples</p>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Base year price ($/unit)</label><input type="range" id="p1b" min="1" max="10" step="0.5" value="2" oninput="calcDecomp()"><span class="out" id="p1b-o">$2.00</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Current year price</label><input type="range" id="p1c" min="1" max="15" step="0.5" value="3" oninput="calcDecomp()"><span class="out" id="p1c-o">$3.00</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Base year quantity</label><input type="range" id="q1b" min="10" max="500" step="10" value="100" oninput="calcDecomp()"><span class="out" id="q1b-o">100</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Current year quantity</label><input type="range" id="q1c" min="10" max="500" step="10" value="120" oninput="calcDecomp()"><span class="out" id="q1c-o">120</span></div>
+      </div>
+      <div>
+        <p style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Good 2 — Computers</p>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Base year price ($/unit)</label><input type="range" id="p2b" min="100" max="2000" step="50" value="500" oninput="calcDecomp()"><span class="out" id="p2b-o">$500</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Current year price</label><input type="range" id="p2c" min="100" max="2000" step="50" value="600" oninput="calcDecomp()"><span class="out" id="p2c-o">$600</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Base year quantity</label><input type="range" id="q2b" min="1" max="50" step="1" value="10" oninput="calcDecomp()"><span class="out" id="q2b-o">10</span></div>
+        <div class="ctrl" style="flex-wrap:wrap"><label style="min-width:140px">Current year quantity</label><input type="range" id="q2c" min="1" max="50" step="1" value="12" oninput="calcDecomp()"><span class="out" id="q2c-o">12</span></div>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead><tr><th></th><th>Base year</th><th>Current year</th><th>% Change</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Nominal GDP</strong> (current prices × current qty)</td><td id="dc-nb">$5,200</td><td id="dc-nc">$7,560</td><td id="dc-npct" style="font-weight:600;color:#185FA5">+45.4%</td></tr>
+        <tr><td><strong>Real GDP</strong> (base prices × current qty)</td><td id="dc-rb">$5,200</td><td id="dc-rc">$6,240</td><td id="dc-rpct" style="font-weight:600;color:#3B6D11">+20.0%</td></tr>
+        <tr><td><strong>GDP Deflator</strong></td><td id="dc-db">100.0</td><td id="dc-dc">121.2</td><td id="dc-dpct" style="font-weight:600;color:#854F0B">+21.2%</td></tr>
+      </tbody>
+    </table>
+    <div class="interp-box" id="dc-insight"></div>
+  </div>
+
+  <!-- TAB 3: QUIZ -->
+  <div class="panel" id="p-quiz">
+    <p class="desc">Calculate each answer on paper first, then select your choice below.</p>
+    <div id="quiz-body"></div>
+    <div class="score-row">
+      <span>Score: <strong id="qz-score">0 / 0</strong></span>
+      <button class="btn" onclick="buildQuiz()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function calcDefl(){
+  const r0=+document.getElementById('real0').value;
+  const rgr=+document.getElementById('rgr').value;
+  const infl=+document.getElementById('infl').value;
+  document.getElementById('r0-o').textContent='$'+r0.toLocaleString()+'B';
+  document.getElementById('rgr-o').textContent=rgr.toFixed(1)+'%';
+  document.getElementById('infl-o').textContent=infl.toFixed(1)+'%';
+  const real=r0*(1+rgr/100);
+  const nom=real*(1+infl/100);
+  const defl=(nom/real)*100;
+  const nomGr=((1+rgr/100)*(1+infl/100)-1)*100;
+  document.getElementById('d-real').textContent='$'+Math.round(real).toLocaleString()+'B';
+  document.getElementById('d-nom').textContent='$'+Math.round(nom).toLocaleString()+'B';
+  document.getElementById('d-defl').textContent=defl.toFixed(1);
+  document.getElementById('d-pct').textContent=(defl>=100?'+':'')+((defl-100).toFixed(1))+'%';
+  let msg='';
+  if(rgr<0) msg=`Recession: real output fell ${Math.abs(rgr).toFixed(1)}%. Even so, nominal GDP may still rise if inflation is high enough. Real GDP is the true measure — it shows actual production fell.`;
+  else if(rgr===0) msg=`Zero real growth — all nominal GDP growth (${nomGr.toFixed(1)}%) comes entirely from rising prices. The deflator captures this exactly: ${defl.toFixed(1)} vs base of 100.`;
+  else msg=`Economy grew ${rgr.toFixed(1)}% in real terms. Nominal grew ${nomGr.toFixed(1)}% — the extra ${(nomGr-rgr).toFixed(1)} percentage points come from inflation, captured by the deflator rising to ${defl.toFixed(1)}.`;
+  document.getElementById('d-interp').textContent=msg;
+  document.getElementById('bg-real').textContent=rgr.toFixed(1)+'%';
+  document.getElementById('bg-inf').textContent=infl.toFixed(1)+'%';
+  document.getElementById('bg-nom').textContent=nomGr.toFixed(1)+'%';
+  const maxW=15;
+  document.getElementById('b-real').style.width=Math.max(0,(rgr+4)/(maxW+4)*100)+'%';
+  document.getElementById('b-inf').style.width=(infl/maxW*100)+'%';
+  document.getElementById('b-nom').style.width=Math.min(100,Math.max(0,nomGr/(maxW*2)*100))+'%';
+}
+calcDefl();
+
+function calcDecomp(){
+  const p1b=+document.getElementById('p1b').value, p1c=+document.getElementById('p1c').value;
+  const q1b=+document.getElementById('q1b').value, q1c=+document.getElementById('q1c').value;
+  const p2b=+document.getElementById('p2b').value, p2c=+document.getElementById('p2c').value;
+  const q2b=+document.getElementById('q2b').value, q2c=+document.getElementById('q2c').value;
+  document.getElementById('p1b-o').textContent='$'+p1b.toFixed(2);
+  document.getElementById('p1c-o').textContent='$'+p1c.toFixed(2);
+  document.getElementById('p2b-o').textContent='$'+p2b.toFixed(2);
+  document.getElementById('p2c-o').textContent='$'+p2c.toFixed(2);
+  document.getElementById('q1b-o').textContent=q1b;
+  document.getElementById('q1c-o').textContent=q1c;
+  document.getElementById('q2b-o').textContent=q2b;
+  document.getElementById('q2c-o').textContent=q2c;
+  const nomBase=p1b*q1b+p2b*q2b;
+  const nomCurr=p1c*q1c+p2c*q2c;
+  const realCurr=p1b*q1c+p2b*q2c;
+  const deflCurr=(nomCurr/realCurr)*100;
+  const nomPct=((nomCurr-nomBase)/nomBase*100).toFixed(1);
+  const realPct=((realCurr-nomBase)/nomBase*100).toFixed(1);
+  const deflPct=((deflCurr-100)).toFixed(1);
+  document.getElementById('dc-nb').textContent='$'+Math.round(nomBase).toLocaleString();
+  document.getElementById('dc-nc').textContent='$'+Math.round(nomCurr).toLocaleString();
+  document.getElementById('dc-npct').textContent=(nomPct>0?'+':'')+nomPct+'%';
+  document.getElementById('dc-rb').textContent='$'+Math.round(nomBase).toLocaleString();
+  document.getElementById('dc-rc').textContent='$'+Math.round(realCurr).toLocaleString();
+  document.getElementById('dc-rpct').textContent=(realPct>0?'+':'')+realPct+'%';
+  document.getElementById('dc-db').textContent='100.0';
+  document.getElementById('dc-dc').textContent=deflCurr.toFixed(1);
+  document.getElementById('dc-dpct').textContent=(deflPct>0?'+':'')+deflPct+'%';
+  const gap=(parseFloat(nomPct)-parseFloat(realPct)).toFixed(1);
+  document.getElementById('dc-insight').textContent=`Nominal GDP rose ${nomPct}%, but real GDP only rose ${realPct}%. The gap of ~${gap} percentage points is explained by the price level rising ${deflPct}% — exactly what the deflator measures. Real GDP holds prices fixed at base-year values so only quantity changes count.`;
+}
+calcDecomp();
+
+const qzItems=[
+  {q:'Nominal GDP = $30T. Real GDP = $24T. What is the GDP deflator?',opts:['80.0','125.0','106.0','1.25'],ans:1,exp:'Deflator = (30/24) × 100 = 125.0. The price level is 25% higher than in the base year.'},
+  {q:'GDP deflator = 140. Real GDP = $20T. What is Nominal GDP?',opts:['$14.3T','$28.0T','$20T','$22.9T'],ans:1,exp:'Nominal = Real × (Deflator/100) = 20 × 1.40 = $28T.'},
+  {q:'Base year deflator = 100. Current year = 112. What is the inflation rate?',opts:['12%','112%','2%','1.12%'],ans:0,exp:'Inflation = (112−100)/100 × 100 = 12%. Always compute the percentage change, not the absolute difference.'},
+  {q:'Country A: Nominal GDP grew 10%. Country B: Nominal GDP grew 6%. Which had better real growth?',opts:['Country A — always','Country B — always','Cannot tell without inflation data','Whichever had higher imports'],ans:2,exp:'We must know inflation in each country. If A had 9% inflation, real growth ≈ 1%. If B had 1%, real growth ≈ 5%. Nominal growth alone tells us nothing about real output.'},
+  {q:'The GDP deflator fell from 105 to 100. What does this mean?',opts:['Recession — output fell','Deflation — the price level fell','Real GDP grew faster than nominal','Economy returned to base year'],ans:1,exp:'A falling deflator means prices are lower than the prior period — this is deflation. It tells us nothing directly about output; real GDP could still be growing.'},
+  {q:'Nominal GDP = $25T, Real GDP = $25T. What must be true?',opts:['Economy has zero growth','We are in the base year (deflator = 100)','There is no inflation ever','They always equal each other'],ans:1,exp:'If Nominal = Real, then Deflator = (25/25)×100 = 100. By definition this is the base year — the benchmark to which all price comparisons are anchored.'},
+];
+let qzAnswered={},qzCorrect=0;
+function buildQuiz(){
+  qzAnswered={};qzCorrect=0;
+  document.getElementById('qz-score').textContent='0 / 0';
+  const body=document.getElementById('quiz-body');body.innerHTML='';
+  qzItems.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<p style="font-size:13px;font-weight:600;margin:0 0 8px;line-height:1.5;color:#1a1a1a">${i+1}. ${q.q}</p>`+
+      q.opts.map((o,j)=>`<button class="quiz-opt" id="qo-${i}-${j}" onclick="ansQ(${i},${j})">${o}</button>`).join('')+
+      `<div id="qfb-${i}" class="fb" style="display:none"></div>`;
+    body.appendChild(d);
+  });
+}
+function ansQ(i,j){
+  if(qzAnswered[i]!==undefined)return;
+  const q=qzItems[i];const ok=j===q.ans;qzAnswered[i]=ok;if(ok)qzCorrect++;
+  for(let k=0;k<q.opts.length;k++){
+    const b=document.getElementById(`qo-${i}-${k}`);
+    if(k===q.ans)b.classList.add('ok');else if(k===j)b.classList.add('no');
+    b.disabled=true;
+  }
+  const fb=document.getElementById(`qfb-${i}`);
+  fb.style.display='block';fb.style.background=ok?'#e6f4ea':'#fde8e8';fb.style.color=ok?'#27500a':'#791f1f';
+  fb.textContent=(ok?'Correct — ':'Incorrect — ')+q.exp;
+  document.getElementById('qz-score').textContent=qzCorrect+' / '+Object.keys(qzAnswered).length;
+}
+buildQuiz();
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');btn.classList.add('on');
+}
+</script>
+</body>
+</html>

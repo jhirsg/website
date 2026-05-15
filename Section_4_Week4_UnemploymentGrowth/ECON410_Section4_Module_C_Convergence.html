@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module C: Convergence & Technology</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#B91C1C;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#B91C1C;color:#fff;border-color:#B91C1C}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#FEF2F2;border:1px solid #B91C1C;border-left:4px solid #B91C1C;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#B91C1C;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .country-row{display:grid;grid-template-columns:140px 100px 100px 100px 1fr;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #E5E7EB;font-size:12px}
+  .country-row.head{background:#1E3A5F;color:#C8A961;font-weight:600;border:none;border-radius:6px 6px 0 0;letter-spacing:1px}
+  .country-row.head > div{font-size:11px}
+  .country-name{font-weight:600;color:#1E3A5F}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module C</h1>
+    <div class="sub">Convergence & Technology · Mankiw Ch. 9</div>
+  </div>
+  <div class="badge">Section 4 · Module C</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('two',this)">1. Two countries compared</button>
+    <button class="tab" onclick="sw('cross',this)">2. Cross-country data</button>
+    <button class="tab" onclick="sw('decompose',this)">3. Growth decomposition</button>
+  </div>
+
+  <!-- TAB 1: TWO COUNTRIES -->
+  <div class="panel on" id="p-two">
+    <p class="desc">Compare two countries with different fundamentals. See if/when they converge.</p>
+    <div class="formula">y per worker grows at g · sustained growth requires g > 0</div>
+
+    <div class="card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div>
+          <div style="font-weight:700;color:#1E3A5F;margin-bottom:8px">Country A</div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>s_A</label><input type="range" id="sA" min="0.05" max="0.50" step="0.01" value="0.20" oninput="upd1()"><div class="val" id="vsA">20%</div></div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>n_A</label><input type="range" id="nA" min="0" max="0.04" step="0.005" value="0.020" oninput="upd1()"><div class="val" id="vnA">2.0%</div></div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>k₀_A</label><input type="range" id="k0A" min="1" max="20" step="0.5" value="2" oninput="upd1()"><div class="val" id="vk0A">2.0</div></div>
+        </div>
+        <div>
+          <div style="font-weight:700;color:#0F766E;margin-bottom:8px">Country B</div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>s_B</label><input type="range" id="sB" min="0.05" max="0.50" step="0.01" value="0.30" oninput="upd1()"><div class="val" id="vsB">30%</div></div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>n_B</label><input type="range" id="nB" min="0" max="0.04" step="0.005" value="0.005" oninput="upd1()"><div class="val" id="vnB">0.5%</div></div>
+          <div class="slider-row" style="grid-template-columns:120px 1fr 60px"><label>k₀_B</label><input type="range" id="k0B" min="1" max="20" step="0.5" value="2" oninput="upd1()"><div class="val" id="vk0B">2.0</div></div>
+        </div>
+      </div>
+      <canvas id="twoChart" width="900" height="400"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">k* Country A</div><div class="val" id="m_kA">5.04</div></div>
+      <div class="metric"><div class="lbl">k* Country B</div><div class="val" id="m_kB">25.6</div></div>
+      <div class="metric green"><div class="lbl">y* ratio (B/A)</div><div class="val" id="m_yratio">2.04</div></div>
+      <div class="metric"><div class="lbl">Conditional convergence?</div><div class="val" id="m_conv">No</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Reading the chart</div>
+      <div class="body">Two countries with same fundamentals but different starting k₀ → CONVERGE (catch-up growth). Different fundamentals → converge to DIFFERENT levels (no catch-up). The world looks more like the second case → conditional convergence holds, but absolute does not.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: CROSS-COUNTRY -->
+  <div class="panel" id="p-cross">
+    <p class="desc">Real-world data — selected countries' fundamentals and per-capita GDP.</p>
+    <div class="card">
+      <div class="country-row head"><div>Country</div><div>Saving (s)</div><div>Pop. growth (n)</div><div>GDP/cap (PPP)</div><div></div></div>
+      <div id="ctyTable"></div>
+    </div>
+    <div class="card">
+      <canvas id="crossChart" width="900" height="400"></canvas>
+    </div>
+    <div class="check-card">
+      <div class="lbl">What you see</div>
+      <div class="body">High-saving + low-population-growth countries are richer (top-left of the scatter). The pattern is consistent with Solow but EXPLAINS only part of cross-country variation. Institutions, geography, and human capital fill the rest.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: GROWTH DECOMPOSITION -->
+  <div class="panel" id="p-decompose">
+    <p class="desc">Decompose U.S. real GDP growth into contributions from K, L, and TFP (the "Solow residual"). Adjust the input shares.</p>
+    <div class="formula" style="font-size:16px">gY = α·gK + (1−α)·gL + gA</div>
+
+    <div class="card">
+      <div class="slider-row"><label>Capital growth gK (%/yr)</label><input type="range" id="gK" min="0" max="6" step="0.1" value="2.5" oninput="updD()"><div class="val" id="vgK">2.5%</div></div>
+      <div class="slider-row"><label>Labor growth gL (%/yr)</label><input type="range" id="gL" min="-1" max="3" step="0.1" value="1.0" oninput="updD()"><div class="val" id="vgL">1.0%</div></div>
+      <div class="slider-row"><label>TFP growth gA (%/yr)</label><input type="range" id="gA" min="-1" max="4" step="0.1" value="1.0" oninput="updD()"><div class="val" id="vgA">1.0%</div></div>
+      <div class="slider-row"><label>Capital share α</label><input type="range" id="alpha" min="0.20" max="0.50" step="0.01" value="0.33" oninput="updD()"><div class="val" id="va">0.33</div></div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">α·gK</div><div class="val" id="d_aK">0.83%</div></div>
+      <div class="metric"><div class="lbl">(1−α)·gL</div><div class="val" id="d_bL">0.67%</div></div>
+      <div class="metric"><div class="lbl">gA (TFP)</div><div class="val" id="d_A">1.00%</div></div>
+      <div class="metric green"><div class="lbl">Total gY</div><div class="val" id="d_Y">2.50%</div></div>
+    </div>
+
+    <div class="card">
+      <canvas id="dBar" width="900" height="200"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">U.S. growth accounting</div>
+      <div class="body">Postwar U.S. growth: gY ≈ 3%, of which gA (TFP) ≈ 1.5%, capital ≈ 1.0%, labor ≈ 0.5%. Half of long-run growth comes from technology — that's why we focus on R&D, innovation, and education in growth policy.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function pow(b,e){return Math.pow(b,e)}
+
+function upd1(){
+  const sA = +document.getElementById('sA').value;
+  const nA = +document.getElementById('nA').value;
+  const k0A = +document.getElementById('k0A').value;
+  const sB = +document.getElementById('sB').value;
+  const nB = +document.getElementById('nB').value;
+  const k0B = +document.getElementById('k0B').value;
+  document.getElementById('vsA').textContent = (sA*100).toFixed(0)+'%';
+  document.getElementById('vnA').textContent = (nA*100).toFixed(1)+'%';
+  document.getElementById('vk0A').textContent = k0A.toFixed(1);
+  document.getElementById('vsB').textContent = (sB*100).toFixed(0)+'%';
+  document.getElementById('vnB').textContent = (nB*100).toFixed(1)+'%';
+  document.getElementById('vk0B').textContent = k0B.toFixed(1);
+  const a = 0.40, d = 0.05;
+  const kStarA = pow(sA/(d+nA), 1/(1-a));
+  const kStarB = pow(sB/(d+nB), 1/(1-a));
+  const yStarA = pow(kStarA, a);
+  const yStarB = pow(kStarB, a);
+  document.getElementById('m_kA').textContent = kStarA.toFixed(2);
+  document.getElementById('m_kB').textContent = kStarB.toFixed(2);
+  document.getElementById('m_yratio').textContent = (yStarB/yStarA).toFixed(2);
+  // Conditional convergence: same fundamentals?
+  const sameFund = (Math.abs(sA-sB) < 0.005 && Math.abs(nA-nB) < 0.001);
+  document.getElementById('m_conv').textContent = sameFund ? 'YES' : 'No';
+  // Simulate paths
+  const T = 100;
+  const pathA = [k0A], pathB = [k0B];
+  let kA = k0A, kB = k0B;
+  for(let t=1;t<=T;t++){
+    kA = Math.max(0.01, kA + sA*pow(kA,a) - (d+nA)*kA);
+    kB = Math.max(0.01, kB + sB*pow(kB,a) - (d+nB)*kB);
+    pathA.push(kA); pathB.push(kB);
+  }
+  drawTwo(pathA, pathB, kStarA, kStarB);
+}
+function drawTwo(pathA, pathB, kStarA, kStarB){
+  const c = document.getElementById('twoChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const yMax = Math.max(kStarA, kStarB, ...pathA, ...pathB) * 1.1;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = 100*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(xv.toFixed(0)+' yr', xx-15, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(1), 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Year', W/2-15, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Capital per worker k', 0, 0); ctx.restore();
+  // A path
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=3; ctx.beginPath();
+  pathA.forEach((k, i) => {
+    const xx = margin.l+(W-margin.l-margin.r)*i/100;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-k/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  });
+  ctx.stroke();
+  // B path
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3; ctx.beginPath();
+  pathB.forEach((k, i) => {
+    const xx = margin.l+(W-margin.l-margin.r)*i/100;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-k/yMax);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  });
+  ctx.stroke();
+  // Legend
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Country A', W-margin.r-200, margin.t+15);
+  ctx.fillStyle='#0F766E';
+  ctx.fillText('Country B', W-margin.r-100, margin.t+15);
+}
+
+// Tab 2: cross-country
+const countries = [
+  { name: "USA",          s: 0.18, n: 0.005, gdp: 76000 },
+  { name: "Germany",      s: 0.27, n: 0.001, gdp: 67000 },
+  { name: "Japan",        s: 0.28, n: -0.005, gdp: 45000 },
+  { name: "South Korea",  s: 0.36, n: 0.002, gdp: 50000 },
+  { name: "China",        s: 0.45, n: 0.003, gdp: 21000 },
+  { name: "India",        s: 0.31, n: 0.010, gdp: 8800 },
+  { name: "Mexico",       s: 0.22, n: 0.011, gdp: 21000 },
+  { name: "Nigeria",      s: 0.20, n: 0.024, gdp: 5900 },
+  { name: "Niger",        s: 0.19, n: 0.037, gdp: 1300 },
+  { name: "Switzerland",  s: 0.31, n: 0.008, gdp: 84000 }
+];
+function buildTable(){
+  const t = document.getElementById('ctyTable');
+  t.innerHTML = '';
+  countries.forEach(c => {
+    const d = document.createElement('div'); d.className='country-row';
+    d.innerHTML = `<div class="country-name">${c.name}</div>
+      <div>${(c.s*100).toFixed(0)}%</div>
+      <div>${(c.n*100).toFixed(1)}%</div>
+      <div>$${c.gdp.toLocaleString()}</div>
+      <div></div>`;
+    t.appendChild(d);
+  });
+}
+function buildCrossChart(){
+  const c = document.getElementById('crossChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:80,r:40,t:30,b:60};
+  const xMin=-1, xMax=4, yMax=90000;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+    const xx = margin.l+(W-margin.l-margin.r)*g/5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMin+(xMax-xMin)*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(xv.toFixed(1)+'%', xx-15, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText('$'+(yv/1000).toFixed(0)+'k', 12, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Population growth (n)', W/2-60, H-15);
+  ctx.save(); ctx.translate(15, H/2+50); ctx.rotate(-Math.PI/2); ctx.fillText('GDP per capita (PPP)', 0, 0); ctx.restore();
+  countries.forEach(c => {
+    const xv = c.n*100;
+    const xx = margin.l+(W-margin.l-margin.r)*(xv-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(1-c.gdp/yMax);
+    ctx.fillStyle='#1E3A5F'; ctx.beginPath(); ctx.arc(xx, yy, 7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#1F2937'; ctx.font='11px sans-serif';
+    ctx.fillText(c.name, xx+10, yy+4);
+  });
+}
+
+function updD(){
+  const gK = +document.getElementById('gK').value;
+  const gL = +document.getElementById('gL').value;
+  const gA = +document.getElementById('gA').value;
+  const a = +document.getElementById('alpha').value;
+  document.getElementById('vgK').textContent = gK.toFixed(1)+'%';
+  document.getElementById('vgL').textContent = gL.toFixed(1)+'%';
+  document.getElementById('vgA').textContent = gA.toFixed(1)+'%';
+  document.getElementById('va').textContent = a.toFixed(2);
+  const aK = a*gK, bL = (1-a)*gL, A = gA;
+  const total = aK + bL + A;
+  document.getElementById('d_aK').textContent = aK.toFixed(2)+'%';
+  document.getElementById('d_bL').textContent = bL.toFixed(2)+'%';
+  document.getElementById('d_A').textContent = A.toFixed(2)+'%';
+  document.getElementById('d_Y').textContent = total.toFixed(2)+'%';
+  drawDecBar(aK, bL, A, total);
+}
+function drawDecBar(aK, bL, A, total){
+  const c = document.getElementById('dBar'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:120,r:30,t:30,b:50};
+  const totalAbs = Math.max(Math.abs(total), 4);
+  const scale = (W-margin.l-margin.r)/(totalAbs*1.1);
+  const barH = 60;
+  const y0 = H/2 - barH/2;
+  ctx.fillStyle='#1F2937'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Growth decomposition gY = α·gK + (1−α)·gL + gA', margin.l, 18);
+  let x = margin.l;
+  const segs = [
+    { val: aK, color: '#0F766E', label: 'α·gK' },
+    { val: bL, color: '#B45309', label: '(1−α)·gL' },
+    { val: A,  color: '#1E3A5F', label: 'gA (TFP)' }
+  ];
+  segs.forEach(seg => {
+    if(seg.val < 0) return;
+    const w = seg.val * scale;
+    ctx.fillStyle = seg.color;
+    ctx.fillRect(x, y0, w, barH);
+    if(w > 50){
+      ctx.fillStyle='#fff'; ctx.font='bold 12px sans-serif';
+      ctx.fillText(seg.label+' = '+seg.val.toFixed(2)+'%', x + w/2 - 60, y0 + barH/2 + 5);
+    }
+    x += w;
+  });
+  // Total bracket
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(margin.l, y0+barH+10); ctx.lineTo(margin.l, y0+barH+18);
+  ctx.lineTo(x, y0+barH+18); ctx.lineTo(x, y0+barH+10); ctx.stroke();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('total gY = '+total.toFixed(2)+'%', (margin.l+x)/2 - 60, y0+barH+35);
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='cross'){ buildTable(); buildCrossChart(); }
+  if(id==='decompose') updD();
+  if(id==='two') upd1();
+}
+
+upd1(); buildTable(); buildCrossChart(); updD();
+</script>
+</body>
+</html>

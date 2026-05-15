@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 1 · Exam Review</title>
+<style>
+:root{--navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1000px;margin:0 auto;padding:24px 32px;}
+.mode-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.mode-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;transition:all 0.15s;}
+.mode-btn:hover{background:var(--white);color:var(--navy);border-color:var(--navy);}
+.mode-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.mode-content{display:none;}
+.mode-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);}
+.card.amber{border-left-color:var(--amber);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+.card.green{border-left-color:var(--green);background:#ECFDF5;}
+.card.red{border-left-color:var(--red);background:#FEF2F2;}
+button.action{background:var(--navy);color:white;border:none;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.red{background:var(--red);color:white;}
+button.action.green{background:var(--green);color:white;}
+button.action.large{padding:14px 26px;font-size:15px;}
+
+.timer-bar{position:sticky;top:0;background:var(--navy);color:white;padding:14px 22px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;z-index:10;}
+.timer-bar .time{font-family:'Cambria',Georgia,serif;font-size:24px;font-weight:bold;color:var(--gold);}
+.timer-bar .progress{font-size:13px;color:#CBD5E1;}
+.timer-bar.warning{background:var(--amber);}
+.timer-bar.warning .time{color:white;}
+
+.exam-q{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:12px 0;}
+.exam-q .qnum{font-weight:bold;color:var(--gold);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.exam-q .stem{font-weight:600;color:var(--navy);margin-bottom:10px;font-size:14px;}
+.exam-q label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;font-size:13px;color:var(--dark);border-radius:4px;}
+.exam-q label:hover{background:#F1F5F9;}
+.exam-q label.selected{background:#DBEAFE;font-weight:600;}
+.exam-q input[type=radio]{margin-right:8px;}
+.exam-q .feedback{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:13px;display:none;}
+.exam-q .feedback.show{display:block;}
+.exam-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.exam-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.exam-q .topic-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;}
+.tag-meas{background:#DBEAFE;color:#1E3A5F;}
+.tag-comp{background:#FEE2E2;color:#991B1B;}
+.tag-real{background:#FEF3C7;color:#92400E;}
+.tag-labor{background:#D1FAE5;color:#065F46;}
+.tag-prod{background:#E0E7FF;color:#3730A3;}
+
+.results{background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:24px;margin:20px 0;}
+.results h2{margin-top:0;}
+.results .score{font-family:'Cambria',Georgia,serif;font-size:48px;color:var(--navy);font-weight:bold;text-align:center;margin:16px 0;}
+.results .grade{text-align:center;font-size:18px;color:var(--teal);margin-bottom:16px;}
+.results table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.results th{background:var(--navy);color:white;padding:8px;text-align:left;}
+.results td{padding:8px;border-bottom:1px solid var(--rule);}
+.topic-row{cursor:pointer;}
+.topic-row:hover{background:#F8FAFC;}
+
+.start-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:32px;margin:20px 0;text-align:center;}
+.start-card h2{font-size:26px;margin-bottom:12px;}
+.start-card p{font-size:14px;color:var(--slate);margin-bottom:20px;}
+.start-card .stats{display:flex;justify-content:center;gap:30px;margin:20px 0;flex-wrap:wrap;}
+.start-card .stats div{text-align:center;}
+.start-card .stats .num{font-family:'Cambria',Georgia,serif;font-size:32px;color:var(--gold);font-weight:bold;}
+.start-card .stats .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+.topic-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:10px 0;cursor:pointer;border-left:4px solid var(--navy);transition:transform 0.15s;}
+.topic-card:hover{transform:translateX(4px);border-left-color:var(--gold);}
+.topic-card h3{margin:0 0 4px 0;color:var(--navy);}
+.topic-card .meta{font-size:12px;color:var(--muted);}
+
+.flash-card{background:var(--white);border:2px solid var(--rule);border-radius:12px;padding:30px;margin:16px 0;min-height:200px;text-align:center;cursor:pointer;transition:border-color 0.15s;}
+.flash-card:hover{border-color:var(--gold);}
+.flash-card .side{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.flash-card .text{font-size:18px;color:var(--navy);font-family:'Cambria',Georgia,serif;}
+.flash-card.flipped{background:#FEFCE8;border-color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 1 — Exam Review</h1>
+  <div class="sub">GDP measurement · Real vs. nominal · CPI vs. deflator · Unemployment — Mankiw Ch.1–2</div>
+</header>
+
+<div class="container">
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="home">Overview</button>
+    <button class="mode-btn" data-mode="timed">Timed Practice Exam</button>
+    <button class="mode-btn" data-mode="topics">By-Topic Practice</button>
+    <button class="mode-btn" data-mode="flash">Flashcards</button>
+  </div>
+
+  <!-- HOME -->
+  <div id="mode-home" class="mode-content active">
+    <h2>Section 1 Exam Review</h2>
+    <div class="subtitle">Two study modes — pick the one that fits your goal today.</div>
+
+    <div class="card">
+      <h3>Mode 1 — Timed Practice Exam</h3>
+      <p style="font-size:13px;">25 questions, 45-minute timer, mixed topics. Full results review at the end. Use this when you've already studied and want to simulate exam conditions.</p>
+      <button class="action large" onclick="setMode('timed')">Start timed exam →</button>
+    </div>
+
+    <div class="card teal">
+      <h3>Mode 2 — By-Topic Practice</h3>
+      <p style="font-size:13px;">Drill specific weak areas — measurement, GDP components, real/nominal, labor market, value-added. No timer, instant feedback. Use this when you're still learning.</p>
+      <button class="action large" onclick="setMode('topics')">Pick a topic →</button>
+    </div>
+
+    <div class="card amber">
+      <h3>Mode 3 — Flashcards</h3>
+      <p style="font-size:13px;">Quick concept review — definitions, formulas, key facts. Click to flip cards. Use this for last-minute review before the exam.</p>
+      <button class="action large" onclick="setMode('flash')">Open flashcards →</button>
+    </div>
+
+    <div class="card gold">
+      <h3>What's on the exam?</h3>
+      <p style="font-size:13px;">Questions in this bank come from Mankiw 10/11e Chapter 1–2 (definitions and computation) plus topic-styled practice in the spirit of typical intermediate-macro exam questions. Topic distribution:</p>
+      <ul style="font-size:13px;line-height:1.7;">
+        <li><strong>Measurement basics</strong> (~6 Q): recessions, GDP definition, nominal vs. real, stocks vs. flows</li>
+        <li><strong>GDP components</strong> (~5 Q): categorize transactions, biggest component, NX, transfers</li>
+        <li><strong>Real/nominal computations</strong> (~5 Q): deflator math, CPI math, growth rates</li>
+        <li><strong>Labor market</strong> (~5 Q): unemployment rate, LFPR, discouraged workers</li>
+        <li><strong>Production approach</strong> (~4 Q): value added, imputed values, what's not in GDP</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TIMED -->
+  <div id="mode-timed" class="mode-content">
+    <div id="timed-start">
+      <div class="start-card">
+        <h2>Timed Practice Exam — Section 1</h2>
+        <p>You'll get 25 questions, randomly ordered. 45-minute timer. Submit when done for full results review.</p>
+        <div class="stats">
+          <div><div class="num">25</div><div class="label">Questions</div></div>
+          <div><div class="num">45</div><div class="label">Minutes</div></div>
+          <div><div class="num">5</div><div class="label">Topics</div></div>
+        </div>
+        <button class="action large gold" onclick="startTimedExam()">Begin exam</button>
+      </div>
+    </div>
+
+    <div id="timed-running" style="display:none;">
+      <div class="timer-bar" id="timer-bar">
+        <div><span class="time" id="timer-display">45:00</span></div>
+        <div class="progress"><span id="answered-count">0</span> of 25 answered</div>
+        <button class="action red" onclick="submitTimedExam()">Submit exam</button>
+      </div>
+      <div id="timed-questions"></div>
+      <button class="action large green" onclick="submitTimedExam()" style="display:block;margin:24px auto;">Submit exam</button>
+    </div>
+
+    <div id="timed-results" style="display:none;"></div>
+  </div>
+
+  <!-- TOPICS -->
+  <div id="mode-topics" class="mode-content">
+    <div id="topics-list">
+      <h2>Pick a topic to drill</h2>
+      <div class="subtitle">Each topic shows 8–10 questions. Instant feedback after each answer.</div>
+      <div class="topic-card" onclick="loadTopic('meas')">
+        <h3>📊 Measurement basics</h3>
+        <div class="meta">Recessions, GDP definition, nominal vs real, stocks vs flows · 8 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('comp')">
+        <h3>🧮 GDP components</h3>
+        <div class="meta">Categorize transactions, C/I/G/NX, transfers, imports · 8 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('real')">
+        <h3>📈 Real GDP, deflator, CPI</h3>
+        <div class="meta">Compute nominal, real, deflator, CPI. Inflation rates · 8 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('labor')">
+        <h3>👥 Labor market</h3>
+        <div class="meta">Unemployment rate, LFPR, discouraged workers · 7 questions</div>
+      </div>
+      <div class="topic-card" onclick="loadTopic('prod')">
+        <h3>⚙️ Production approach + extras</h3>
+        <div class="meta">Value added, imputed values, what's not in GDP · 7 questions</div>
+      </div>
+    </div>
+
+    <div id="topic-questions" style="display:none;">
+      <button class="action" onclick="backToTopics()" style="margin-bottom:16px;">← Back to topics</button>
+      <h2 id="topic-title">Topic</h2>
+      <div class="subtitle" id="topic-subtitle"></div>
+      <div id="topic-q-list"></div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="mode-flash" class="mode-content">
+    <h2>Flashcards — Section 1 concepts</h2>
+    <div class="subtitle">Click any card to flip. Use these for quick review before the exam.</div>
+    <div style="margin-bottom:20px;">
+      <button class="action" id="flash-prev" onclick="flashPrev()">← Previous</button>
+      <span style="margin:0 16px;font-size:14px;color:var(--muted);">Card <span id="flash-idx">1</span> of <span id="flash-total">20</span></span>
+      <button class="action" id="flash-next" onclick="flashNext()">Next →</button>
+      <button class="action gold" onclick="flashShuffle()" style="float:right;">Shuffle</button>
+    </div>
+    <div class="flash-card" id="flash-card" onclick="flashFlip()">
+      <div class="side" id="flash-side">Term</div>
+      <div class="text" id="flash-text">Click to start</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;font-style:italic;">
+      Tip: try to answer in your head BEFORE flipping.
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ QUESTION BANK ============
+// Topics: meas, comp, real, labor, prod
+const questionBank = [
+  // MEASUREMENT BASICS
+  { topic:'meas', stem:'Recessions are periods of:',
+    opts:['rising incomes','falling incomes','rising prices','falling prices'], a:1,
+    exp:'Recession = sustained decline in real GDP and incomes.' },
+  { topic:'meas', stem:'In U.S. history, deflation:',
+    opts:['is the norm','is as common as inflation','is rare now but occurred in the past','has never occurred'], a:2,
+    exp:'Common in 19th-c and Great Depression; rare since WWII.' },
+  { topic:'meas', stem:'Two striking features of U.S. real GDP per capita over the 20th century are:',
+    opts:['upward trend interrupted by 1930s downturn','constant level with 1930s downturn',
+          'downward then upward','constant then upward'], a:0,
+    exp:'Long-run growth + Great Depression dip.' },
+  { topic:'meas', stem:'___ GDP measures output at current prices and is a ___ variable.',
+    opts:['Nominal, stock','Nominal, flow','Real, stock','Real, flow'], a:1,
+    exp:'Nominal = current prices; all GDP is a flow (per unit of time).' },
+  { topic:'meas', stem:'For each: STOCK or FLOW? National debt of $34T; 2024 deficit of $1.8T; GDP of $28T/yr.',
+    opts:['stock, flow, flow','stock, stock, flow','flow, flow, stock','stock, flow, stock'], a:0,
+    exp:'Debt is a stock (at a point); deficit and GDP are flows (per period).' },
+  { topic:'meas', stem:'GDP measures:',
+    opts:['the happiness of citizens','the market value of all final goods/services produced within an economy',
+          'the total wealth of an economy','the total value of all transactions'], a:1,
+    exp:'GDP = market value of final goods/services PRODUCED in a period. Wealth ≠ GDP.' },
+  { topic:'meas', stem:'A baker bakes bread and stores it for sale next month. This counts as:',
+    opts:['waste','saving','fixed investment','inventory investment'], a:3,
+    exp:'Unsold output = inventory investment in the year produced.' },
+  { topic:'meas', stem:'If nominal and real GDP both rise by 10%, the GDP deflator:',
+    opts:['rises 10%','rises 20%','falls 10%','is unchanged'], a:3,
+    exp:'Deflator = Nominal/Real × 100. Ratio unchanged when both rise proportionally.' },
+
+  // GDP COMPONENTS
+  { topic:'comp', stem:'The largest component of U.S. GDP is:',
+    opts:['consumption','investment','government purchases','net exports'], a:0,
+    exp:'Consumption ~68% of U.S. GDP.' },
+  { topic:'comp', stem:'Apple sells a laptop to a public school district. This is:',
+    opts:['C','I','G','NX'], a:2,
+    exp:'Public schools are government → G.' },
+  { topic:'comp', stem:'Apple sells a laptop to a French bakery. This is:',
+    opts:['C','I','G','NX'], a:3,
+    exp:'Foreign buyer → export → NX rises.' },
+  { topic:'comp', stem:'Apple sells a laptop to an accounting firm. This is:',
+    opts:['C','I','G','NX'], a:1,
+    exp:'Firm buying capital → I (business fixed investment).' },
+  { topic:'comp', stem:'Apple builds a laptop in December but sells it next year. The 2025 GDP impact:',
+    opts:['+laptop price as C','+laptop price as I (inventory)','+laptop price as G','no GDP impact in 2025'], a:1,
+    exp:'Counted as inventory investment in the year produced.' },
+  { topic:'comp', stem:'Social Security transfer payments count as:',
+    opts:['G (government purchases)','C (consumption when received)','not in GDP at all',
+          'half G and half C'], a:2,
+    exp:'Transfers have no current production → not in GDP. The household spending of the check IS in C.' },
+  { topic:'comp', stem:'C = $14T, I = $4T, G = $4T, NX = −$1T. GDP equals:',
+    opts:['$21T','$22T','$23T','$25T'], a:0,
+    exp:'Y = C + I + G + NX = 14 + 4 + 4 − 1 = $21T.' },
+  { topic:'comp', stem:'Kara buys an iPhone for $1,200; Apple imported it for $800. U.S. GDP changes by:',
+    opts:['+$1,200','+$800','+$400','$0'], a:2,
+    exp:'C↑ $1,200 AND NX↓ $800. Net = $400 (U.S. value-added margin).' },
+
+  // REAL GDP / CPI / DEFLATOR
+  { topic:'real', stem:'GDP deflator = 1.25, nominal GDP = $15T. Real GDP equals:',
+    opts:['$12T','$12.5T','$15T','$18.75T'], a:0,
+    exp:'Real = Nominal / Deflator = 15/1.25 = $12T.' },
+  { topic:'real', stem:'2024 (base): hot dogs 200 @ $2, burgers 200 @ $3. 2026: hot dogs 250 @ $4, burgers 500 @ $4. '+
+    'Nominal GDP 2026 is:',
+    opts:['$1,000','$2,000','$3,000','$3,500'], a:2,
+    exp:'4·250 + 4·500 = 1000 + 2000 = $3,000.' },
+  { topic:'real', stem:'Same data as previous. Real GDP 2026 (base 2024 prices):',
+    opts:['$1,000','$2,000','$2,500','$3,000'], a:1,
+    exp:'2·250 + 3·500 = 500 + 1500 = $2,000.' },
+  { topic:'real', stem:'Same data. GDP deflator 2026 (base 2024 = 100):',
+    opts:['100','120','150','160'], a:2,
+    exp:'Deflator = (Nominal/Real) × 100 = (3000/2000)·100 = 150.' },
+  { topic:'real', stem:'Same data. CPI 2026 (base 2024 = 100), using 2024 fixed basket:',
+    opts:['100','120','150','160'], a:3,
+    exp:'2024 basket cost in 2026 = 4·200 + 4·200 = $1,600. CPI = (1600/1000)·100 = 160.' },
+  { topic:'real', stem:'Which event affects CPI but NOT the GDP deflator?',
+    opts:['Boeing raises Air Force jet prices','Volvo (Sweden) raises U.S. car prices',
+          'Kellogg cuts corn flakes prices','Barbers raise haircut prices'], a:1,
+    exp:'CPI includes imports; GDP deflator does not. Volvo cars are imports.' },
+  { topic:'real', stem:'A fixed-weight index (CPI) ___ true inflation because it ___ allow substitution.',
+    opts:['underestimates; does','overestimates; does','accurately estimates; does','overestimates; does not'], a:3,
+    exp:'CPI overstates because it cannot reflect substitution toward cheaper goods.' },
+  { topic:'real', stem:'2023 nominal $27.7T, deflator 121.5. 2022 nominal $25.7T, deflator 116.3. Real growth equals:',
+    opts:['7.8%','5.0%','3.2%','1.4%'], a:2,
+    exp:'2023 real = 27.7/1.215 = 22.80T. 2022 real = 25.7/1.163 = 22.10T. Growth = 3.2%.' },
+
+  // LABOR MARKET
+  { topic:'labor', stem:'The unemployment rate measures the fraction of:',
+    opts:['adults who stopped looking','adults not working','labor force that stopped looking','labor force not working'], a:3,
+    exp:'U-rate = unemployed / labor force. Labor force = E + U (active searchers).' },
+  { topic:'labor', stem:'A person quits to be a stay-at-home parent. LFPR ___ and U-rate ___.',
+    opts:['rises, rises','rises, stays same','falls, rises','falls, stays same'], a:3,
+    exp:'Leaves labor force entirely. LFPR falls. Not in U numerator or denominator.' },
+  { topic:'labor', stem:'If employment rises and unemployment is unchanged, the U-rate:',
+    opts:['increases','decreases','stays same','could go either way'], a:1,
+    exp:'LF = E + U rises; U same → U/LF falls.' },
+  { topic:'labor', stem:'A discouraged worker is counted in:',
+    opts:['the employed','the unemployed','neither — out of the labor force','the labor force but not as unemployed'], a:2,
+    exp:'Discouraged worker = wants a job but stopped searching → OUT of the labor force.' },
+  { topic:'labor', stem:'Adult pop = 200M. Labor force = 160M. Unemployed = 8M. LFPR equals:',
+    opts:['80%','5%','95%','64%'], a:0,
+    exp:'LFPR = LF/Adult pop = 160/200 = 80%.' },
+  { topic:'labor', stem:'Same numbers. U-rate equals:',
+    opts:['4%','5%','6%','8%'], a:1,
+    exp:'U-rate = U/LF = 8/160 = 5%.' },
+  { topic:'labor', stem:'90 adults: 25 FT jobs, 20 PT, 5 with 2 PT, 10 looking, 10 discouraged, 10 own business, '+
+    '10 retired. LFPR equals:',
+    opts:['67%','71%','78%','89%'], a:2,
+    exp:'LF = 25+20+5+10+10 = 70 (FT, PT, double-PT, searching, self-employed). LFPR = 70/90 = 77.8%.' },
+
+  // PRODUCTION / EXTRAS
+  { topic:'prod', stem:'Farmer sells wheat for $1; miller sells flour for $3; baker sells bread for $6. Miller\'s value added:',
+    opts:['$1','$2','$3','$6'], a:1,
+    exp:'Output value $3 − intermediate input $1 = $2.' },
+  { topic:'prod', stem:'Total GDP from the bread chain (farmer $1, miller $3, baker $6) is:',
+    opts:['$6','$10','$1+$3+$6','depends'], a:0,
+    exp:'GDP = final-good value = $6 = sum of value added ($1+$2+$3).' },
+  { topic:'prod', stem:'CPI items are weighted by:',
+    opts:['equal weights','GDP share','typical-household quantity (fixed)','annual growth rate'], a:2,
+    exp:'CPI uses a FIXED consumer basket (Laspeyres index).' },
+  { topic:'prod', stem:'Which is NOT in GDP?',
+    opts:['imputed rent on owner-occupied housing','government employee wages',
+          'sale of a used 2010 car','inventory investment'], a:2,
+    exp:'Used goods were counted when first produced. Only the dealer\'s service margin counts in current GDP.' },
+  { topic:'prod', stem:'The largest component of national income (income approach) is:',
+    opts:['corporate profits','compensation of employees','proprietors\' income','net interest'], a:1,
+    exp:'Wages + benefits ~60% of national income (labor share).' },
+  { topic:'prod', stem:'Why does GDP include imputed rent for owner-occupied homes?',
+    opts:['to inflate GDP figures','so GDP doesn\'t fall when home-ownership rises',
+          'because the IRS requires it','because homeowners actually pay rent to themselves'], a:1,
+    exp:'Without imputation, GDP would mechanically fall when home-ownership rises (rental income would disappear).' },
+  { topic:'prod', stem:'Underground (illegal) economic activity is:',
+    opts:['fully included in GDP','partially imputed in GDP','excluded from GDP','only counted by IRS'], a:2,
+    exp:'No imputation is made; illegal/underground activity is excluded.' }
+];
+
+// ============ NAVIGATION ============
+document.querySelectorAll('.mode-btn').forEach(b => {
+  b.addEventListener('click', () => setMode(b.dataset.mode));
+});
+function setMode(m) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('.mode-content').forEach(c => c.classList.toggle('active', c.id === 'mode-' + m));
+  if (m === 'flash') initFlash();
+}
+
+// ============ TIMED EXAM ============
+let timedQs = [], timedAnswers = [], timerInterval = null, timeLeft = 0;
+
+function shuffle(arr) { return arr.slice().sort(() => Math.random() - 0.5); }
+
+function startTimedExam() {
+  timedQs = shuffle(questionBank).slice(0, 25);
+  timedAnswers = new Array(timedQs.length).fill(null);
+  timeLeft = 45 * 60;
+  document.getElementById('timed-start').style.display = 'none';
+  document.getElementById('timed-results').style.display = 'none';
+  document.getElementById('timed-running').style.display = 'block';
+  renderTimed();
+  startTimer();
+}
+
+function renderTimed() {
+  const root = document.getElementById('timed-questions');
+  root.innerHTML = timedQs.map((q, i) => `
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o, j) => `
+        <label data-opt="${j}" onclick="selectTimed(${i}, ${j}, this)">
+          <input type="radio" name="t${i}" ${timedAnswers[i] === j ? 'checked' : ''}> ${String.fromCharCode(97+j)}) ${o}
+        </label>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+function selectTimed(i, j, el) {
+  timedAnswers[i] = j;
+  // mark selected label visually
+  const card = el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l => l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('answered-count').textContent = timedAnswers.filter(x => x !== null).length;
+}
+
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      submitTimedExam();
+    }
+  }, 1000);
+}
+
+function updTimerDisplay(){updateTimerDisplay();}
+function updateTimerDisplay() {
+  const m = Math.floor(timeLeft / 60);
+  const s = timeLeft % 60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  document.getElementById('timer-bar').classList.toggle('warning', timeLeft <= 5 * 60);
+}
+
+const topicLabels = {meas:'Measurement', comp:'Components', real:'Real/Nominal', labor:'Labor', prod:'Production'};
+
+function submitTimedExam() {
+  clearInterval(timerInterval);
+  let correct = 0;
+  const byTopic = {};
+  timedQs.forEach((q, i) => {
+    if (!byTopic[q.topic]) byTopic[q.topic] = {c: 0, t: 0};
+    byTopic[q.topic].t++;
+    if (timedAnswers[i] === q.a) { correct++; byTopic[q.topic].c++; }
+  });
+  const score = correct;
+  const pct = (correct / timedQs.length * 100).toFixed(0);
+  let grade = 'F';
+  if (pct >= 90) grade = 'A — excellent';
+  else if (pct >= 80) grade = 'B — good';
+  else if (pct >= 70) grade = 'C — pass';
+  else if (pct >= 60) grade = 'D — needs work';
+  else grade = 'F — review carefully';
+
+  document.getElementById('timed-running').style.display = 'none';
+  const r = document.getElementById('timed-results');
+  r.style.display = 'block';
+  r.innerHTML = `
+    <div class="results">
+      <h2>Exam Results</h2>
+      <div class="score">${score} / ${timedQs.length}</div>
+      <div class="grade"><strong>${pct}%</strong> — ${grade}</div>
+      <h3>By topic</h3>
+      <table>
+        <tr><th>Topic</th><th>Correct</th><th>Total</th><th>%</th></tr>
+        ${Object.keys(byTopic).map(t => `
+          <tr><td>${topicLabels[t]}</td><td>${byTopic[t].c}</td><td>${byTopic[t].t}</td>
+              <td>${(byTopic[t].c/byTopic[t].t*100).toFixed(0)}%</td></tr>
+        `).join('')}
+      </table>
+      <h3 style="margin-top:24px;">Review each question</h3>
+      ${timedQs.map((q, i) => {
+        const correct = timedAnswers[i] === q.a;
+        return `<div class="exam-q">
+          <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+          <div class="stem">${q.stem}</div>
+          ${q.opts.map((o, j) => {
+            let style = '';
+            if (j === q.a) style = 'background:#ECFDF5;color:#065F46;font-weight:600;';
+            else if (timedAnswers[i] === j) style = 'background:#FEF2F2;color:#991B1B;';
+            return `<div style="padding:6px 10px;${style};border-radius:4px;margin:2px 0;font-size:13px;">${String.fromCharCode(97+j)}) ${o}${j === q.a ? ' ✓' : (timedAnswers[i] === j && !correct ? ' (your answer)' : '')}</div>`;
+          }).join('')}
+          <div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">Explanation: ${q.exp}</div>
+        </div>`;
+      }).join('')}
+      <button class="action large gold" onclick="setMode('home');document.getElementById('timed-start').style.display='block';document.getElementById('timed-results').style.display='none';" style="display:block;margin:24px auto;">Back to start</button>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+// ============ TOPIC PRACTICE ============
+function loadTopic(t) {
+  const qs = questionBank.filter(q => q.topic === t);
+  document.getElementById('topics-list').style.display = 'none';
+  const tq = document.getElementById('topic-questions');
+  tq.style.display = 'block';
+  document.getElementById('topic-title').textContent = topicLabels[t] + ' — practice';
+  document.getElementById('topic-subtitle').textContent = qs.length + ' questions with instant feedback. No timer.';
+  document.getElementById('topic-q-list').innerHTML = qs.map((q, i) => `
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1}</div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o, j) => `
+        <label onclick="checkTopic(${i}, ${j}, '${t}', this)">
+          <input type="radio" name="topic-${t}-${i}"> ${String.fromCharCode(97+j)}) ${o}
+        </label>
+      `).join('')}
+      <div class="feedback" id="topic-fb-${t}-${i}"></div>
+    </div>
+  `).join('');
+  window.scrollTo(0, 0);
+}
+
+function checkTopic(i, chosen, t, el) {
+  const q = questionBank.filter(x => x.topic === t)[i];
+  const card = el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l => { l.style.pointerEvents = 'none'; });
+  const correct = (chosen === q.a);
+  el.classList.add('selected');
+  if (correct) el.style.background = '#ECFDF5';
+  else {
+    el.style.background = '#FEF2F2';
+    // highlight correct
+    card.querySelectorAll('label')[q.a].style.background = '#ECFDF5';
+    card.querySelectorAll('label')[q.a].style.fontWeight = '600';
+  }
+  const fb = document.getElementById(`topic-fb-${t}-${i}`);
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = (correct ? '✓ Correct. ' : `✗ Correct: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+}
+
+function backToTopics() {
+  document.getElementById('topic-questions').style.display = 'none';
+  document.getElementById('topics-list').style.display = 'block';
+}
+
+// ============ FLASHCARDS ============
+const flashCards = [
+  {term:'GDP', def:'Market value of all FINAL goods and services PRODUCED within an economy in a given PERIOD of time.'},
+  {term:'Nominal GDP', def:'GDP at current prices: ΣP_t·Q_t. Reflects both quantity and price changes.'},
+  {term:'Real GDP', def:'GDP at constant base-year prices: ΣP_0·Q_t. Reflects only quantity changes.'},
+  {term:'GDP Deflator', def:'100 × (Nominal GDP / Real GDP). Paasche-type index using current basket.'},
+  {term:'CPI', def:'Cost of base-year basket at current prices / cost at base-year prices × 100. Laspeyres / fixed basket.'},
+  {term:'Inflation rate', def:'Percent change in a price index from one period to the next.'},
+  {term:'GDP expenditure approach', def:'Y = C + I + G + NX. Sum of all spending on final goods/services.'},
+  {term:'GDP income approach', def:'Y = wages + interest + rent + profits + indirect taxes − subsidies.'},
+  {term:'GDP production / value-added approach', def:'Y = Σ (output value − intermediate input cost) across firms.'},
+  {term:'Consumption (C)', def:'Household spending on goods (durable + nondurable) and services. ~68% of U.S. GDP.'},
+  {term:'Investment (I)', def:'Business fixed investment + residential investment + inventory investment. ~18% of U.S. GDP.'},
+  {term:'Government purchases (G)', def:'Federal, state, local spending on goods/services. EXCLUDES transfer payments.'},
+  {term:'Net exports (NX)', def:'Exports − Imports. U.S. typically runs negative NX.'},
+  {term:'Transfer payments', def:'Government payments NOT in exchange for current production (Social Security, welfare). NOT in GDP.'},
+  {term:'Labor force', def:'Employed + Unemployed (16+, civilian, non-institutional, actively engaged with the labor market).'},
+  {term:'Unemployment rate', def:'Unemployed / Labor force × 100. Requires ACTIVE search.'},
+  {term:'Labor-force participation rate (LFPR)', def:'Labor force / Adult population × 100.'},
+  {term:'Discouraged worker', def:'Wants a job but stopped searching. NOT counted as unemployed.'},
+  {term:'Stock vs Flow', def:'Stock: quantity at a POINT in time (capital, debt). Flow: quantity PER UNIT of time (income, deficit, GDP).'},
+  {term:'PCE deflator', def:'Personal Consumption Expenditures deflator. Like CPI in scope (consumer only), like deflator in method (chain-weighted). Fed\'s 2% target.'}
+];
+
+let flashIdx = 0, flashFlipped = false, flashOrder = flashCards.map((_, i) => i);
+function initFlash() {
+  document.getElementById('flash-total').textContent = flashCards.length;
+  showFlash();
+}
+function showFlash() {
+  const c = flashCards[flashOrder[flashIdx]];
+  document.getElementById('flash-idx').textContent = flashIdx + 1;
+  document.getElementById('flash-card').classList.toggle('flipped', flashFlipped);
+  document.getElementById('flash-side').textContent = flashFlipped ? 'Definition' : 'Term';
+  document.getElementById('flash-text').textContent = flashFlipped ? c.def : c.term;
+}
+function flashFlip() { flashFlipped = !flashFlipped; showFlash(); }
+function flashNext() { if (flashIdx < flashCards.length - 1) flashIdx++; flashFlipped = false; showFlash(); }
+function flashPrev() { if (flashIdx > 0) flashIdx--; flashFlipped = false; showFlash(); }
+function flashShuffle() { flashOrder = shuffle(flashCards.map((_, i) => i)); flashIdx = 0; flashFlipped = false; showFlash(); }
+</script>
+
+</body>
+</html>

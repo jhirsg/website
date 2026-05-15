@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module D: Unemployment</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f7f5;color:#1a1a1a}
+  .header{background:#500000;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#e8c87a;margin-top:2px}
+  .badge{background:#1a2a5e;color:#c8a96e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:7px 15px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:16px 18px;margin:10px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .ctrl{display:flex;align-items:center;gap:10px;margin:7px 0;flex-wrap:wrap}
+  .ctrl label{font-size:13px;color:#555;min-width:240px}
+  .ctrl input[type=range]{flex:1;min-width:100px}
+  .ctrl .out{font-size:13px;font-weight:600;min-width:55px;text-align:right;color:#1a1a1a}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+  .metric{background:#f4f4f4;border-radius:8px;padding:10px 14px}
+  .metric .lbl{font-size:11px;color:#666;margin-bottom:4px}
+  .metric .val{font-size:18px;font-weight:600;color:#1a1a1a}
+  .bar-wrap{margin:5px 0}
+  .bar-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:3px}
+  .bar-track{height:20px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;transition:width .3s;min-width:2px}
+  .pop-grid{display:flex;flex-wrap:wrap;gap:3px;margin:10px 0}
+  .psq{width:14px;height:14px;border-radius:2px;flex-shrink:0}
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  .quiz-opt{padding:9px 13px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;text-align:left;color:#1a1a1a;display:block;width:100%;margin:5px 0;font-family:inherit;line-height:1.4;transition:background .15s}
+  .quiz-opt:hover{background:#f5f5f5}
+  .quiz-opt.ok{background:#e6f4ea;border-color:#3b6d11;color:#27500a}
+  .quiz-opt.no{background:#fde8e8;border-color:#a32d2d;color:#791f1f}
+  .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;margin:2px}
+  .pill.green{background:#e6f4ea;color:#1a6b34}
+  .pill.red{background:#fde8e8;color:#922b21}
+  .pill.amber{background:#fef3e2;color:#784212}
+  .pill.blue{background:#e8f0fe;color:#1a3a8a}
+  .interp-box{background:#f0f4ff;border:1px solid #c5d5f5;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;color:#1a3a8a;line-height:1.6}
+  .res-row{padding:6px 0;font-size:12px;border-bottom:1px solid #f0f0f0;line-height:1.5}
+  .res-row:last-child{border:none}
+  .btn{padding:7px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#f0f0f0}
+  .btn.primary{background:#500000;color:#fff;border-color:#500000}
+  .btn.primary:hover{background:#6a0000}
+  .score-row{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .score-row span{font-size:13px;color:#555}
+  .score-row strong{color:#1a1a1a}
+  .type-btn{padding:7px 14px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit;margin:3px;transition:all .15s}
+  .type-btn:hover{background:#f0f0f0}
+  .type-btn.sel-Frictional{background:#e8f0fe;color:#0c447c;border-color:#185FA5;font-weight:600}
+  .type-btn.sel-Structural{background:#fef3e2;color:#633806;border-color:#854F0B;font-weight:600}
+  .type-btn.sel-Cyclical{background:#fde8e8;color:#791f1f;border-color:#A32D2D;font-weight:600}
+  .shock-btn{padding:8px 12px;font-size:12px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s;line-height:1.4}
+  .shock-btn:hover{background:#f5f5f5}
+  .shock-btn.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .shock-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-bottom:14px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0;font-size:12px;color:#555}
+  .legend-dot{width:12px;height:12px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+  .note{font-size:11px;color:#888;margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header h1">ECON 410 — Interactive Module D</div>
+    <div class="sub">Unemployment Measurement &amp; Types · Texas A&M University</div>
+  </div>
+  <div class="badge">Section D · Ch. 2</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('calc',this)">Labor market calculator</button>
+    <button class="tab" onclick="sw('types',this)">Identify the type</button>
+    <button class="tab" onclick="sw('scenario',this)">Scenario simulator</button>
+    <button class="tab" onclick="sw('quiz',this)">Calculation quiz</button>
+  </div>
+
+  <!-- TAB 1: CALCULATOR -->
+  <div class="panel on" id="p-calc">
+    <p class="desc">Adjust the labor market parameters. Watch all key statistics — including U-3 vs U-6 — update instantly.</p>
+    <div class="ctrl"><label>Adult population (16+, millions)</label><input type="range" id="pop" min="150" max="350" step="1" value="260" oninput="calcUR()"><span class="out" id="pop-o">260M</span></div>
+    <div class="ctrl"><label>Labor force participation rate (%)</label><input type="range" id="lfpr" min="50" max="75" step="0.5" value="63.5" oninput="calcUR()"><span class="out" id="lfpr-o">63.5%</span></div>
+    <div class="ctrl"><label>Unemployment rate U-3 (%)</label><input type="range" id="ur" min="1" max="16" step="0.1" value="4.2" oninput="calcUR()"><span class="out" id="ur-o">4.2%</span></div>
+    <div class="ctrl"><label>Discouraged workers (M)</label><input type="range" id="disc" min="0" max="8" step="0.1" value="1.5" oninput="calcUR()"><span class="out" id="disc-o">1.5M</span></div>
+    <div class="ctrl"><label>Part-time for economic reasons (M)</label><input type="range" id="ptfr" min="0" max="10" step="0.1" value="4.2" oninput="calcUR()"><span class="out" id="ptfr-o">4.2M</span></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Labor force</div><div class="val" id="m-lf">165.1M</div></div>
+      <div class="metric"><div class="lbl">Employed</div><div class="val" id="m-emp" style="color:#3B6D11">158.1M</div></div>
+      <div class="metric"><div class="lbl">Unemployed (U-3)</div><div class="val" id="m-un" style="color:#A32D2D">6.9M</div></div>
+      <div class="metric"><div class="lbl">Not in labor force</div><div class="val" id="m-nilf">94.9M</div></div>
+      <div class="metric"><div class="lbl">U-3 (official)</div><div class="val" id="m-u3" style="color:#A32D2D">4.2%</div></div>
+      <div class="metric"><div class="lbl">U-6 (broad)</div><div class="val" id="m-u6" style="color:#854F0B">6.9%</div></div>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#3B6D11"></span>Employed</span>
+      <span><span class="legend-dot" style="background:#A32D2D"></span>Unemployed (U-3)</span>
+      <span><span class="legend-dot" style="background:#854F0B"></span>Discouraged</span>
+      <span><span class="legend-dot" style="background:#e0e0e0;border:1px solid #ccc"></span>Not in labor force</span>
+    </div>
+    <p class="note">Each square ≈ 2 million people</p>
+    <div class="pop-grid" id="pop-vis"></div>
+    <div class="interp-box" id="calc-interp"></div>
+    <div class="divider"></div>
+    <p style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Unemployment breakdown by type (estimated)</p>
+    <div class="bar-wrap"><div class="bar-label"><span>Frictional</span><span id="bt-fric">~1.5%</span></div><div class="bar-track"><div class="bar-fill" id="bf-fric" style="background:#185FA5;width:9%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Structural</span><span id="bt-struc">~1.2%</span></div><div class="bar-track"><div class="bar-fill" id="bf-struc" style="background:#854F0B;width:7%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Cyclical (= UR − NRU)</span><span id="bt-cyc">~1.5%</span></div><div class="bar-track"><div class="bar-fill" id="bf-cyc" style="background:#A32D2D;width:9%"></div></div></div>
+    <p class="note">NRU ≈ 4.0% (frictional + structural). Cyclical = max(0, UR − 4.0%). U-6 includes discouraged workers + those working part-time involuntarily.</p>
+  </div>
+
+  <!-- TAB 2: TYPES -->
+  <div class="panel" id="p-types">
+    <p class="desc">Classify each worker's situation as Frictional, Structural, or Cyclical unemployment. A new set is generated each time.</p>
+    <div id="type-list"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="checkTypes()">Check answers</button>
+      <button class="btn" onclick="buildTypes()">New cases</button>
+    </div>
+    <div id="type-fb" style="margin-top:12px"></div>
+  </div>
+
+  <!-- TAB 3: SCENARIOS -->
+  <div class="panel" id="p-scenario">
+    <p class="desc">Apply an economic shock and see how the unemployment type breakdown changes — and what policy response is appropriate.</p>
+    <div class="shock-grid" id="shock-btns"></div>
+    <div class="card" id="shock-detail" style="display:none">
+      <p style="font-size:14px;font-weight:600;margin:0 0 6px;color:#1a1a1a" id="sh-title"></p>
+      <p style="font-size:13px;margin:0 0 12px;color:#555;line-height:1.5" id="sh-desc"></p>
+      <div class="metric-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="metric"><div class="lbl">UR before</div><div class="val" id="sh-ur-b" style="color:#3B6D11">4.0%</div></div>
+        <div class="metric"><div class="lbl">UR after</div><div class="val" id="sh-ur-a" style="color:#A32D2D">4.0%</div></div>
+        <div class="metric"><div class="lbl">Type affected</div><div class="val" id="sh-type" style="font-size:13px;color:#854F0B">—</div></div>
+      </div>
+      <div class="interp-box" id="sh-policy" style="margin-top:10px"></div>
+    </div>
+    <div class="divider"></div>
+    <p style="font-size:12px;font-weight:600;color:#555;margin-bottom:8px">Unemployment composition after shock</p>
+    <div class="bar-wrap"><div class="bar-label"><span>Frictional</span><span id="ss-fric-pct">1.5%</span></div><div class="bar-track"><div class="bar-fill" id="ss-fric" style="background:#185FA5;width:9%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Structural</span><span id="ss-struc-pct">1.2%</span></div><div class="bar-track"><div class="bar-fill" id="ss-struc" style="background:#854F0B;width:7%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Cyclical</span><span id="ss-cyc-pct">0.0%</span></div><div class="bar-track"><div class="bar-fill" id="ss-cyc" style="background:#A32D2D;width:0%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>Total UR</span><span id="ss-total-pct">4.0%</span></div><div class="bar-track"><div class="bar-fill" id="ss-total" style="background:#444;width:25%"></div></div></div>
+  </div>
+
+  <!-- TAB 4: QUIZ -->
+  <div class="panel" id="p-quiz">
+    <p class="desc">Calculate each answer on paper first, then select your choice below.</p>
+    <div id="qz-body"></div>
+    <div class="score-row">
+      <span>Score: <strong id="qz-sc">0 / 0</strong></span>
+      <button class="btn" onclick="buildQz()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const NRU=4.0;
+function calcUR(){
+  const pop=+document.getElementById('pop').value;
+  const lfpr=+document.getElementById('lfpr').value;
+  const ur=+document.getElementById('ur').value;
+  const disc=+document.getElementById('disc').value;
+  const ptfr=+document.getElementById('ptfr').value;
+  document.getElementById('pop-o').textContent=Math.round(pop)+'M';
+  document.getElementById('lfpr-o').textContent=lfpr.toFixed(1)+'%';
+  document.getElementById('ur-o').textContent=ur.toFixed(1)+'%';
+  document.getElementById('disc-o').textContent=disc.toFixed(1)+'M';
+  document.getElementById('ptfr-o').textContent=ptfr.toFixed(1)+'M';
+  const lf=pop*lfpr/100;
+  const unemp=lf*ur/100;
+  const emp=lf-unemp;
+  const nilf=pop-lf;
+  const u6denom=lf+disc;
+  const u6=(unemp+disc+ptfr)/u6denom*100;
+  document.getElementById('m-lf').textContent=lf.toFixed(1)+'M';
+  document.getElementById('m-emp').textContent=emp.toFixed(1)+'M';
+  document.getElementById('m-un').textContent=unemp.toFixed(1)+'M';
+  document.getElementById('m-nilf').textContent=nilf.toFixed(1)+'M';
+  document.getElementById('m-u3').textContent=ur.toFixed(1)+'%';
+  document.getElementById('m-u6').textContent=u6.toFixed(1)+'%';
+  const unit=2;
+  const empSq=Math.round(emp/unit),unSq=Math.round(unemp/unit),nilfSq=Math.round(nilf/unit),discSq=Math.round(disc/unit);
+  let html='';
+  for(let i=0;i<empSq;i++)html+=`<div class="psq" style="background:#3B6D11" title="Employed"></div>`;
+  for(let i=0;i<unSq;i++)html+=`<div class="psq" style="background:#A32D2D" title="Unemployed (U-3)"></div>`;
+  for(let i=0;i<discSq;i++)html+=`<div class="psq" style="background:#854F0B" title="Discouraged worker"></div>`;
+  for(let i=0;i<nilfSq;i++)html+=`<div class="psq" style="background:#e0e0e0;border:1px solid #ccc" title="Not in labor force"></div>`;
+  document.getElementById('pop-vis').innerHTML=html;
+  const cycical=Math.max(0,ur-NRU);
+  let status='';
+  if(ur<=NRU+0.3)status='Economy near full employment. Cyclical unemployment ≈ 0%. The remaining unemployment is frictional + structural — this is the natural rate.';
+  else if(ur<=7)status=`Moderate unemployment. Cyclical component ≈ ${cycical.toFixed(1)}% — aggregate demand is below potential. Expansionary policy could help reduce cyclical unemployment.`;
+  else status=`High unemployment. Cyclical component ≈ ${cycical.toFixed(1)}% — significant recession-driven joblessness. Strong fiscal or monetary stimulus is warranted.`;
+  document.getElementById('calc-interp').textContent=`U-6 broad rate = ${u6.toFixed(1)}% vs U-3 = ${ur.toFixed(1)}%. ${status}`;
+  const fric=Math.min(ur,1.5),struc=Math.min(Math.max(0,ur-fric),1.2),cyc=Math.max(0,ur-fric-struc);
+  document.getElementById('bt-fric').textContent='~'+fric.toFixed(1)+'%';
+  document.getElementById('bt-struc').textContent='~'+struc.toFixed(1)+'%';
+  document.getElementById('bt-cyc').textContent='~'+cyc.toFixed(1)+'%';
+  document.getElementById('bf-fric').style.width=(fric/16*100)+'%';
+  document.getElementById('bf-struc').style.width=(struc/16*100)+'%';
+  document.getElementById('bf-cyc').style.width=(cyc/16*100)+'%';
+}
+calcUR();
+
+const typeCases=[
+  {desc:'Maria quit her marketing job to look for a higher-paying position at a different company. She has been searching for 3 weeks.',ans:'Frictional',why:'Voluntary job change + active search = frictional. Normal labor market turnover, no skill mismatch, no recession.'},
+  {desc:'James is a coal miner. His mine shut down due to the energy transition to renewables. Coal jobs have disappeared in his region.',ans:'Structural',why:'Industry elimination due to technological/economic change = structural. His mining skills do not match available jobs. Retraining is needed.'},
+  {desc:'Sandra was laid off from hotel management when the economy entered a deep recession and travel demand collapsed.',ans:'Cyclical',why:'Job loss caused by aggregate demand falling in a recession = cyclical. Her skills are fine — not enough jobs during the downturn.'},
+  {desc:'Carlos recently graduated from college and is interviewing at several firms. He has not yet received an offer.',ans:'Frictional',why:'Entry into the labor market with active search = frictional. Normal matching time between new workers and available jobs.'},
+  {desc:'Anna was a travel agent. Her job was replaced by online booking platforms. She lacks the digital skills employers want.',ans:'Structural',why:'Technology displaced her role and created a skills mismatch = structural. Retraining, not stimulus, is the appropriate response.'},
+  {desc:'During the 2020 pandemic, Tom\'s restaurant was closed by public health orders and he was laid off.',ans:'Cyclical',why:'Aggregate demand shock (pandemic-driven) caused temporary job loss across many sectors = cyclical unemployment.'},
+  {desc:'Lisa left her finance job for several months to care for her newborn. She is now actively searching for new positions.',ans:'Frictional',why:'Re-entry after voluntary leave + active job search = frictional. She has marketable skills and is actively looking.'},
+  {desc:'Rick worked in a print shop. The printing industry has contracted dramatically due to digital media; few printing jobs remain.',ans:'Structural',why:'Secular industry decline = structural. His skills are specific to a shrinking sector; retraining needed.'},
+];
+let typeAnswers={},typeItems=[];
+function buildTypes(){
+  typeAnswers={};
+  const shuffled=[...typeCases].sort(()=>Math.random()-.5).slice(0,5);
+  typeItems=shuffled;
+  document.getElementById('type-fb').innerHTML='';
+  const c=document.getElementById('type-list');c.innerHTML='';
+  shuffled.forEach((item,i)=>{
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<p style="font-size:13px;margin:0 0 8px;line-height:1.5;color:#1a1a1a">${item.desc}</p>`+
+      `<div>`+['Frictional','Structural','Cyclical'].map(t=>`<button class="type-btn" id="ty-${i}-${t}" onclick="selectType(${i},'${t}')">${t}</button>`).join('')+`</div>`;
+    c.appendChild(d);
+  });
+}
+function selectType(i,t){
+  typeAnswers[i]=t;
+  ['Frictional','Structural','Cyclical'].forEach(opt=>{
+    const b=document.getElementById(`ty-${i}-${opt}`);
+    if(b){b.className='type-btn';if(opt===t)b.classList.add('sel-'+t);}
+  });
+}
+function checkTypes(){
+  let correct=0,fb='';
+  typeItems.forEach((item,i)=>{
+    const ua=typeAnswers[i];
+    if(!ua){fb+=`<div class="res-row"><span class="pill amber">Skipped</span> ${item.desc.substring(0,70)}...</div>`;return;}
+    const ok=ua===item.ans;if(ok)correct++;
+    fb+=`<div class="res-row"><span class="pill ${ok?'green':'red'}">${ok?'Correct':'Wrong — '+item.ans}</span> ${item.desc.substring(0,80)}...<br><span style="color:#666">${item.why}</span></div>`;
+  });
+  const tried=Object.keys(typeAnswers).length;
+  document.getElementById('type-fb').innerHTML=`<div class="card"><p style="font-size:14px;font-weight:600;color:#500000;margin-bottom:10px">${correct}/${tried} correct</p>${fb}</div>`;
+}
+buildTypes();
+
+const shocks=[
+  {label:'Deep recession hits',fric:1.5,struc:1.2,cyc:5.0,before:4.0,policy:'Policy response: Expansionary fiscal and monetary policy. Cut interest rates, increase government spending to boost aggregate demand and eliminate cyclical unemployment.'},
+  {label:'AI automates warehouse jobs',fric:1.5,struc:3.5,cyc:0.0,before:4.0,policy:'Policy response: Supply-side response needed. Job retraining programs, education subsidies, geographic mobility support. Fiscal stimulus won\'t fix a skills mismatch.'},
+  {label:'Job matching app improves search',fric:0.8,struc:1.2,cyc:0.0,before:4.0,policy:'Policy response: No fiscal/monetary intervention needed. Better technology reduces frictional unemployment by improving job-worker matching speed. The NRU itself falls.'},
+  {label:'Full economic recovery',fric:1.5,struc:1.2,cyc:0.0,before:8.5,policy:'Policy response: None required. Cyclical unemployment has been eliminated by recovering aggregate demand. What remains is the NRU (frictional + structural) — normal for a healthy economy.'},
+  {label:'Large wave of immigration',fric:2.0,struc:1.5,cyc:0.0,before:4.0,policy:'Policy response: Invest in integration programs, language training, credential recognition. Effects depend on skill levels of immigrants and absorption capacity of the labor market.'},
+  {label:'Many new graduates enter market',fric:2.5,struc:1.2,cyc:0.0,before:4.0,policy:'Policy response: Better career counseling, internship programs, and labor market information can reduce frictional unemployment among new graduates.'},
+];
+function buildShocks(){
+  const c=document.getElementById('shock-btns');c.innerHTML='';
+  shocks.forEach((sh,i)=>{
+    const b=document.createElement('button');b.className='shock-btn';b.textContent=sh.label;
+    b.onclick=()=>{
+      document.querySelectorAll('.shock-btn').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');showShock(i);
+    };
+    c.appendChild(b);
+  });
+}
+function showShock(i){
+  const sh=shocks[i];const total=sh.fric+sh.struc+sh.cyc;
+  document.getElementById('shock-detail').style.display='block';
+  document.getElementById('sh-title').textContent=sh.label;
+  document.getElementById('sh-desc').textContent=`After: Frictional ${sh.fric.toFixed(1)}%  |  Structural ${sh.struc.toFixed(1)}%  |  Cyclical ${sh.cyc.toFixed(1)}%  |  Total UR ${total.toFixed(1)}%`;
+  document.getElementById('sh-ur-b').textContent=sh.before.toFixed(1)+'%';
+  document.getElementById('sh-ur-a').textContent=total.toFixed(1)+'%';
+  const type=sh.cyc>0?'Cyclical':sh.struc>1.3?'Structural':sh.fric<1.0?'Frictional (reduced)':'Frictional';
+  document.getElementById('sh-type').textContent=type;
+  document.getElementById('sh-policy').textContent=sh.policy;
+  const max=12;
+  document.getElementById('ss-fric').style.width=(sh.fric/max*100)+'%';
+  document.getElementById('ss-struc').style.width=(sh.struc/max*100)+'%';
+  document.getElementById('ss-cyc').style.width=(sh.cyc/max*100)+'%';
+  document.getElementById('ss-total').style.width=(total/max*100)+'%';
+  document.getElementById('ss-fric-pct').textContent=sh.fric.toFixed(1)+'%';
+  document.getElementById('ss-struc-pct').textContent=sh.struc.toFixed(1)+'%';
+  document.getElementById('ss-cyc-pct').textContent=sh.cyc.toFixed(1)+'%';
+  document.getElementById('ss-total-pct').textContent=total.toFixed(1)+'%';
+}
+buildShocks();
+
+const qzItems=[
+  {q:'Pop = 300M. LFPR = 65%. UR = 5%. How many workers are unemployed?',opts:['9.75M','15M','195M','8.45M'],ans:0,exp:'LF = 300 × 0.65 = 195M. Unemployed = 195 × 0.05 = 9.75M.'},
+  {q:'LF = 160M. Employed = 152M. What is the unemployment rate?',opts:['5.0%','4.8%','5.3%','95.0%'],ans:0,exp:'UR = (160−152)/160 × 100 = 8/160 × 100 = 5.0%.'},
+  {q:'Pop = 250M. LF = 160M. Employed = 152M. Discouraged = 3M. Part-time for econ. reasons = 5M. What is U-6?',opts:['5.0%','10.0%','9.3%','12.1%'],ans:1,exp:'Unemployed = 160−152 = 8M. U-6 numerator = 8+3+5 = 16M. U-6 denominator = LF + discouraged = 160+3 = 163M. U-6 = 16/163 × 100 ≈ 9.8% ≈ 10.0%.'},
+  {q:'UR = 7.5%. NRU = 4.0%. What is cyclical unemployment?',opts:['11.5%','3.5%','4.0%','7.5%'],ans:1,exp:'Cyclical = UR − NRU = 7.5 − 4.0 = 3.5%. This is the recession-driven portion — the part expansionary policy can address.'},
+  {q:'100 discouraged workers re-enter the labor force but none find jobs immediately. What happens to U-3?',opts:['It falls','It rises','Stays the same','Cannot be determined'],ans:1,exp:'Both unemployed and LF increase by 100. New UR = (U+100)/(LF+100). Since U/LF < 1, adding equal amounts to both raises the fraction. UR rises even with no new job losses.'},
+];
+let qzAns={},qzCor=0;
+function buildQz(){
+  qzAns={};qzCor=0;document.getElementById('qz-sc').textContent='0 / 0';
+  const b=document.getElementById('qz-body');b.innerHTML='';
+  qzItems.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<p style="font-size:13px;font-weight:600;margin:0 0 8px;line-height:1.5;color:#1a1a1a">${i+1}. ${q.q}</p>`+
+      q.opts.map((o,j)=>`<button class="quiz-opt" id="qo-${i}-${j}" onclick="ansQ(${i},${j})">${o}</button>`).join('')+
+      `<div id="qfb-${i}" style="display:none;font-size:12px;padding:8px 12px;border-radius:7px;margin-top:6px;line-height:1.5"></div>`;
+    b.appendChild(d);
+  });
+}
+function ansQ(i,j){
+  if(qzAns[i]!==undefined)return;
+  const q=qzItems[i];const ok=j===q.ans;qzAns[i]=ok;if(ok)qzCor++;
+  for(let k=0;k<q.opts.length;k++){
+    const btn=document.getElementById(`qo-${i}-${k}`);
+    if(k===q.ans)btn.classList.add('ok');else if(k===j)btn.classList.add('no');
+    btn.disabled=true;
+  }
+  const fb=document.getElementById(`qfb-${i}`);
+  fb.style.display='block';fb.style.background=ok?'#e6f4ea':'#fde8e8';fb.style.color=ok?'#27500a':'#791f1f';
+  fb.textContent=(ok?'Correct — ':'Incorrect — ')+q.exp;
+  document.getElementById('qz-sc').textContent=qzCor+' / '+Object.keys(qzAns).length;
+}
+buildQz();
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');btn.classList.add('on');
+}
+</script>
+</body>
+</html>

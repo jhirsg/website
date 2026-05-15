@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 2 · Module D — Deeper Dive Lab</title>
+<style>
+:root {
+  --navy: #1E3A5F; --navy-dk: #0F2540; --gold: #C8A961; --teal: #0F766E;
+  --slate: #374151; --cream: #FAF8F3; --paper: #FCFAF6; --dark: #1F2937;
+  --muted: #6B7280; --rule: #E5E7EB; --green: #047857; --red: #B91C1C;
+  --amber: #B45309; --blue: #2563EB; --purple: #6B21A8;
+  --white: #FFFFFF;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Calibri', 'Segoe UI', system-ui, sans-serif;
+  background: var(--cream); color: var(--dark);
+  margin: 0; padding: 0; min-height: 100vh;
+}
+header {
+  background: var(--navy-dk); color: white; padding: 18px 32px;
+  border-bottom: 4px solid var(--gold);
+}
+header h1 { margin: 0; font-family: 'Cambria', Georgia, serif; font-size: 22px; }
+header .sub { color: var(--gold); font-size: 13px; margin-top: 4px; font-style: italic; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 32px; }
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--rule); flex-wrap: wrap; }
+.tab-btn {
+  background: var(--paper); color: var(--slate);
+  border: 1px solid var(--rule); border-bottom: none;
+  padding: 10px 18px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border-radius: 6px 6px 0 0;
+  transition: all 0.15s;
+}
+.tab-btn:hover { background: var(--white); color: var(--navy); }
+.tab-btn.active {
+  background: var(--navy); color: var(--white); border-color: var(--navy);
+}
+.tab-content { display: none; padding: 4px; }
+.tab-content.active { display: block; }
+h2 { color: var(--navy); font-family: 'Cambria', Georgia, serif; margin: 0 0 6px 0; }
+h3 { color: var(--teal); font-family: 'Cambria', Georgia, serif; margin: 16px 0 8px 0; font-size: 16px; }
+.subtitle { color: var(--muted); font-style: italic; margin-bottom: 20px; }
+.card {
+  background: var(--white); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 18px 22px; margin: 12px 0; border-left: 4px solid var(--navy);
+}
+.card.teal { border-left-color: var(--teal); }
+.card.amber { border-left-color: var(--amber); }
+.card.green { border-left-color: var(--green); background: #ECFDF5; border-color: var(--green); }
+.card.red { border-left-color: var(--red); background: #FEF2F2; border-color: var(--red); }
+.card.gold { border-left-color: var(--gold); background: #FEFCE8; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+@media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+label { display: block; font-size: 12px; font-weight: 600; color: var(--slate); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.slider-row { margin: 10px 0; }
+.slider-row .val { display: inline-block; font-family: 'Cambria', Georgia, serif;
+  font-size: 16px; color: var(--navy); font-weight: bold; margin-left: 8px; }
+input[type=range] { width: 70%; vertical-align: middle; accent-color: var(--navy); }
+input[type=number], input[type=text], select {
+  padding: 6px 10px; font-size: 13px; border: 1px solid var(--rule);
+  border-radius: 4px; font-family: inherit;
+}
+button.action {
+  background: var(--navy); color: white; border: none;
+  padding: 9px 18px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border-radius: 4px;
+  transition: background 0.15s;
+}
+button.action:hover { background: var(--navy-dk); }
+button.action.gold { background: var(--gold); color: var(--navy-dk); }
+button.action.gold:hover { background: #b8923a; }
+table.calc {
+  width: 100%; border-collapse: collapse; margin: 12px 0;
+  background: var(--white); border-radius: 6px; overflow: hidden;
+  font-size: 13px;
+}
+table.calc th { background: var(--navy); color: white; padding: 10px; text-align: left; font-weight: 600; }
+table.calc td { padding: 8px 10px; border-top: 1px solid var(--rule); }
+table.calc tr.optimum { background: #FEF3C7; font-weight: 600; }
+table.calc tr.hire td:nth-child(4) { color: var(--green); font-weight: 600; }
+table.calc tr.stop td:nth-child(4) { color: var(--red); font-weight: 600; }
+.result-box {
+  background: var(--navy-dk); color: white; padding: 16px 20px;
+  border-radius: 6px; margin: 14px 0; font-family: 'Cambria', Georgia, serif;
+  font-size: 16px; text-align: center;
+}
+.result-box .num { color: var(--gold); font-weight: bold; font-size: 22px; }
+.tag {
+  display: inline-block; padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.tag.green { background: var(--green); color: white; }
+.tag.red { background: var(--red); color: white; }
+.tag.amber { background: var(--amber); color: white; }
+.tag.teal { background: var(--teal); color: white; }
+.formula {
+  font-family: 'Cambria', Georgia, serif; font-size: 16px;
+  background: var(--paper); padding: 10px 14px; border-radius: 4px;
+  border-left: 3px solid var(--gold); margin: 8px 0; font-style: italic;
+}
+canvas { max-width: 100%; height: auto; }
+.quiz-q { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 14px 18px; margin: 10px 0; }
+.quiz-q .stem { font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.quiz-q label { display: block; font-weight: normal; text-transform: none;
+  padding: 4px 8px; cursor: pointer; margin: 2px 0; font-size: 13px; letter-spacing: 0; color: var(--dark); }
+.quiz-q label:hover { background: #F1F5F9; border-radius: 3px; }
+.quiz-q .feedback { margin-top: 8px; padding: 8px 10px; border-radius: 4px;
+  font-size: 12px; display: none; }
+.quiz-q .feedback.show { display: block; }
+.quiz-q .feedback.correct { background: #ECFDF5; color: var(--green); border-left: 3px solid var(--green); }
+.quiz-q .feedback.wrong { background: #FEF2F2; color: var(--red); border-left: 3px solid var(--red); }
+.quiz-score {
+  position: sticky; top: 0; background: var(--white);
+  padding: 12px 18px; border: 1px solid var(--rule); border-radius: 6px;
+  margin-bottom: 16px; font-size: 14px;
+}
+.quiz-score .pct { font-family: 'Cambria', Georgia, serif; font-size: 22px;
+  color: var(--navy); font-weight: bold; }
+.help-text { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
+.lf-graph { background: var(--white); border: 1px solid var(--rule); border-radius: 6px; padding: 12px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 2 · Module D — Deeper Dive Interactive Lab</h1>
+  <div class="sub">Production · Factor Markets · Loanable Funds · Practice — Mankiw Ch.3</div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="crs">1. CRS Checker</button>
+    <button class="tab-btn" data-tab="mpl">2. MPL Hiring Tool</button>
+    <button class="tab-btn" data-tab="cd">3. Cobb-Douglas Explorer</button>
+    <button class="tab-btn" data-tab="lf">4. Loanable Funds</button>
+    <button class="tab-btn" data-tab="quiz">5. Practice Quiz</button>
+  </div>
+
+  <!-- ============ TAB 1: CRS CHECKER ============ -->
+  <div id="tab-crs" class="tab-content active">
+    <h2>Returns to scale — interactive checker</h2>
+    <div class="subtitle">Enter exponents for Y = A·K^α·L^β; the tool checks F(zK, zL) vs z·F(K, L) and classifies returns to scale.</div>
+
+    <div class="grid-3">
+      <div class="card">
+        <label>α (K exponent)</label>
+        <div class="slider-row">
+          <input type="range" id="crs-alpha" min="0" max="2" step="0.05" value="0.3">
+          <span class="val" id="crs-alpha-val">0.30</span>
+        </div>
+      </div>
+      <div class="card teal">
+        <label>β (L exponent)</label>
+        <div class="slider-row">
+          <input type="range" id="crs-beta" min="0" max="2" step="0.05" value="0.7">
+          <span class="val" id="crs-beta-val">0.70</span>
+        </div>
+      </div>
+      <div class="card amber">
+        <label>A (TFP)</label>
+        <div class="slider-row">
+          <input type="range" id="crs-A" min="0.1" max="5" step="0.1" value="1.0">
+          <span class="val" id="crs-A-val">1.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="formula" id="crs-formula">Y = 1.00 · K^0.30 · L^0.70</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Check F(zK, zL) vs z·F(K, L)</h3>
+        <div class="slider-row">
+          <label>Scale factor z</label>
+          <input type="range" id="crs-z" min="1" max="5" step="0.1" value="2">
+          <span class="val" id="crs-z-val">2.0</span>
+        </div>
+        <p style="margin: 6px 0; font-size: 13px;">With K = 100, L = 100:</p>
+        <table class="calc">
+          <tr><td>F(K, L)</td><td id="crs-fkl">100.00</td></tr>
+          <tr><td>z · F(K, L)</td><td id="crs-zfkl">200.00</td></tr>
+          <tr><td>F(zK, zL)</td><td id="crs-fzklzl">200.00</td></tr>
+          <tr><td>Ratio F(zK,zL) / [z·F(K,L)]</td><td id="crs-ratio">1.000</td></tr>
+        </table>
+      </div>
+
+      <div class="card" id="crs-verdict-card">
+        <h3>Returns to scale</h3>
+        <div style="margin: 16px 0;">
+          <span class="tag green" id="crs-tag" style="font-size: 14px; padding: 8px 16px;">CRS</span>
+        </div>
+        <div id="crs-explain" style="font-size: 13px; line-height: 1.5;">α + β = 1.00 → Constant returns to scale. F(zK, zL) = z · F(K, L) exactly.</div>
+        <h3 style="margin-top: 20px;">Quick rule for Cobb-Douglas</h3>
+        <ul style="font-size: 13px; padding-left: 20px; margin: 6px 0;">
+          <li><strong>α + β = 1</strong> → Constant returns to scale</li>
+          <li><strong>α + β &gt; 1</strong> → Increasing returns</li>
+          <li><strong>α + β &lt; 1</strong> → Decreasing returns</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card gold">
+      <strong>Try these:</strong>
+      <ul style="font-size: 13px; line-height: 1.7; margin: 6px 0;">
+        <li>Set α = 0.5, β = 0.5 → CRS (this is √(KL))</li>
+        <li>Set α = 0.25, β = 0.75 → CRS</li>
+        <li>Set α = 1, β = 1 → Increasing returns (α + β = 2)</li>
+        <li>Set α = 0.3, β = 0.5 → Decreasing returns (α + β = 0.8)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: MPL HIRING ============ -->
+  <div id="tab-mpl" class="tab-content">
+    <h2>Optimal hiring — labor demand simulator</h2>
+    <div class="subtitle">Pick a wage W/P. The tool computes MPL at each L and tells you whether to hire more or stop.</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Settings</h3>
+        <label>Real wage W/P</label>
+        <div class="slider-row">
+          <input type="range" id="mpl-wage" min="1" max="15" step="0.5" value="6">
+          <span class="val" id="mpl-wage-val">6.0</span>
+        </div>
+        <label>Production function</label>
+        <select id="mpl-fn" style="width: 100%; margin-top: 4px;">
+          <option value="yoon">Discrete schedule (Y rises with diminishing returns)</option>
+          <option value="cd">Cobb-Douglas Y = 10·K^0.5·L^0.5, K = 100</option>
+          <option value="sqrt">Y = 30·√L (K fixed)</option>
+        </select>
+        <div class="formula" id="mpl-formula">Discrete schedule from Mankiw textbook</div>
+      </div>
+
+      <div class="card teal">
+        <h3>Result</h3>
+        <div class="result-box">
+          Optimal labor L*<br>
+          <span class="num" id="mpl-lstar">5</span>
+        </div>
+        <div id="mpl-explain" style="font-size: 13px; line-height: 1.5;">
+          At L* = 5, MPL = 6 = W/P. Hiring stops here — any more workers cost more than they produce.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Labor demand table</h3>
+      <table class="calc" id="mpl-table">
+        <thead>
+          <tr><th>Labor L</th><th>Output Y</th><th>MPL</th><th>Decision when W/P = <span id="mpl-w-hdr">6</span></th></tr>
+        </thead>
+        <tbody id="mpl-tbody"></tbody>
+      </table>
+      <p class="help-text">Rule: hire one more worker iff MPL ≥ W/P. The optimum L* is where MPL = W/P.</p>
+    </div>
+  </div>
+
+  <!-- ============ TAB 3: COBB-DOUGLAS EXPLORER ============ -->
+  <div id="tab-cd" class="tab-content">
+    <h2>Cobb-Douglas factor share explorer</h2>
+    <div class="subtitle">Watch how MPL, MPK, factor incomes, and shares move as you change K, L, α, and A. Verify Euler's theorem live.</div>
+
+    <div class="grid-3">
+      <div class="card"><label>K (capital)</label>
+        <div class="slider-row"><input type="range" id="cd-K" min="10" max="500" step="10" value="100"><span class="val" id="cd-K-val">100</span></div>
+      </div>
+      <div class="card teal"><label>L (labor)</label>
+        <div class="slider-row"><input type="range" id="cd-L" min="10" max="500" step="10" value="100"><span class="val" id="cd-L-val">100</span></div>
+      </div>
+      <div class="card amber"><label>α (capital share)</label>
+        <div class="slider-row"><input type="range" id="cd-alpha" min="0.1" max="0.9" step="0.05" value="0.3"><span class="val" id="cd-alpha-val">0.30</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <label>A (technology / TFP)</label>
+      <div class="slider-row">
+        <input type="range" id="cd-A" min="0.5" max="5" step="0.1" value="1.0">
+        <span class="val" id="cd-A-val">1.00</span>
+      </div>
+    </div>
+
+    <div class="formula">Y = <span id="cd-A-fmt">1.00</span> · K^<span id="cd-a-fmt">0.30</span> · L^<span id="cd-1ma-fmt">0.70</span></div>
+
+    <div class="grid-2">
+      <div class="card teal">
+        <h3>Output and marginal products</h3>
+        <table class="calc">
+          <tr><td>Output Y</td><td id="cd-Y" style="font-family: Cambria; font-weight: bold; color: var(--navy);">100.00</td></tr>
+          <tr><td>MPL = (1−α)·Y/L</td><td id="cd-MPL">0.700</td></tr>
+          <tr><td>MPK = α·Y/K</td><td id="cd-MPK">0.300</td></tr>
+        </table>
+      </div>
+      <div class="card amber">
+        <h3>Income distribution</h3>
+        <table class="calc">
+          <tr><td>Labor income MPL·L</td><td id="cd-labinc">70.00</td></tr>
+          <tr><td>Capital income MPK·K</td><td id="cd-capinc">30.00</td></tr>
+          <tr><td>MPL·L + MPK·K (should = Y)</td><td id="cd-euler" style="color: var(--green); font-weight: bold;">100.00 ✓</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card gold">
+      <h3>Factor shares</h3>
+      <p style="font-size: 13px; margin: 8px 0;">Labor share = MPL·L / Y = <strong><span id="cd-labshare" style="color: var(--green); font-size: 16px; font-family: Cambria;">0.700</span></strong> = (1−α). Capital share = α = <strong><span id="cd-capshare" style="color: var(--amber); font-size: 16px; font-family: Cambria;">0.300</span></strong>.</p>
+      <p style="font-size: 12px; color: var(--muted); font-style: italic;">Move K, L, A around — labor share stays at (1−α). Only α changes the share. This is the famous CONSTANT factor share property.</p>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4: LOANABLE FUNDS ============ -->
+  <div id="tab-lf" class="tab-content">
+    <h2>Loanable funds — crowding-out simulator</h2>
+    <div class="subtitle">Move G, T, MPC, or investment-demand parameters. See how S and I curves shift and what happens to r*.</div>
+
+    <div class="grid-3">
+      <div class="card">
+        <label>G (government purchases)</label>
+        <div class="slider-row"><input type="range" id="lf-G" min="1000" max="4000" step="50" value="2500"><span class="val" id="lf-G-val">2500</span></div>
+      </div>
+      <div class="card teal">
+        <label>T (net taxes)</label>
+        <div class="slider-row"><input type="range" id="lf-T" min="1000" max="4000" step="50" value="2000"><span class="val" id="lf-T-val">2000</span></div>
+      </div>
+      <div class="card amber">
+        <label>MPC</label>
+        <div class="slider-row"><input type="range" id="lf-MPC" min="0.1" max="0.95" step="0.05" value="0.67"><span class="val" id="lf-MPC-val">0.67</span></div>
+      </div>
+    </div>
+
+    <p style="font-size: 12px; color: var(--muted); margin: 4px 0 12px 0;">Fixed: Y = 8,000 (set by factor markets). C = 1,000 + MPC·(Y−T). I = 1,200 − 100r.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Saving decomposition</h3>
+        <table class="calc">
+          <tr><td>Disposable income Y − T</td><td id="lf-yd">6000</td></tr>
+          <tr><td>Consumption C</td><td id="lf-C">5020</td></tr>
+          <tr><td>Private saving S<sub>priv</sub></td><td id="lf-spriv">980</td></tr>
+          <tr><td>Public saving S<sub>pub</sub> = T − G</td><td id="lf-spub" style="color: var(--red);">−500</td></tr>
+          <tr><td>National saving S</td><td id="lf-S" style="font-weight: bold; color: var(--navy);">480</td></tr>
+        </table>
+      </div>
+      <div class="card teal">
+        <h3>Equilibrium</h3>
+        <div class="result-box">
+          Real interest rate r*<br>
+          <span class="num" id="lf-rstar">7.20%</span>
+        </div>
+        <table class="calc">
+          <tr><td>Equilibrium I*</td><td id="lf-Istar">480</td></tr>
+          <tr><td>Crowding out from baseline</td><td id="lf-crowd" style="color: var(--red);">0</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card lf-graph">
+      <h3>Loanable funds market</h3>
+      <canvas id="lf-canvas" width="700" height="350"></canvas>
+      <p class="help-text">S (vertical) and I (downward-sloping). Equilibrium at r* where they intersect.</p>
+    </div>
+
+    <div class="card gold">
+      <strong>Try these scenarios:</strong>
+      <ul style="font-size: 13px; line-height: 1.7; margin: 6px 0;">
+        <li>Reset to baseline (G=2500, T=2000, MPC=0.67) — note r* and I*.</li>
+        <li>Raise G to 3000. r* should rise sharply. ΔI ≈ −ΔG (full crowding out).</li>
+        <li>Reset, then drop T to 1500. r* rises, but less. (Partial crowding out — depends on MPC.)</li>
+        <li>Try MPC = 0.95 with the same tax cut. Crowding out gets worse. Why?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAB 5: PRACTICE QUIZ ============ -->
+  <div id="tab-quiz" class="tab-content">
+    <h2>Practice quiz — Section 2 v3</h2>
+    <div class="subtitle">10 questions in the style of practice-exam material. Get instant feedback after each answer.</div>
+
+    <div class="quiz-score">
+      Score: <span class="pct"><span id="quiz-correct">0</span>/<span id="quiz-total">10</span></span>
+      <button class="action gold" style="float: right;" onclick="resetQuiz()">Reset</button>
+    </div>
+
+    <div id="quiz-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ============ TABS ============
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', e => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-' + b.dataset.tab).classList.add('active');
+  });
+});
+
+// ============ TAB 1: CRS CHECKER ============
+function updateCRS() {
+  const a = parseFloat(document.getElementById('crs-alpha').value);
+  const b = parseFloat(document.getElementById('crs-beta').value);
+  const A = parseFloat(document.getElementById('crs-A').value);
+  const z = parseFloat(document.getElementById('crs-z').value);
+  document.getElementById('crs-alpha-val').textContent = a.toFixed(2);
+  document.getElementById('crs-beta-val').textContent = b.toFixed(2);
+  document.getElementById('crs-A-val').textContent = A.toFixed(2);
+  document.getElementById('crs-z-val').textContent = z.toFixed(1);
+  document.getElementById('crs-formula').textContent = `Y = ${A.toFixed(2)} · K^${a.toFixed(2)} · L^${b.toFixed(2)}`;
+
+  const K = 100, L = 100;
+  const fkl = A * Math.pow(K, a) * Math.pow(L, b);
+  const zfkl = z * fkl;
+  const fzklzl = A * Math.pow(z*K, a) * Math.pow(z*L, b);
+  const ratio = fzklzl / zfkl;
+  document.getElementById('crs-fkl').textContent = fkl.toFixed(2);
+  document.getElementById('crs-zfkl').textContent = zfkl.toFixed(2);
+  document.getElementById('crs-fzklzl').textContent = fzklzl.toFixed(2);
+  document.getElementById('crs-ratio').textContent = ratio.toFixed(3);
+
+  const sum = a + b;
+  const tag = document.getElementById('crs-tag');
+  const exp = document.getElementById('crs-explain');
+  if (Math.abs(sum - 1) < 0.01) {
+    tag.textContent = 'CRS'; tag.className = 'tag green';
+    exp.textContent = `α + β = ${sum.toFixed(2)} → Constant returns to scale. Doubling K and L exactly doubles Y.`;
+  } else if (sum > 1) {
+    tag.textContent = 'INCREASING RTS'; tag.className = 'tag amber';
+    exp.textContent = `α + β = ${sum.toFixed(2)} > 1 → Increasing returns. Doubling K and L MORE than doubles Y. F(zK,zL) = z^${sum.toFixed(2)} · F(K,L).`;
+  } else {
+    tag.textContent = 'DECREASING RTS'; tag.className = 'tag red';
+    exp.textContent = `α + β = ${sum.toFixed(2)} < 1 → Decreasing returns. Doubling K and L less than doubles Y. F(zK,zL) = z^${sum.toFixed(2)} · F(K,L).`;
+  }
+}
+['crs-alpha','crs-beta','crs-A','crs-z'].forEach(id => document.getElementById(id).addEventListener('input', updateCRS));
+updateCRS();
+
+// ============ TAB 2: MPL HIRING ============
+function computeMPLTable(fn) {
+  // Discrete Yoon-style schedule (matches lecture)
+  const yoon = [0, 10, 19, 27, 34, 40, 45, 49, 52, 54, 55];
+  const rows = [];
+  for (let L = 1; L <= 10; L++) {
+    let Y, MPL;
+    if (fn === 'yoon') {
+      Y = yoon[L];
+      MPL = yoon[L] - yoon[L-1];
+    } else if (fn === 'cd') {
+      // Y = 10·K^0.5·L^0.5, K=100 → Y = 100·L^0.5
+      Y = 100 * Math.sqrt(L);
+      // discrete MPL approximation
+      const Yprev = 100 * Math.sqrt(L-1);
+      MPL = Y - (L === 1 ? 0 : Yprev);
+    } else {
+      // Y = 30·√L
+      Y = 30 * Math.sqrt(L);
+      const Yprev = 30 * Math.sqrt(L-1);
+      MPL = Y - (L === 1 ? 0 : Yprev);
+    }
+    rows.push({ L, Y, MPL });
+  }
+  return rows;
+}
+
+function updateMPL() {
+  const w = parseFloat(document.getElementById('mpl-wage').value);
+  const fn = document.getElementById('mpl-fn').value;
+  document.getElementById('mpl-wage-val').textContent = w.toFixed(1);
+  document.getElementById('mpl-w-hdr').textContent = w.toFixed(1);
+  const formulaTxt = {
+    'yoon': 'Discrete schedule from Mankiw textbook',
+    'cd': 'Y = 10·K^0.5·L^0.5, with K = 100 → Y = 100·√L',
+    'sqrt': 'Y = 30·√L'
+  };
+  document.getElementById('mpl-formula').textContent = formulaTxt[fn];
+
+  const rows = computeMPLTable(fn);
+  // Find L*: largest L with MPL >= w
+  let lstar = 0, lstarMpl = 0;
+  rows.forEach(r => {
+    if (r.MPL >= w) { lstar = r.L; lstarMpl = r.MPL; }
+  });
+
+  document.getElementById('mpl-lstar').textContent = lstar;
+  const exp = document.getElementById('mpl-explain');
+  if (lstar === 0) {
+    exp.textContent = `W/P = ${w.toFixed(1)} is too high — even the first worker doesn't justify the cost. Hire zero.`;
+  } else if (lstar === 10) {
+    exp.textContent = `At L* = 10, MPL = ${lstarMpl.toFixed(2)} ≥ W/P = ${w.toFixed(1)}. Would hire more if table extended.`;
+  } else {
+    exp.textContent = `At L* = ${lstar}, MPL = ${lstarMpl.toFixed(2)} ≥ W/P = ${w.toFixed(1)}. Adding worker ${lstar+1} would add MPL = ${rows[lstar].MPL.toFixed(2)} < W/P = ${w.toFixed(1)} — stop.`;
+  }
+
+  const tbody = document.getElementById('mpl-tbody');
+  tbody.innerHTML = rows.map(r => {
+    const isOpt = (r.L === lstar);
+    const cls = isOpt ? 'optimum' : (r.MPL >= w ? 'hire' : 'stop');
+    const decision = isOpt
+      ? `OPTIMUM — MPL = W/P = ${w.toFixed(1)}`
+      : (r.MPL >= w ? `Hire — MPL ${r.MPL.toFixed(2)} > W/P ${w.toFixed(1)}` : `Stop — MPL ${r.MPL.toFixed(2)} < W/P ${w.toFixed(1)}`);
+    return `<tr class="${cls}"><td>${r.L}</td><td>${r.Y.toFixed(1)}</td><td>${r.MPL.toFixed(2)}</td><td>${decision}</td></tr>`;
+  }).join('');
+}
+['mpl-wage','mpl-fn'].forEach(id => document.getElementById(id).addEventListener('input', updateMPL));
+document.getElementById('mpl-fn').addEventListener('change', updateMPL);
+updateMPL();
+
+// ============ TAB 3: COBB-DOUGLAS ============
+function updateCD() {
+  const K = parseFloat(document.getElementById('cd-K').value);
+  const L = parseFloat(document.getElementById('cd-L').value);
+  const a = parseFloat(document.getElementById('cd-alpha').value);
+  const A = parseFloat(document.getElementById('cd-A').value);
+  document.getElementById('cd-K-val').textContent = K;
+  document.getElementById('cd-L-val').textContent = L;
+  document.getElementById('cd-alpha-val').textContent = a.toFixed(2);
+  document.getElementById('cd-A-val').textContent = A.toFixed(2);
+  document.getElementById('cd-A-fmt').textContent = A.toFixed(2);
+  document.getElementById('cd-a-fmt').textContent = a.toFixed(2);
+  document.getElementById('cd-1ma-fmt').textContent = (1-a).toFixed(2);
+
+  const Y = A * Math.pow(K, a) * Math.pow(L, 1-a);
+  const MPL = (1-a) * Y / L;
+  const MPK = a * Y / K;
+  const labinc = MPL * L;
+  const capinc = MPK * K;
+  const euler = labinc + capinc;
+  const labshare = labinc / Y;
+  const capshare = capinc / Y;
+
+  document.getElementById('cd-Y').textContent = Y.toFixed(2);
+  document.getElementById('cd-MPL').textContent = MPL.toFixed(3);
+  document.getElementById('cd-MPK').textContent = MPK.toFixed(3);
+  document.getElementById('cd-labinc').textContent = labinc.toFixed(2);
+  document.getElementById('cd-capinc').textContent = capinc.toFixed(2);
+  document.getElementById('cd-euler').textContent = euler.toFixed(2) + ' ✓';
+  document.getElementById('cd-labshare').textContent = labshare.toFixed(3);
+  document.getElementById('cd-capshare').textContent = capshare.toFixed(3);
+}
+['cd-K','cd-L','cd-alpha','cd-A'].forEach(id => document.getElementById(id).addEventListener('input', updateCD));
+updateCD();
+
+// ============ TAB 4: LOANABLE FUNDS ============
+const lfBaseline = { G: 2500, T: 2000, MPC: 0.67 };
+
+function updateLF() {
+  const G = parseFloat(document.getElementById('lf-G').value);
+  const T = parseFloat(document.getElementById('lf-T').value);
+  const mpc = parseFloat(document.getElementById('lf-MPC').value);
+  document.getElementById('lf-G-val').textContent = G;
+  document.getElementById('lf-T-val').textContent = T;
+  document.getElementById('lf-MPC-val').textContent = mpc.toFixed(2);
+
+  const Y = 8000;
+  const yd = Y - T;
+  const C = 1000 + mpc * yd;
+  const spriv = yd - C;
+  const spub = T - G;
+  const S = spriv + spub;
+  // I(r) = 1200 - 100r. S = I => r = (1200 - S)/100
+  const rstar = (1200 - S) / 100;
+  const Istar = 1200 - 100 * rstar;
+
+  // Baseline I for crowding-out comparison
+  const ydB = Y - lfBaseline.T;
+  const CB = 1000 + lfBaseline.MPC * ydB;
+  const SB = (ydB - CB) + (lfBaseline.T - lfBaseline.G);
+  const IBaseline = SB;
+  const crowd = Istar - IBaseline;
+
+  document.getElementById('lf-yd').textContent = yd.toFixed(0);
+  document.getElementById('lf-C').textContent = C.toFixed(0);
+  document.getElementById('lf-spriv').textContent = spriv.toFixed(0);
+  const spubEl = document.getElementById('lf-spub');
+  spubEl.textContent = spub.toFixed(0);
+  spubEl.style.color = spub < 0 ? 'var(--red)' : 'var(--green)';
+  document.getElementById('lf-S').textContent = S.toFixed(0);
+  document.getElementById('lf-rstar').textContent = rstar.toFixed(2) + '%';
+  document.getElementById('lf-Istar').textContent = Istar.toFixed(0);
+  const crEl = document.getElementById('lf-crowd');
+  crEl.textContent = (crowd >= 0 ? '+' : '') + crowd.toFixed(0);
+  crEl.style.color = crowd < 0 ? 'var(--red)' : (crowd > 0 ? 'var(--green)' : 'var(--muted)');
+
+  drawLFGraph(S, rstar, Istar);
+}
+
+function drawLFGraph(S, rstar, Istar) {
+  const c = document.getElementById('lf-canvas');
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, c.width, c.height);
+
+  // Axes setup
+  const padL = 60, padR = 40, padT = 30, padB = 50;
+  const W = c.width - padL - padR;
+  const H = c.height - padT - padB;
+  // x: investment quantity range 0 to 1500
+  // y: r range -2 to 14
+  const xMin = 0, xMax = 1500;
+  const yMin = -2, yMax = 14;
+  const xs = q => padL + (q - xMin) / (xMax - xMin) * W;
+  const ys = r => padT + (yMax - r) / (yMax - yMin) * H;
+
+  // Background
+  ctx.fillStyle = '#FAF8F3';
+  ctx.fillRect(padL, padT, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 0.5;
+  ctx.font = '11px Calibri'; ctx.fillStyle = '#6B7280';
+  for (let r = 0; r <= 12; r += 2) {
+    ctx.beginPath(); ctx.moveTo(padL, ys(r)); ctx.lineTo(padL + W, ys(r)); ctx.stroke();
+    ctx.fillText(r + '%', 8, ys(r) + 4);
+  }
+  for (let q = 0; q <= 1500; q += 250) {
+    ctx.beginPath(); ctx.moveTo(xs(q), padT); ctx.lineTo(xs(q), padT + H); ctx.stroke();
+    ctx.fillText(q, xs(q) - 12, padT + H + 18);
+  }
+
+  // Axis labels
+  ctx.font = 'bold 12px Calibri'; ctx.fillStyle = '#374151';
+  ctx.fillText('S, I (quantity)', padL + W/2 - 30, padT + H + 38);
+  ctx.save();
+  ctx.translate(20, padT + H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('Real rate r (%)', -30, 0);
+  ctx.restore();
+
+  // Investment demand curve: I = 1200 - 100r => r = (1200-I)/100
+  ctx.strokeStyle = '#B45309'; ctx.lineWidth = 2.5; ctx.beginPath();
+  ctx.moveTo(xs(0), ys(12));
+  ctx.lineTo(xs(1200), ys(0));
+  // extend beyond to negative r territory
+  ctx.lineTo(xs(1400), ys(-2));
+  ctx.stroke();
+  ctx.fillStyle = '#B45309';
+  ctx.font = '12px Calibri';
+  ctx.fillText('I(r) demand', xs(900), ys(3) - 5);
+
+  // Saving curve (vertical)
+  ctx.strokeStyle = '#1E3A5F'; ctx.lineWidth = 2.5; ctx.beginPath();
+  ctx.moveTo(xs(S), padT); ctx.lineTo(xs(S), padT + H);
+  ctx.stroke();
+  ctx.fillStyle = '#1E3A5F';
+  ctx.fillText('S supply', xs(S) + 6, padT + 14);
+
+  // Equilibrium dot
+  ctx.fillStyle = '#C8A961';
+  ctx.beginPath(); ctx.arc(xs(Istar), ys(rstar), 6, 0, Math.PI * 2); ctx.fill();
+  ctx.strokeStyle = '#1E3A5F'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = '#1E3A5F'; ctx.font = 'bold 12px Cambria';
+  ctx.fillText(`r* = ${rstar.toFixed(2)}%`, xs(Istar) + 10, ys(rstar) - 6);
+  ctx.fillText(`I* = ${Istar.toFixed(0)}`, xs(Istar) + 10, ys(rstar) + 14);
+}
+
+['lf-G','lf-T','lf-MPC'].forEach(id => document.getElementById(id).addEventListener('input', updateLF));
+updateLF();
+
+// ============ TAB 5: QUIZ ============
+const quizQs = [
+  { stem: "An economy has Y = K^0.5·L^0.5, K = 100, L = 100. What is Y?",
+    opts: ["50", "100", "200", "10,000"], a: 1,
+    exp: "Y = 100^0.5 · 100^0.5 = 10 · 10 = 100." },
+  { stem: "Under Cobb-Douglas Y = K^0.3·L^0.7, what is the labor share of income?",
+    opts: ["0.30", "0.70", "1.00", "Depends on K and L"], a: 1,
+    exp: "Labor share = (1−α) = 1 − 0.30 = 0.70. Cobb-Douglas predicts CONSTANT shares." },
+  { stem: "A firm has MPL = 5 and faces W/P = 7. To maximize profit, the firm should:",
+    opts: ["Hire more labor", "Hire less labor", "Keep labor the same", "Reduce capital"], a: 1,
+    exp: "MPL (5) < W/P (7) — the next worker costs more than they produce. Cut labor until MPL = W/P." },
+  { stem: "If G rises by $100 and Y is fixed (long run), the change in I is approximately:",
+    opts: ["+$100", "−$100", "0", "−$50 (depends on MPC)"], a: 1,
+    exp: "Full crowding out: ΔG = +100 → ΔS_pub = −100 → ΔS_nat = −100 → ΔI = −100 (one-for-one)." },
+  { stem: "If T falls by $100 and MPC = 0.75, the change in national saving is:",
+    opts: ["+$25", "−$25", "−$75", "−$100"], a: 2,
+    exp: "ΔC = MPC·|ΔT| = 75. ΔS_priv = +25 (saves 1−MPC of new income). ΔS_pub = −100. Net ΔS = −75. Tax cut crowds out by MPC·|ΔT|." },
+  { stem: "Y = K^0.4·L^0.6. Increase L by 10%, K unchanged. By approximately what % does Y rise?",
+    opts: ["4%", "6%", "10%", "16%"], a: 1,
+    exp: "dlnY = 0.4·dlnK + 0.6·dlnL = 0.6·0.10 = 6%. Output elasticity w.r.t. L equals exponent on L." },
+  { stem: "Investment demand shifts right (e.g., new technology). With S fixed, what happens to r* and I*?",
+    opts: ["r* up, I* up", "r* up, I* unchanged", "r* unchanged, I* up", "r* down, I* up"], a: 1,
+    exp: "S is vertical (Y, G, T fixed). Demand shift only moves r upward; equilibrium I quantity = S = unchanged." },
+  { stem: "An economy has S_priv = $1,200, S_pub = −$400. What is national saving?",
+    opts: ["$800", "$1,200", "$1,600", "−$400"], a: 0,
+    exp: "S_nat = S_priv + S_pub = 1200 + (−400) = $800." },
+  { stem: "F(K, L) = K + L. What kind of returns to scale?",
+    opts: ["Increasing", "Constant", "Decreasing", "Cannot be determined"], a: 1,
+    exp: "F(zK, zL) = zK + zL = z(K+L) = z·F(K,L). Constant returns to scale." },
+  { stem: "Under classical assumptions, what determines long-run Y?",
+    opts: ["Money supply", "Aggregate demand", "Government policy", "Factor supplies (K, L) and TFP (A)"], a: 3,
+    exp: "Y = A·F(K, L). Real factors only — money and demand do NOT shift Y in classical long run." }
+];
+
+function renderQuiz() {
+  document.getElementById('quiz-total').textContent = quizQs.length;
+  const root = document.getElementById('quiz-list');
+  root.innerHTML = quizQs.map((q, i) => `
+    <div class="quiz-q" data-i="${i}">
+      <div class="stem">Q${i+1}. ${q.stem}</div>
+      ${q.opts.map((o, j) => `
+        <label><input type="radio" name="q${i}" value="${j}" onchange="checkQuiz(${i}, ${j})">  ${String.fromCharCode(97+j)}) ${o}</label>
+      `).join('')}
+      <div class="feedback" id="fb-${i}"></div>
+    </div>
+  `).join('');
+}
+
+const quizState = new Array(quizQs.length).fill(null);
+function checkQuiz(i, chosen) {
+  const q = quizQs[i];
+  const fb = document.getElementById('fb-' + i);
+  const correct = (chosen === q.a);
+  if (quizState[i] === null) {
+    quizState[i] = correct;
+  }
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = (correct ? '✓ Correct. ' : `✗ Correct answer: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+  updateQuizScore();
+}
+
+function updateQuizScore() {
+  const c = quizState.filter(x => x === true).length;
+  document.getElementById('quiz-correct').textContent = c;
+}
+
+function resetQuiz() {
+  quizState.fill(null);
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.feedback').forEach(f => f.className = 'feedback');
+  updateQuizScore();
+}
+
+renderQuiz();
+</script>
+
+</body>
+</html>

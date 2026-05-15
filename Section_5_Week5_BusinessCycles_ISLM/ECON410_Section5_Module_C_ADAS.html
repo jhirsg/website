@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module C: AD-AS Equilibrium</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#B91C1C;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#B91C1C;color:#fff;border-color:#B91C1C}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .check-card{background:#FEF2F2;border:1px solid #B91C1C;border-left:4px solid #B91C1C;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#B91C1C;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .scen-btn{padding:10px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit;text-align:left;flex:1;min-width:160px}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#B91C1C;color:#fff;border-color:#B91C1C}
+  .narrative{padding:12px 16px;border-radius:8px;margin:12px 0;font-size:13px;line-height:1.6;background:#FCFAF6;border-left:4px solid #C8A961}
+  .narrative strong{color:#1E3A5F}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module C</h1>
+    <div class="sub">AD-AS Equilibrium · Mankiw Ch. 12</div>
+  </div>
+  <div class="badge">Section 5 · Module C</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('eq',this)">1. AD-AS equilibrium</button>
+    <button class="tab" onclick="sw('shocks',this)">2. Shocks & adjustment</button>
+  </div>
+
+  <!-- TAB 1: EQUILIBRIUM -->
+  <div class="panel on" id="p-eq">
+    <p class="desc">Pick an economic episode to see the AD, SRAS, and LRAS curves, plus the resulting equilibrium and policy response.</p>
+    <div class="formula">SR equilibrium: AD = SRAS &nbsp;&nbsp;|&nbsp;&nbsp; LR equilibrium: AD = SRAS = LRAS</div>
+
+    <div class="card">
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setEp(0,this)">Long-run equilibrium (Y = Ȳ)</button>
+        <button class="scen-btn" onclick="setEp(1,this)">Negative AD shock (recession)</button>
+        <button class="scen-btn" onclick="setEp(2,this)">Positive AD shock (boom)</button>
+        <button class="scen-btn" onclick="setEp(3,this)">Negative AS shock (oil crisis)</button>
+        <button class="scen-btn" onclick="setEp(4,this)">Positive AS shock (productivity)</button>
+      </div>
+      <canvas id="adasChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Output Y</div><div class="val" id="m_Y">$22T</div></div>
+      <div class="metric"><div class="lbl">Price level P</div><div class="val" id="m_P">100</div></div>
+      <div class="metric"><div class="lbl">Output gap</div><div class="val" id="m_gap">0%</div></div>
+      <div class="metric"><div class="lbl">Inflation pressure</div><div class="val" id="m_pi">Neutral</div></div>
+    </div>
+
+    <div class="narrative" id="narrative">
+      The economy is at long-run equilibrium. AD intersects both SRAS and LRAS at potential output Ȳ = $22T. There is no output gap and no inflation pressure.
+    </div>
+  </div>
+
+  <!-- TAB 2: SHOCKS & ADJUSTMENT -->
+  <div class="panel" id="p-shocks">
+    <p class="desc">Watch how the economy adjusts after a shock. Step through Phase 0 → 1 → 2 → 3 to see the SR-to-LR transition.</p>
+    <div class="card">
+      <div style="font-size:13px;color:#1F2937;font-weight:600;margin-bottom:8px">Pick a shock:</div>
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setShock('ad-down',this)">Negative AD shock</button>
+        <button class="scen-btn" onclick="setShock('ad-up',this)">Positive AD shock</button>
+        <button class="scen-btn" onclick="setShock('as-down',this)">Negative AS shock</button>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="scen-btn" onclick="setPhase(0)" id="phase0">Phase 0: Initial</button>
+        <button class="scen-btn" onclick="setPhase(1)" id="phase1">Phase 1: Shock hits (SR)</button>
+        <button class="scen-btn" onclick="setPhase(2)" id="phase2">Phase 2: SRAS adjusts</button>
+        <button class="scen-btn" onclick="setPhase(3)" id="phase3">Phase 3: LR equilibrium</button>
+      </div>
+      <canvas id="phaseChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="narrative" id="phaseNarrative"></div>
+  </div>
+</div>
+
+<script>
+const Ybar = 22;  // Potential output
+const P0 = 100;   // Baseline price level
+
+function drawADAS(canvasId, ad_intercept, ad_slope, sras_pos, sras_horizontal, lras, eq_x, eq_y, label){
+  const c = document.getElementById(canvasId);
+  if(!c.getContext) return;
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:60};
+  const xMin = 12, xMax = 32, yMin = 80, yMax = 130;
+
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+    const xx = margin.l+(W-margin.l-margin.r)*g/5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMin+(xMax-xMin)*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText('$'+xv.toFixed(0)+'T', xx-15, H-margin.b+15);
+    const yv = yMax-(yMax-yMin)*i/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(0), 14, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Output Y', W/2-25, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Price level P', 0, 0); ctx.restore();
+  // LRAS (vertical at lras)
+  if(lras !== null){
+    const xx = margin.l+(W-margin.l-margin.r)*(lras-xMin)/(xMax-xMin);
+    ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+    ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+    ctx.fillText('LRAS', xx+5, margin.t+15);
+  }
+  // SRAS (horizontal or upward sloping at sras_pos)
+  ctx.strokeStyle='#B45309'; ctx.lineWidth=3;
+  if(sras_horizontal){
+    const yy = margin.t+(H-margin.t-margin.b)*(yMax-sras_pos)/(yMax-yMin);
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.fillStyle='#B45309'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('SRAS', W-margin.r-50, margin.t+(H-margin.t-margin.b)*(yMax-sras_pos)/(yMax-yMin) - 5);
+  // AD: P = ad_intercept - ad_slope * Y
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const Y = xMin+(xMax-xMin)*i/100;
+    const P = ad_intercept - ad_slope*Y;
+    if(P < yMin || P > yMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*(Y-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(yMax-P)/(yMax-yMin);
+    if(i===0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#0F766E'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('AD', W-margin.r-30, H-margin.b-25);
+  // Equilibrium dot
+  const px = margin.l+(W-margin.l-margin.r)*(eq_x-xMin)/(xMax-xMin);
+  const py = margin.t+(H-margin.t-margin.b)*(yMax-eq_y)/(yMax-yMin);
+  ctx.fillStyle='#B91C1C'; ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, H-margin.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(margin.l, py); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText(label || ('Y='+eq_x.toFixed(1)+', P='+eq_y.toFixed(0)), px+10, py-8);
+}
+
+const episodes = [
+  {
+    name: "Long-run equilibrium",
+    ad_int: 220, ad_slope: 5.45,  // AD passes through (22, 100)
+    sras_pos: 100, lras: 22,
+    eq_x: 22, eq_y: 100,
+    Y: 22, P: 100, gap: 0, infl: "Neutral",
+    color_pi: '#1E3A5F',
+    desc: "<strong>Long-run equilibrium.</strong> AD intersects both SRAS and LRAS at potential output Ȳ = $22T. No output gap. No inflation pressure. The classical dichotomy holds — money is neutral."
+  },
+  {
+    name: "Negative AD shock",
+    ad_int: 200, ad_slope: 5.45,
+    sras_pos: 100, lras: 22,
+    eq_x: 18.4, eq_y: 100,
+    Y: 18.4, P: 100, gap: -16.4, infl: "Disinflation",
+    color_pi: '#047857',
+    desc: "<strong>Negative AD shock</strong> (e.g., 2008 financial crisis, COVID lockdowns). AD shifts LEFT. SR: Y falls below Ȳ; with sticky prices, P barely moves. Output gap = -16%. Unemployment rises. Calls for stabilization policy: Fed cuts rates, fiscal stimulus."
+  },
+  {
+    name: "Positive AD shock",
+    ad_int: 245, ad_slope: 5.45,
+    sras_pos: 100, lras: 22,
+    eq_x: 26.6, eq_y: 100,
+    Y: 26.6, P: 100, gap: 21, infl: "Building",
+    color_pi: '#B45309',
+    desc: "<strong>Positive AD shock</strong> (e.g., post-COVID 2021 stimulus, 1960s Vietnam-era spending). AD shifts RIGHT. SR: Y exceeds Ȳ; positive output gap. Inflation pressure builds as economy overheats. Fed eventually tightens."
+  },
+  {
+    name: "Negative AS shock (oil crisis)",
+    ad_int: 220, ad_slope: 5.45,
+    sras_pos: 115, lras: 22,
+    eq_x: 19.3, eq_y: 115,
+    Y: 19.3, P: 115, gap: -12, infl: "STAGFLATION",
+    color_pi: '#B91C1C',
+    desc: "<strong>Negative AS shock</strong> (1973 OPEC, 1979 Iranian revolution, 2022 energy spike). SRAS shifts UP. SR: Y falls AND P rises = STAGFLATION. The Fed faces a dilemma — fight unemployment or inflation? In the 1970s they tried both and got neither."
+  },
+  {
+    name: "Positive AS shock (productivity boom)",
+    ad_int: 220, ad_slope: 5.45,
+    sras_pos: 90, lras: 22,
+    eq_x: 23.9, eq_y: 90,
+    Y: 23.9, P: 90, gap: 8.6, infl: "Disinflation",
+    color_pi: '#047857',
+    desc: "<strong>Positive AS shock</strong> (1990s IT boom, 2010s shale oil). SRAS shifts DOWN. SR: Y rises AND P falls — the rare 'win-win' scenario. The 1990s 'Goldilocks economy' under Greenspan: low unemployment AND low inflation simultaneously."
+  }
+];
+function setEp(idx, btn){
+  document.querySelectorAll('#p-eq .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const ep = episodes[idx];
+  drawADAS('adasChart', ep.ad_int, ep.ad_slope, ep.sras_pos, true, ep.lras, ep.eq_x, ep.eq_y, ep.name);
+  document.getElementById('m_Y').textContent = '$'+ep.Y.toFixed(1)+'T';
+  document.getElementById('m_P').textContent = ep.P.toFixed(0);
+  document.getElementById('m_gap').textContent = (ep.gap>=0?'+':'')+ep.gap.toFixed(1)+'%';
+  const pi = document.getElementById('m_pi');
+  pi.textContent = ep.infl;
+  pi.style.color = ep.color_pi;
+  document.getElementById('narrative').innerHTML = ep.desc;
+}
+
+// PHASE TAB
+let curShock = 'ad-down';
+let curPhase = 0;
+const phaseConfigs = {
+  'ad-down': [
+    { ad: 220, ad_slope: 5.45, sras: 100, eq_x: 22, eq_y: 100, narr: "<strong>Phase 0: Initial equilibrium.</strong> Y = Ȳ = $22T, P = 100. AD intersects SRAS and LRAS at potential output." },
+    { ad: 200, ad_slope: 5.45, sras: 100, eq_x: 18.4, eq_y: 100, narr: "<strong>Phase 1: AD shock hits.</strong> AD shifts LEFT. New SR equilibrium: Y = $18.4T (recession!), P barely changed (sticky prices). Output gap = −$3.6T. Unemployment rising." },
+    { ad: 200, ad_slope: 5.45, sras: 92, eq_x: 21.5, eq_y: 92, narr: "<strong>Phase 2: SRAS adjusts down.</strong> Sticky prices and wages slowly fall. SRAS shifts DOWN. Y rises toward Ȳ. P drops further. Recovery underway." },
+    { ad: 200, ad_slope: 5.45, sras: 90, eq_x: 22, eq_y: 90, narr: "<strong>Phase 3: New LR equilibrium.</strong> Y back to Ȳ = $22T. P permanently lower at 90. The economy has fully adjusted — only the price level is different." }
+  ],
+  'ad-up': [
+    { ad: 220, ad_slope: 5.45, sras: 100, eq_x: 22, eq_y: 100, narr: "<strong>Phase 0: Initial.</strong> Y = Ȳ. P = 100." },
+    { ad: 245, ad_slope: 5.45, sras: 100, eq_x: 26.6, eq_y: 100, narr: "<strong>Phase 1: AD up.</strong> Y = $26.6T (boom!). Positive output gap. P sticky — barely moves. Economy overheating." },
+    { ad: 245, ad_slope: 5.45, sras: 108, eq_x: 22.5, eq_y: 108, narr: "<strong>Phase 2: SRAS up.</strong> Wages and prices rise. SRAS shifts UP. Y falls back toward Ȳ. P rising." },
+    { ad: 245, ad_slope: 5.45, sras: 110, eq_x: 22, eq_y: 110, narr: "<strong>Phase 3: New LR.</strong> Y = Ȳ = $22T (back to potential). P permanently HIGHER at 110. Inflation has fully passed through." }
+  ],
+  'as-down': [
+    { ad: 220, ad_slope: 5.45, sras: 100, eq_x: 22, eq_y: 100, narr: "<strong>Phase 0: Initial.</strong> Y = Ȳ. P = 100." },
+    { ad: 220, ad_slope: 5.45, sras: 115, eq_x: 19.3, eq_y: 115, narr: "<strong>Phase 1: AS shock.</strong> Oil prices spike. SRAS shifts UP. Y falls AND P rises = STAGFLATION. No good policy options — both inflation and unemployment up." },
+    { ad: 220, ad_slope: 5.45, sras: 108, eq_x: 20.6, eq_y: 108, narr: "<strong>Phase 2: SRAS adjusts.</strong> If shock is temporary, SRAS slowly returns down as expectations adjust. Y partially recovers." },
+    { ad: 220, ad_slope: 5.45, sras: 100, eq_x: 22, eq_y: 100, narr: "<strong>Phase 3: Full recovery.</strong> Shock dissipates. SRAS returns to original. Y = Ȳ at original P. (If shock is permanent, real Ȳ falls — different scenario.)" }
+  ]
+};
+function setShock(s, btn){
+  curShock = s;
+  document.querySelectorAll('#p-shocks .scen-row:first-of-type .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  setPhase(0);
+}
+function setPhase(p){
+  curPhase = p;
+  for(let i=0;i<4;i++){
+    const el = document.getElementById('phase'+i);
+    if(el) el.classList.toggle('on', i===p);
+  }
+  const cfg = phaseConfigs[curShock][p];
+  drawADAS('phaseChart', cfg.ad, cfg.ad_slope, cfg.sras, true, 22, cfg.eq_x, cfg.eq_y, 'Phase '+p);
+  document.getElementById('phaseNarrative').innerHTML = cfg.narr;
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='eq') setEp(0, document.querySelector('#p-eq .scen-btn.on'));
+  if(id==='shocks') setShock('ad-down', document.querySelector('#p-shocks .scen-row:first-of-type .scen-btn.on'));
+}
+
+setEp(0, document.querySelector('#p-eq .scen-btn.on'));
+setShock('ad-down', document.querySelector('#p-shocks .scen-row:first-of-type .scen-btn.on'));
+</script>
+</body>
+</html>

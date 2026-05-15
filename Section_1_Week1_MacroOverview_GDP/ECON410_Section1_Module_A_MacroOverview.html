@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module A: Macro Overview</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f7f5;color:#1a1a1a;padding:0}
+  .header{background:#500000;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600;letter-spacing:.01em}
+  .header .sub{font-size:12px;color:#e8c87a;margin-top:2px}
+  .badge{background:#1a2a5e;color:#c8a96e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:7px 15px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:16px 18px;margin:10px 0}
+  .section-title{font-size:15px;font-weight:600;color:#500000;margin:0 0 6px}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+  .metric{background:#f4f4f4;border-radius:8px;padding:10px 14px}
+  .metric .lbl{font-size:11px;color:#666;margin-bottom:4px}
+  .metric .val{font-size:20px;font-weight:600;color:#1a1a1a}
+  .pill{display:inline-block;padding:2px 9px;border-radius:6px;font-size:11px;font-weight:600;margin:2px}
+  .pill.green{background:#e6f4ea;color:#1a6b34}
+  .pill.red{background:#fde8e8;color:#922b21}
+  .pill.amber{background:#fef3e2;color:#784212}
+  .pill.blue{background:#e8f0fe;color:#1a3a8a}
+  .drag-item{padding:9px 13px;border:1px solid #ddd;border-radius:7px;margin:6px 0;cursor:grab;font-size:13px;background:#fff;color:#1a1a1a;user-select:none;line-height:1.4;transition:background .1s}
+  .drag-item:hover{background:#f5f5f5}
+  .drag-item.dragging{opacity:.35}
+  .drop-zone{min-height:70px;border:2px dashed #ccc;border-radius:8px;padding:8px;margin:4px 0;transition:background .15s}
+  .drop-zone.over{background:#e8f0fe;border-color:#1a3a8a}
+  .col-head{font-size:12px;font-weight:600;margin-bottom:6px;padding:5px 8px;border-radius:6px}
+  .col-head.micro{background:#e8f0fe;color:#0c447c}
+  .col-head.macro{background:#e6f4ea;color:#27500a}
+  .result-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:13px;line-height:1.5}
+  .cf-node{display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;font-weight:600;padding:8px 12px;text-align:center;min-width:80px}
+  .cf-arrow{font-size:20px;color:#888}
+  .flow-row{display:flex;align-items:center;gap:10px;margin:.5rem 0;flex-wrap:wrap}
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  .quiz-opt{padding:9px 13px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;text-align:left;color:#1a1a1a;display:block;width:100%;margin:5px 0;font-family:inherit;line-height:1.4;transition:background .15s}
+  .quiz-opt:hover{background:#f5f5f5}
+  .quiz-opt.ok{background:#e6f4ea;border-color:#3b6d11;color:#27500a}
+  .quiz-opt.no{background:#fde8e8;border-color:#a32d2d;color:#791f1f}
+  .fb{font-size:13px;padding:8px 12px;border-radius:7px;margin-top:8px;display:none;line-height:1.5}
+  .fb.ok{background:#e6f4ea;color:#27500a;display:block}
+  .fb.no{background:#fde8e8;color:#791f1f;display:block}
+  .score-row{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .score-row span{font-size:13px;color:#555}
+  .score-row strong{color:#1a1a1a}
+  .btn{padding:7px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#f0f0f0}
+  .btn.primary{background:#500000;color:#fff;border-color:#500000}
+  .btn.primary:hover{background:#6a0000}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:560px){.two-col{grid-template-columns:1fr}}
+  .flow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+  .flow-btn{padding:8px 10px;font-size:12px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer;text-align:left;font-family:inherit;line-height:1.4;transition:background .15s}
+  .flow-btn:hover{background:#f5f5f5}
+  .flow-btn.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .flow-btn.excl.on{background:#922b21;color:#fff;border-color:#922b21}
+  .totals-eq{background:#1a2a5e;color:#fff;border-radius:8px;padding:10px 14px;margin:12px 0;font-size:14px;font-weight:500}
+  .totals-eq span{color:#c8a96e;font-weight:700}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header h1">ECON 410 — Interactive Module A</div>
+    <div class="sub">Macroeconomics Overview · Texas A&M University</div>
+  </div>
+  <div class="badge">Section A · Ch. 1</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('sort',this)">Micro vs macro sorter</button>
+    <button class="tab" onclick="sw('flow',this)">Circular flow explorer</button>
+    <button class="tab" onclick="sw('myth',this)">Misconception detector</button>
+  </div>
+
+  <!-- TAB 1: SORTER -->
+  <div class="panel on" id="p-sort">
+    <p class="desc">Drag each statement into the correct column — Microeconomics or Macroeconomics.</p>
+    <div class="two-col">
+      <div>
+        <div class="col-head" style="background:#f4f4f4;color:#555">Statements to sort</div>
+        <div id="source-pool"></div>
+      </div>
+      <div>
+        <div class="col-head micro">Microeconomics</div>
+        <div class="drop-zone" id="dz-micro" ondrop="drop(event,'micro')" ondragover="over(event)" ondragleave="leave(event)"></div>
+        <div class="col-head macro" style="margin-top:10px">Macroeconomics</div>
+        <div class="drop-zone" id="dz-macro" ondrop="drop(event,'macro')" ondragover="over(event)" ondragleave="leave(event)"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="checkSort()">Check answers</button>
+      <button class="btn" onclick="resetSort()">Reset</button>
+    </div>
+    <div id="sort-feedback" style="margin-top:12px"></div>
+  </div>
+
+  <!-- TAB 2: FLOW -->
+  <div class="panel" id="p-flow">
+    <p class="desc">Click a transaction to see which GDP component it belongs to. Select multiple to build up GDP.</p>
+    <div class="flow-grid" id="flow-btns"></div>
+    <div class="card" id="flow-detail" style="display:none">
+      <div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:8px" id="flow-title"></div>
+      <div class="flow-row" id="flow-path"></div>
+      <div style="font-size:13px;color:#555;margin-top:8px;line-height:1.5" id="flow-explain"></div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">C — Consumption</div><div class="val" id="ft-c" style="color:#185FA5">$0B</div></div>
+      <div class="metric"><div class="lbl">I — Investment</div><div class="val" id="ft-i" style="color:#3B6D11">$0B</div></div>
+      <div class="metric"><div class="lbl">G — Gov't</div><div class="val" id="ft-g" style="color:#854F0B">$0B</div></div>
+      <div class="metric"><div class="lbl">NX — Net exports</div><div class="val" id="ft-nx">$0B</div></div>
+      <div class="metric"><div class="lbl">GDP (Y)</div><div class="val" id="ft-y" style="color:#500000;font-size:22px">$0B</div></div>
+    </div>
+    <div class="totals-eq" id="eq-flow">Y = <span>$0B</span> + <span>$0B</span> + <span>$0B</span> + <span>$0B</span> = <span>$0B</span></div>
+    <p style="font-size:11px;color:#888;margin-top:4px">Red-highlighted items are excluded from GDP.</p>
+  </div>
+
+  <!-- TAB 3: MYTHS -->
+  <div class="panel" id="p-myth">
+    <p class="desc">Read each claim. Is it a valid macroeconomic insight, or a common misconception? Click your answer to reveal the explanation.</p>
+    <div id="myth-cards"></div>
+    <div class="score-row">
+      <span>Score: <strong id="myth-score">0 / 0</strong></span>
+      <button class="btn" onclick="resetMyths()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const sortItems=[
+  {id:'s1',text:'Why does the price of coffee rise when drought hits Brazil?',cat:'micro'},
+  {id:'s2',text:'Why did US unemployment jump to 14.7% in April 2020?',cat:'macro'},
+  {id:'s3',text:'How does Apple decide how many iPhones to produce?',cat:'micro'},
+  {id:'s4',text:'What caused inflation to reach 9.1% in June 2022?',cat:'macro'},
+  {id:'s5',text:'How do rent controls affect the housing market in NYC?',cat:'micro'},
+  {id:'s6',text:'Why do some countries grow 7% per year while others stagnate?',cat:'macro'},
+  {id:'s7',text:'What happens to taxi driver wages when Uber enters a city?',cat:'micro'},
+  {id:'s8',text:'How does the Federal Reserve cutting rates affect GDP?',cat:'macro'},
+];
+let sortState={};
+function buildSort(){
+  const pool=document.getElementById('source-pool');pool.innerHTML='';
+  sortItems.forEach(it=>{
+    const d=document.createElement('div');d.className='drag-item';d.draggable=true;d.id='di-'+it.id;d.textContent=it.text;
+    d.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',it.id);d.classList.add('dragging');});
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    pool.appendChild(d);
+  });
+  sortState={};
+  document.getElementById('dz-micro').innerHTML='';
+  document.getElementById('dz-macro').innerHTML='';
+  document.getElementById('sort-feedback').innerHTML='';
+}
+function over(e){e.preventDefault();e.currentTarget.classList.add('over');}
+function leave(e){e.currentTarget.classList.remove('over');}
+function drop(e,col){
+  e.preventDefault();e.currentTarget.classList.remove('over');
+  const id=e.dataTransfer.getData('text/plain');
+  const el=document.getElementById('di-'+id);if(!el)return;
+  e.currentTarget.appendChild(el);sortState[id]=col;
+}
+function checkSort(){
+  let correct=0,fb='';
+  sortItems.forEach(it=>{
+    const ans=sortState[it.id];
+    if(!ans){fb+=`<div class="result-row"><span class="pill amber">Not placed</span><span>${it.text}</span></div>`;return;}
+    const ok=ans===it.cat;if(ok)correct++;
+    fb+=`<div class="result-row"><span class="pill ${ok?'green':'red'}">${ok?'Correct':'Wrong'}</span><span>${it.text} &mdash; <strong>${it.cat==='micro'?'Microeconomics':'Macroeconomics'}</strong></span></div>`;
+  });
+  const placed=Object.keys(sortState).length;
+  document.getElementById('sort-feedback').innerHTML=`<div class="card"><p style="font-size:14px;font-weight:600;margin-bottom:10px;color:#500000">${correct} / ${placed} correct</p>${fb}</div>`;
+}
+function resetSort(){buildSort();}
+buildSort();
+
+const flowTx=[
+  {label:'Family buys groceries',comp:'C',amt:200,gdp:true,explain:'Household spending on non-durable goods → Consumption (C). Directly adds to GDP.'},
+  {label:'Toyota builds factory in Texas',comp:'I',amt:800,gdp:true,explain:'Business fixed investment in a new structure → Investment (I). Counts in US GDP — produced within US borders.'},
+  {label:'Gov\'t hires school teachers',comp:'G',amt:500,gdp:true,explain:'Government purchases of services → G. Salaries paid for current production of education services.'},
+  {label:'US exports software to EU',comp:'NX',amt:300,gdp:true,explain:'Exports raise X, increasing Net Exports (NX). Adds to US GDP — US-produced output sold abroad.'},
+  {label:'Consumer buys imported car',comp:'NX',amt:-400,gdp:true,explain:'Import raises M, reducing NX (more negative). Subtracts from GDP — car was produced abroad.'},
+  {label:'Social Security payment',comp:'—',amt:0,gdp:false,explain:'Transfer payment — not a purchase of new goods/services. Redistributes income but creates no new production. EXCLUDED.'},
+  {label:'Family buys used house',comp:'—',amt:0,gdp:false,explain:'Resale of existing property — already counted when built. Not new production. EXCLUDED.'},
+  {label:'New home construction',comp:'I',amt:600,gdp:true,explain:'Residential investment → Investment (I). New housing construction creates new value — fully counted in GDP.'},
+  {label:'Startup buys Apple shares',comp:'—',amt:0,gdp:false,explain:'Financial investment ≠ GDP investment. Buying stocks is a transfer of ownership, not new production. EXCLUDED.'},
+  {label:'City repaves roads',comp:'G',amt:250,gdp:true,explain:'Government purchases of goods → G. Infrastructure spending is a direct government purchase of construction output.'},
+];
+let flowActive=new Set();
+function buildFlow(){
+  const c=document.getElementById('flow-btns');c.innerHTML='';
+  flowTx.forEach((tx,i)=>{
+    const b=document.createElement('button');
+    b.className='flow-btn'+(tx.gdp?'':' excl');
+    b.textContent=tx.label;
+    b.onclick=()=>{
+      if(flowActive.has(i))flowActive.delete(i);else flowActive.add(i);
+      b.classList.toggle('on',flowActive.has(i));
+      showFlow(i);updateFlowTotals();
+    };
+    c.appendChild(b);
+  });
+}
+function showFlow(i){
+  const tx=flowTx[i];
+  document.getElementById('flow-detail').style.display='block';
+  document.getElementById('flow-title').textContent=tx.label;
+  const inC=tx.gdp?'#1a5a2e':'#7b241c', inBg=tx.gdp?'#e6f4ea':'#fde8e8';
+  document.getElementById('flow-path').innerHTML=
+    `<div class="cf-node" style="background:#f0f0f0;color:#333">Transaction</div>`+
+    `<div class="cf-arrow">→</div>`+
+    `<div class="cf-node" style="background:#e8f0fe;color:#0c447c">${tx.comp}</div>`+
+    `<div class="cf-arrow">→</div>`+
+    `<div class="cf-node" style="background:${inBg};color:${inC}">${tx.gdp?'In GDP':'EXCLUDED'}</div>`;
+  document.getElementById('flow-explain').textContent=tx.explain;
+}
+function updateFlowTotals(){
+  let C=0,I=0,G=0,NX=0;
+  flowActive.forEach(i=>{
+    const tx=flowTx[i];if(!tx.gdp)return;
+    if(tx.comp==='C')C+=tx.amt;
+    else if(tx.comp==='I')I+=tx.amt;
+    else if(tx.comp==='G')G+=tx.amt;
+    else if(tx.comp==='NX')NX+=tx.amt;
+  });
+  document.getElementById('ft-c').textContent='$'+C.toLocaleString()+'B';
+  document.getElementById('ft-i').textContent='$'+I.toLocaleString()+'B';
+  document.getElementById('ft-g').textContent='$'+G.toLocaleString()+'B';
+  document.getElementById('ft-nx').textContent=(NX<0?'-$'+Math.abs(NX):'$'+NX).toLocaleString()+'B';
+  const Y=C+I+G+NX;
+  document.getElementById('ft-y').textContent='$'+Y.toLocaleString()+'B';
+  document.getElementById('eq-flow').innerHTML=`Y = <span>$${C.toLocaleString()}B</span> + <span>$${I.toLocaleString()}B</span> + <span>$${G.toLocaleString()}B</span> + <span>${NX<0?'&minus;$'+Math.abs(NX):'$'+NX}B</span> = <span>$${Y.toLocaleString()}B</span>`;
+}
+buildFlow();
+
+const myths=[
+  {claim:'If every household saves more money, the nation as a whole will accumulate more wealth.',myth:true,explain:'This is the Paradox of Thrift — a classic fallacy of composition. If everyone saves simultaneously, aggregate demand falls, GDP drops, and incomes fall. What is rational individually can be harmful collectively.'},
+  {claim:'A rising GDP deflator always signals economic trouble and means the economy is shrinking.',myth:true,explain:'The deflator measures price changes, not output. Moderate inflation (2–3%) is healthy. GDP can rise while the deflator rises — they are independent. Trouble arises at extremes: deflation or hyperinflation.'},
+  {claim:'Macroeconomics cannot simply be derived by adding up microeconomic behavior of individual agents.',myth:false,explain:'Correct — this is a core macro insight. Aggregate outcomes often differ from individual behavior (emergent properties). Different models and frameworks are needed at the macro level.'},
+  {claim:'Printing money always leads to runaway hyperinflation regardless of economic conditions.',myth:true,explain:'Inflation depends on money supply relative to output and velocity. In a recession with slack capacity, money creation may not cause high inflation — as observed after the 2008 financial crisis.'},
+  {claim:'The government must balance its budget every year, just like a household.',myth:true,explain:'Governments can borrow in their own currency and roll over debt. Counter-cyclical deficits during recessions stabilize the economy. The key question is long-run sustainability, not year-by-year balance.'},
+  {claim:'Macroeconomists study three core questions: long-run growth, business cycles, and stabilization policy.',myth:false,explain:'Correct — the three-pillar framework from Mankiw Ch.1. Long-run growth: why do living standards differ? Business cycles: why do short-run fluctuations occur? Stabilization: how do monetary and fiscal tools help?'},
+];
+let mythAnswered={};
+function buildMyths(){
+  mythAnswered={};
+  document.getElementById('myth-score').textContent='0 / 0';
+  const c=document.getElementById('myth-cards');c.innerHTML='';
+  myths.forEach((m,i)=>{
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML=`<p style="font-size:13px;margin:0 0 10px;line-height:1.5;color:#1a1a1a">${m.claim}</p>`+
+      `<div style="display:flex;gap:8px">`+
+      `<button class="btn" id="mb-myth-${i}" onclick="answerMyth(${i},false)">Misconception</button>`+
+      `<button class="btn" id="mb-ok-${i}" onclick="answerMyth(${i},true)">Valid insight</button>`+
+      `</div><div id="mfb-${i}" style="display:none;margin-top:10px;font-size:13px;line-height:1.5;padding:8px 12px;border-radius:7px"></div>`;
+    c.appendChild(d);
+  });
+}
+function answerMyth(i,guessedValid){
+  if(mythAnswered[i]!==undefined)return;
+  const m=myths[i];const correct=(guessedValid===!m.myth);
+  mythAnswered[i]=correct;
+  const fb=document.getElementById('mfb-'+i);
+  fb.style.display='block';
+  fb.style.background=correct?'#e6f4ea':'#fde8e8';
+  fb.style.color=correct?'#27500a':'#791f1f';
+  fb.innerHTML=`<strong>${correct?'Correct!':'Incorrect.'}</strong> ${m.explain}`;
+  document.getElementById(`mb-myth-${i}`).disabled=true;
+  document.getElementById(`mb-ok-${i}`).disabled=true;
+  const answered=Object.keys(mythAnswered).length;
+  const corr=Object.values(mythAnswered).filter(Boolean).length;
+  document.getElementById('myth-score').textContent=corr+' / '+answered;
+}
+function resetMyths(){buildMyths();}
+buildMyths();
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+</script>
+</body>
+</html>

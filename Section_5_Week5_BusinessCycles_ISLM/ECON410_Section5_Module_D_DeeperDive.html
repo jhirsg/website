@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 5 · Module D — Deeper Dive Lab</title>
+<style>
+:root { --navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--blue:#2563EB;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1100px;margin:0 auto;padding:24px 32px;}
+.tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--rule);flex-wrap:wrap;}
+.tab-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);border-bottom:none;padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;border-radius:6px 6px 0 0;}
+.tab-btn:hover{background:var(--white);color:var(--navy);}
+.tab-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.tab-content{display:none;padding:4px;}
+.tab-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);}
+.card.amber{border-left-color:var(--amber);}
+.card.green{border-left-color:var(--green);background:#ECFDF5;border-color:var(--green);}
+.card.red{border-left-color:var(--red);background:#FEF2F2;border-color:var(--red);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:16px 0;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:16px 0;}
+@media(max-width:720px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+label{display:block;font-size:12px;font-weight:600;color:var(--slate);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.slider-row{margin:10px 0;}
+.slider-row .val{display:inline-block;font-family:'Cambria',Georgia,serif;font-size:16px;color:var(--navy);font-weight:bold;margin-left:8px;}
+input[type=range]{width:70%;vertical-align:middle;accent-color:var(--navy);}
+button.action{background:var(--navy);color:white;border:none;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;border-radius:4px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.outline{background:var(--white);color:var(--navy);border:1px solid var(--navy);}
+button.action.outline.selected{background:var(--navy);color:white;}
+table.calc{width:100%;border-collapse:collapse;margin:12px 0;background:var(--white);border-radius:6px;overflow:hidden;font-size:13px;}
+table.calc th{background:var(--navy);color:white;padding:10px;text-align:left;}
+table.calc td{padding:8px 10px;border-top:1px solid var(--rule);}
+.result-box{background:var(--navy-dk);color:white;padding:16px 20px;border-radius:6px;margin:14px 0;font-family:'Cambria',Georgia,serif;font-size:16px;text-align:center;}
+.result-box .num{color:var(--gold);font-weight:bold;font-size:22px;}
+.formula{font-family:'Cambria',Georgia,serif;font-size:15px;background:var(--paper);padding:10px 14px;border-radius:4px;border-left:3px solid var(--gold);margin:8px 0;font-style:italic;}
+.help-text{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px;}
+canvas{max-width:100%;height:auto;background:var(--paper);border-radius:4px;}
+.quiz-q{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:14px 18px;margin:10px 0;}
+.quiz-q .stem{font-weight:600;color:var(--navy);margin-bottom:8px;}
+.quiz-q label{display:block;font-weight:normal;text-transform:none;padding:4px 8px;cursor:pointer;margin:2px 0;font-size:13px;letter-spacing:0;color:var(--dark);}
+.quiz-q .feedback{margin-top:8px;padding:8px 10px;border-radius:4px;font-size:12px;display:none;}
+.quiz-q .feedback.show{display:block;}
+.quiz-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.quiz-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.quiz-score{background:var(--white);padding:12px 18px;border:1px solid var(--rule);border-radius:6px;margin-bottom:16px;font-size:14px;}
+.quiz-score .pct{font-family:'Cambria',Georgia,serif;font-size:22px;color:var(--navy);font-weight:bold;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 5 · Module D — Deeper Dive Interactive Lab</h1>
+  <div class="sub">Keynesian Cross · IS-LM Simulator · Policy Reactions · AD-AS Dynamics · Practice — Mankiw Ch.10–12</div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="kc">1. Keynesian Cross</button>
+    <button class="tab-btn" data-tab="islm">2. IS-LM Simulator</button>
+    <button class="tab-btn" data-tab="react">3. Fed Reaction</button>
+    <button class="tab-btn" data-tab="adas">4. AD-AS Dynamics</button>
+    <button class="tab-btn" data-tab="quiz">5. Practice Quiz</button>
+  </div>
+
+  <!-- TAB 1: KEYNESIAN CROSS -->
+  <div id="tab-kc" class="tab-content active">
+    <h2>Keynesian Cross calculator</h2>
+    <div class="subtitle">Set a, MPC, Ī, Ḡ, T̄. See equilibrium Y and multipliers live.</div>
+
+    <div class="grid-3">
+      <div class="card"><label>a (autonomous C)</label>
+        <div class="slider-row"><input type="range" id="kc-a" min="0" max="500" step="10" value="120"><span class="val" id="kc-a-val">120</span></div></div>
+      <div class="card teal"><label>MPC</label>
+        <div class="slider-row"><input type="range" id="kc-mpc" min="0.1" max="0.95" step="0.05" value="0.8"><span class="val" id="kc-mpc-val">0.80</span></div></div>
+      <div class="card amber"><label>Ī (investment)</label>
+        <div class="slider-row"><input type="range" id="kc-I" min="0" max="500" step="10" value="200"><span class="val" id="kc-I-val">200</span></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card"><label>Ḡ (gov purchases)</label>
+        <div class="slider-row"><input type="range" id="kc-G" min="0" max="800" step="10" value="400"><span class="val" id="kc-G-val">400</span></div></div>
+      <div class="card teal"><label>T̄ (net taxes)</label>
+        <div class="slider-row"><input type="range" id="kc-T" min="0" max="800" step="10" value="400"><span class="val" id="kc-T-val">400</span></div></div>
+    </div>
+
+    <div class="formula" id="kc-formula">PE = 120 + 0.80(Y − 400) + 200 + 400 = 0.80Y + 400</div>
+
+    <div class="grid-2">
+      <div class="result-box">Equilibrium Y*<br><span class="num" id="kc-Y">2000</span></div>
+      <div class="result-box" style="background:var(--teal);">G multiplier<br><span class="num" id="kc-Gmult">5.00</span></div>
+    </div>
+    <div class="grid-2">
+      <div class="result-box" style="background:var(--amber);">Tax multiplier<br><span class="num" id="kc-Tmult">−4.00</span></div>
+      <div class="result-box" style="background:var(--green);">Consumption C<br><span class="num" id="kc-C">1400</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Keynesian Cross diagram</h3>
+      <canvas id="kc-canvas" width="900" height="320"></canvas>
+      <p class="help-text">Blue: PE = a + MPC·(Y − T) + Ī + Ḡ. Gold: 45° line (Y = PE). Equilibrium at intersection.</p>
+    </div>
+  </div>
+
+  <!-- TAB 2: IS-LM SIMULATOR -->
+  <div id="tab-islm" class="tab-content">
+    <h2>IS-LM simulator</h2>
+    <div class="subtitle">Move G, T, M, and price level. Watch IS, LM, and equilibrium (Y*, r*) shift live.</div>
+
+    <div class="grid-3">
+      <div class="card"><label>Ḡ (gov purchases)</label>
+        <div class="slider-row"><input type="range" id="is-G" min="100" max="800" step="20" value="400"><span class="val" id="is-G-val">400</span></div></div>
+      <div class="card teal"><label>T̄ (net taxes)</label>
+        <div class="slider-row"><input type="range" id="is-T" min="100" max="800" step="20" value="400"><span class="val" id="is-T-val">400</span></div></div>
+      <div class="card amber"><label>M (money supply)</label>
+        <div class="slider-row"><input type="range" id="is-M" min="500" max="3000" step="50" value="2000"><span class="val" id="is-M-val">2000</span></div></div>
+    </div>
+    <div class="card"><label>P (price level)</label>
+      <div class="slider-row"><input type="range" id="is-P" min="1" max="10" step="0.1" value="5"><span class="val" id="is-P-val">5.0</span></div></div>
+
+    <div class="formula">IS: Y = [a + Ī(r) + Ḡ − MPC·T̄] / (1−MPC).  LM: M/P = L(r,Y).  Closed-form: Y = (1700 + 5·r) on IS-LM grid below.</div>
+
+    <div class="grid-2">
+      <div class="result-box">Equilibrium Y*<br><span class="num" id="is-Y">2000</span></div>
+      <div class="result-box" style="background:var(--teal);">Equilibrium r*<br><span class="num" id="is-r">4.00%</span></div>
+    </div>
+
+    <div class="card">
+      <h3>IS-LM diagram</h3>
+      <canvas id="is-canvas" width="900" height="380"></canvas>
+      <p class="help-text">Navy: IS curve. Teal: LM curve. Gold dot: equilibrium (Y*, r*).</p>
+    </div>
+  </div>
+
+  <!-- TAB 3: FED REACTION -->
+  <div id="tab-react" class="tab-content">
+    <h2>Fed reaction simulator</h2>
+    <div class="subtitle">Apply a fiscal shock. Pick how the Fed responds. See three different outcomes.</div>
+
+    <div class="card">
+      <h3>Apply fiscal shock</h3>
+      <label>ΔG (change in government purchases)</label>
+      <div class="slider-row"><input type="range" id="fr-dG" min="-200" max="200" step="20" value="100"><span class="val" id="fr-dG-val">+100</span></div>
+    </div>
+
+    <div class="card">
+      <h3>Fed reaction</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="action outline selected" id="btn-hM" onclick="setReact('hM')">Hold M constant</button>
+        <button class="action outline" id="btn-hr" onclick="setReact('hr')">Hold r constant</button>
+        <button class="action outline" id="btn-hY" onclick="setReact('hY')">Hold Y constant</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="result-box">ΔY<br><span class="num" id="fr-dY">+150</span></div>
+      <div class="result-box" style="background:var(--teal);">Δr<br><span class="num" id="fr-dr">+1.0pp</span></div>
+    </div>
+
+    <div class="card" id="fr-explain">
+      <strong>Fed holds M constant:</strong> IS shifts right. New equilibrium higher up the LM curve. Y rises by less than the Keynesian-cross multiplier amount (partial crowding out). r rises moderately.
+    </div>
+
+    <div class="card gold">
+      <h3>Comparison table</h3>
+      <table class="calc">
+        <thead><tr><th>Fed reaction</th><th>Δ Money supply</th><th>Δ Y</th><th>Δ r</th><th>Real-world example</th></tr></thead>
+        <tbody>
+          <tr><td>Hold M</td><td>No change</td><td>Moderate ↑</td><td>Moderate ↑</td><td>Default IS-LM textbook case</td></tr>
+          <tr><td>Hold r</td><td>Expand to absorb fiscal expansion</td><td>Large ↑ (no crowding out)</td><td>0</td><td>Greenspan 1990s — Fed accommodated fiscal</td></tr>
+          <tr><td>Hold Y</td><td>Contract sharply</td><td>0 (full offset)</td><td>Large ↑</td><td>Volcker 1980s — refusing to accommodate Reagan deficits</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4: AD-AS DYNAMICS -->
+  <div id="tab-adas" class="tab-content">
+    <h2>AD-AS dynamics — supply shocks</h2>
+    <div class="subtitle">Apply a shock to AD or SRAS. Choose the Fed response. See the short-run and long-run paths.</div>
+
+    <div class="card">
+      <h3>Shock type</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="action outline selected" id="btn-supplyAdverse" onclick="setShock('supplyAdverse')">Adverse supply shock</button>
+        <button class="action outline" id="btn-supplyFavorable" onclick="setShock('supplyFavorable')">Favorable supply shock</button>
+        <button class="action outline" id="btn-demandPos" onclick="setShock('demandPos')">Positive demand shock</button>
+        <button class="action outline" id="btn-demandNeg" onclick="setShock('demandNeg')">Negative demand shock</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Fed response (for supply shocks)</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="action outline selected" id="btn-neutral" onclick="setFedResp('neutral')">Stay neutral</button>
+        <button class="action outline" id="btn-accommodate" onclick="setFedResp('accommodate')">Accommodate (expand M)</button>
+        <button class="action outline" id="btn-tighten" onclick="setFedResp('tighten')">Tighten (contract M)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>AD-AS diagram</h3>
+      <canvas id="adas-canvas" width="900" height="380"></canvas>
+    </div>
+
+    <div class="card gold" id="adas-insight">
+      <strong>Adverse supply shock, Fed neutral.</strong> SRAS shifts up/left. In the short run: P rises, Y falls below potential (stagflation). With no policy response, prices and wages eventually adjust, SRAS returns to original position, and Y returns to potential. Recession self-corrects, but slowly.
+    </div>
+  </div>
+
+  <!-- TAB 5: QUIZ -->
+  <div id="tab-quiz" class="tab-content">
+    <h2>Practice quiz — Section 5 v3</h2>
+    <div class="subtitle">10 questions modeled on Practice Exam 3.</div>
+    <div class="quiz-score">Score: <span class="pct"><span id="quiz-correct">0</span>/<span id="quiz-total">10</span></span>
+      <button class="action gold" style="float:right;" onclick="resetQuiz()">Reset</button></div>
+    <div id="quiz-list"></div>
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-' + b.dataset.tab).classList.add('active');
+  });
+});
+
+// TAB 1: KEYNESIAN CROSS
+function updateKC() {
+  const a=+document.getElementById('kc-a').value, mpc=+document.getElementById('kc-mpc').value,
+        I=+document.getElementById('kc-I').value, G=+document.getElementById('kc-G').value,
+        T=+document.getElementById('kc-T').value;
+  document.getElementById('kc-a-val').textContent=a;
+  document.getElementById('kc-mpc-val').textContent=mpc.toFixed(2);
+  document.getElementById('kc-I-val').textContent=I;
+  document.getElementById('kc-G-val').textContent=G;
+  document.getElementById('kc-T-val').textContent=T;
+  const intercept = a - mpc*T + I + G;
+  const Y = intercept/(1-mpc);
+  const C = a + mpc*(Y-T);
+  const Gmult = 1/(1-mpc);
+  const Tmult = -mpc/(1-mpc);
+  document.getElementById('kc-formula').textContent = `PE = ${a} + ${mpc.toFixed(2)}(Y − ${T}) + ${I} + ${G} = ${mpc.toFixed(2)}Y + ${intercept.toFixed(0)}`;
+  document.getElementById('kc-Y').textContent = Y.toFixed(0);
+  document.getElementById('kc-Gmult').textContent = Gmult.toFixed(2);
+  document.getElementById('kc-Tmult').textContent = Tmult.toFixed(2);
+  document.getElementById('kc-C').textContent = C.toFixed(0);
+  drawKC(intercept, mpc, Y);
+}
+function drawKC(b, m, Y) {
+  const c=document.getElementById('kc-canvas'); const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const padL=50,padR=30,padT=20,padB=40,W=c.width-padL-padR,H=c.height-padT-padB;
+  const yMax = Math.max(Y*1.5, 1000), xMax = yMax;
+  const xs = v => padL+(v/xMax)*W; const ys = v => padT+(1-v/yMax)*H;
+  ctx.strokeStyle='#E5E7EB'; ctx.fillStyle='#6B7280'; ctx.font='11px Calibri';
+  for (let v=0; v<=yMax; v+=yMax/5) {
+    ctx.beginPath(); ctx.moveTo(padL,ys(v)); ctx.lineTo(padL+W,ys(v)); ctx.stroke();
+    ctx.fillText(v.toFixed(0),12,ys(v)+4);
+  }
+  ctx.strokeStyle='#374151'; ctx.beginPath(); ctx.moveTo(padL,padT); ctx.lineTo(padL,padT+H); ctx.lineTo(padL+W,padT+H); ctx.stroke();
+  // 45 degree line
+  ctx.strokeStyle='#C8A961'; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath();
+  ctx.moveTo(xs(0),ys(0)); ctx.lineTo(xs(xMax),ys(xMax)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#C8A961'; ctx.font='bold 12px Cambria'; ctx.fillText('45°', xs(xMax)-30, ys(xMax)+20);
+  // PE line
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2.5; ctx.beginPath();
+  ctx.moveTo(xs(0), ys(b)); ctx.lineTo(xs(xMax), ys(b + m*xMax)); ctx.stroke();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px Cambria'; ctx.fillText('PE = a + MPC(Y−T) + Ī + Ḡ', padL+W-220, ys(b+m*xMax*0.95)-5);
+  // Equilibrium dot
+  ctx.fillStyle='#B45309'; ctx.beginPath(); ctx.arc(xs(Y), ys(Y), 6, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='#1E3A5F'; ctx.fillText(`Y* = ${Y.toFixed(0)}`, xs(Y)+10, ys(Y)-8);
+  ctx.fillStyle='#374151'; ctx.fillText('Income Y', padL+W/2-25, padT+H+30);
+  ctx.save(); ctx.translate(15, padT+H/2); ctx.rotate(-Math.PI/2); ctx.fillText('PE', -10, 0); ctx.restore();
+}
+['kc-a','kc-mpc','kc-I','kc-G','kc-T'].forEach(id => document.getElementById(id).addEventListener('input', updateKC));
+updateKC();
+
+// TAB 2: IS-LM
+function updateIS() {
+  const G=+document.getElementById('is-G').value, T=+document.getElementById('is-T').value,
+        M=+document.getElementById('is-M').value, P=+document.getElementById('is-P').value;
+  document.getElementById('is-G-val').textContent=G;
+  document.getElementById('is-T-val').textContent=T;
+  document.getElementById('is-M-val').textContent=M;
+  document.getElementById('is-P-val').textContent=P.toFixed(1);
+  // Simple model: IS: Y = A_IS - 50r where A_IS = (200 + (-0.8)*T + G + 100*5) / (1-0.8) * something
+  // We use: IS: Y = 5·(120 + 0.8·(0 - T) + 200 + G) - 250r => simpler closed form
+  // Let MPC=0.8, intercept = 120 + I0 + G - 0.8·T, with I(r) = 200 - 50r so I0 = 200 effectively + 50r credit
+  // Actually for visualization use: Y_IS(r) = 5·(120 + G - 0.8·T) + 5·200 - 250r = 5·(420+G-0.8T) - 250r
+  // LM: M/P = 0.2·Y + 100 - 100r  ⇒  r = (0.2·Y + 100 - M/P)/100
+  // Solve IS: Y = 5(420 + G - 0.8T) - 250r → r = (5(420+G-0.8T) - Y)/250
+  // and from LM: r = (0.2Y + 100 - M/P)/100
+  // Set equal: (5(420+G-0.8T) - Y)/250 = (0.2Y + 100 - M/P)/100
+  // 100·(5(420+G-0.8T) - Y) = 250·(0.2Y + 100 - M/P)
+  // 500(420+G-0.8T) - 100Y = 50Y + 25000 - 250·M/P
+  // 500(420+G-0.8T) + 250·M/P - 25000 = 150Y
+  // Y = (500(420+G-0.8T) + 250·M/P - 25000)/150
+  const A_IS = 420 + G - 0.8*T;
+  const realM = M/P;
+  const Y = (500*A_IS + 250*realM - 25000) / 150;
+  const r = (5*A_IS - Y) / 250;
+  document.getElementById('is-Y').textContent = Y.toFixed(0);
+  document.getElementById('is-r').textContent = r.toFixed(2) + '%';
+  drawIS(A_IS, realM, Y, r);
+}
+function drawIS(A_IS, realM, Y, r) {
+  const c=document.getElementById('is-canvas'); const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const padL=60,padR=40,padT=30,padB=50,W=c.width-padL-padR,H=c.height-padT-padB;
+  const yMin=1000, yMax=4500, rMin=0, rMax=15;
+  const xs = v => padL+(v-yMin)/(yMax-yMin)*W;
+  const ys = v => padT+(rMax-v)/(rMax-rMin)*H;
+  // Grid
+  ctx.strokeStyle='#E5E7EB'; ctx.fillStyle='#6B7280'; ctx.font='11px Calibri';
+  for (let rr=0; rr<=15; rr+=3) {
+    ctx.beginPath(); ctx.moveTo(padL,ys(rr)); ctx.lineTo(padL+W,ys(rr)); ctx.stroke();
+    ctx.fillText(rr+'%', 12, ys(rr)+4);
+  }
+  for (let yy=1000; yy<=4500; yy+=500) {
+    ctx.beginPath(); ctx.moveTo(xs(yy),padT); ctx.lineTo(xs(yy),padT+H); ctx.stroke();
+    ctx.fillText(yy, xs(yy)-15, padT+H+18);
+  }
+  // IS: r = (5·A_IS - Y)/250
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2.5; ctx.beginPath();
+  let first=true;
+  for (let yy=yMin; yy<=yMax; yy+=50) {
+    const rr = (5*A_IS - yy)/250;
+    if (rr >= rMin && rr <= rMax) {
+      if (first) { ctx.moveTo(xs(yy), ys(rr)); first=false; } else { ctx.lineTo(xs(yy), ys(rr)); }
+    }
+  }
+  ctx.stroke();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px Cambria'; ctx.fillText('IS', padL+W-30, ys((5*A_IS-yMax)/250)+20);
+  // LM: r = (0.2·Y + 100 - M/P)/100
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=2.5; ctx.beginPath();
+  first=true;
+  for (let yy=yMin; yy<=yMax; yy+=50) {
+    const rr = (0.2*yy + 100 - realM)/100;
+    if (rr >= rMin && rr <= rMax) {
+      if (first) { ctx.moveTo(xs(yy), ys(rr)); first=false; } else { ctx.lineTo(xs(yy), ys(rr)); }
+    }
+  }
+  ctx.stroke();
+  ctx.fillStyle='#0F766E'; ctx.font='bold 12px Cambria'; ctx.fillText('LM', padL+W-30, ys((0.2*yMax+100-realM)/100)-5);
+  // Equilibrium dot
+  if (Y >= yMin && Y <= yMax && r >= rMin && r <= rMax) {
+    ctx.fillStyle='#C8A961'; ctx.beginPath(); ctx.arc(xs(Y), ys(r), 7, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px Cambria';
+    ctx.fillText(`(Y*=${Y.toFixed(0)}, r*=${r.toFixed(1)}%)`, xs(Y)+12, ys(r)-8);
+  }
+  // Axis labels
+  ctx.fillStyle='#374151'; ctx.font='bold 12px Calibri';
+  ctx.fillText('Income Y', padL+W/2-25, padT+H+38);
+  ctx.save(); ctx.translate(20, padT+H/2); ctx.rotate(-Math.PI/2); ctx.fillText('Interest r (%)', -35, 0); ctx.restore();
+}
+['is-G','is-T','is-M','is-P'].forEach(id => document.getElementById(id).addEventListener('input', updateIS));
+updateIS();
+
+// TAB 3: FED REACTION
+let fedR = 'hM';
+function setReact(r) {
+  fedR = r;
+  ['hM','hr','hY'].forEach(x => document.getElementById('btn-'+x).classList.remove('selected'));
+  document.getElementById('btn-'+r).classList.add('selected');
+  updateFR();
+}
+function updateFR() {
+  const dG = +document.getElementById('fr-dG').value;
+  document.getElementById('fr-dG-val').textContent = (dG >= 0 ? '+' : '') + dG;
+  // Simplified outcomes (calibrated to MPC=0.8, LM slope ~1.5)
+  let dY, dr, exp;
+  if (fedR === 'hM') {
+    dY = 1.5 * dG; dr = 0.01 * dG;
+    exp = `<strong>Fed holds M constant:</strong> IS shifts ${dG > 0 ? 'right' : 'left'}. Y changes by ${dY.toFixed(0)} (partial Keynesian effect). r changes by ${(dr*100).toFixed(2)}pp. PARTIAL crowding out via higher rates.`;
+  } else if (fedR === 'hr') {
+    dY = 5 * dG; dr = 0;
+    exp = `<strong>Fed holds r constant:</strong> Fed ${dG > 0 ? 'expands' : 'contracts'} M to accommodate fiscal shock. Y changes by ${dY.toFixed(0)} (FULL Keynesian-cross multiplier). r unchanged. NO crowding out.`;
+  } else {
+    dY = 0; dr = 0.04 * dG;
+    exp = `<strong>Fed holds Y constant:</strong> Fed ${dG > 0 ? 'contracts' : 'expands'} M to neutralize fiscal shock. Y unchanged. r changes by ${(dr*100).toFixed(2)}pp — FULL crowding out by monetary tightening.`;
+  }
+  document.getElementById('fr-dY').textContent = (dY >= 0 ? '+' : '') + dY.toFixed(0);
+  document.getElementById('fr-dr').textContent = (dr >= 0 ? '+' : '') + (dr*100).toFixed(2) + 'pp';
+  document.getElementById('fr-explain').innerHTML = exp;
+}
+document.getElementById('fr-dG').addEventListener('input', updateFR);
+updateFR();
+
+// TAB 4: AD-AS
+let shock = 'supplyAdverse', fedResp = 'neutral';
+function setShock(s) {
+  shock = s;
+  ['supplyAdverse','supplyFavorable','demandPos','demandNeg'].forEach(x => document.getElementById('btn-'+x).classList.remove('selected'));
+  document.getElementById('btn-'+s).classList.add('selected');
+  drawADAS();
+}
+function setFedResp(r) {
+  fedResp = r;
+  ['neutral','accommodate','tighten'].forEach(x => document.getElementById('btn-'+x).classList.remove('selected'));
+  document.getElementById('btn-'+r).classList.add('selected');
+  drawADAS();
+}
+function drawADAS() {
+  const c=document.getElementById('adas-canvas'); const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const padL=60,padR=40,padT=30,padB=50,W=c.width-padL-padR,H=c.height-padT-padB;
+  const yMin=0, yMax=10, pMin=0, pMax=10;
+  const xs=v=>padL+(v-yMin)/(yMax-yMin)*W; const ys=v=>padT+(pMax-v)/(pMax-pMin)*H;
+  // Grid
+  ctx.strokeStyle='#E5E7EB'; ctx.fillStyle='#6B7280'; ctx.font='11px Calibri';
+  for (let p=0; p<=10; p+=2) {
+    ctx.beginPath(); ctx.moveTo(padL,ys(p)); ctx.lineTo(padL+W,ys(p)); ctx.stroke();
+    ctx.fillText(p, 25, ys(p)+4);
+  }
+  for (let y=0; y<=10; y+=2) {
+    ctx.beginPath(); ctx.moveTo(xs(y),padT); ctx.lineTo(xs(y),padT+H); ctx.stroke();
+    ctx.fillText(y, xs(y)-5, padT+H+18);
+  }
+
+  // Initial equilibrium: Ȳ = 5, P̄ = 5
+  // LRAS: vertical at Ȳ = 5
+  ctx.strokeStyle='#374151'; ctx.lineWidth=2; ctx.beginPath();
+  ctx.moveTo(xs(5), padT); ctx.lineTo(xs(5), padT+H); ctx.stroke();
+  ctx.fillStyle='#374151'; ctx.font='bold 12px Cambria'; ctx.fillText('LRAS', xs(5)+5, padT+15);
+
+  // Original SRAS: flat-ish at P = 5
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=2; ctx.setLineDash([4,3]); ctx.beginPath();
+  ctx.moveTo(xs(0), ys(4)); ctx.lineTo(xs(10), ys(6)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#0F766E'; ctx.fillText('SRAS₀', xs(8), ys(5.6)-5);
+
+  // Original AD: downward
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=2; ctx.setLineDash([4,3]); ctx.beginPath();
+  ctx.moveTo(xs(0), ys(10)); ctx.lineTo(xs(10), ys(0)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.fillText('AD₀', xs(7), ys(3)+15);
+
+  // Initial equilibrium dot
+  ctx.fillStyle='#6B7280'; ctx.beginPath(); ctx.arc(xs(5), ys(5), 5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='#374151'; ctx.font='bold 11px Cambria'; ctx.fillText('A (start)', xs(5)+8, ys(5)-8);
+
+  // Apply shock
+  let shockSRAS=null, shockAD=null, newEqY, newEqP, insight, finalEqY, finalEqP;
+  if (shock === 'supplyAdverse') {
+    // SRAS shifts up: SRAS' from (0,6) to (10,8)
+    ctx.strokeStyle='#B91C1C'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(6)); ctx.lineTo(xs(10), ys(8)); ctx.stroke();
+    ctx.fillStyle='#B91C1C'; ctx.fillText('SRAS₁ (shock)', xs(7), ys(7.4)+15);
+    newEqY = 3.5; newEqP = 6.7;
+  } else if (shock === 'supplyFavorable') {
+    ctx.strokeStyle='#047857'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(2)); ctx.lineTo(xs(10), ys(4)); ctx.stroke();
+    ctx.fillStyle='#047857'; ctx.fillText('SRAS₁ (favorable)', xs(7), ys(3.5)-5);
+    newEqY = 6.5; newEqP = 3.3;
+  } else if (shock === 'demandPos') {
+    ctx.strokeStyle='#047857'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(12)); ctx.lineTo(xs(10), ys(2)); ctx.stroke();
+    ctx.fillStyle='#047857'; ctx.fillText('AD₁ (boom)', xs(8), ys(2.5)-5);
+    newEqY = 6.5; newEqP = 6;
+  } else { // demandNeg
+    ctx.strokeStyle='#B91C1C'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(8)); ctx.lineTo(xs(10), ys(-2)); ctx.stroke();
+    ctx.fillStyle='#B91C1C'; ctx.fillText('AD₁ (bust)', xs(6), ys(3)+15);
+    newEqY = 3.5; newEqP = 4;
+  }
+
+  // Apply Fed response (supply shocks only)
+  if (shock === 'supplyAdverse' && fedResp === 'accommodate') {
+    ctx.strokeStyle='#0F766E'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(12)); ctx.lineTo(xs(10), ys(2)); ctx.stroke();
+    ctx.fillStyle='#0F766E'; ctx.fillText('AD₂ (Fed expands)', xs(7), ys(3.5)-5);
+    newEqY = 5; newEqP = 7.5;
+  } else if (shock === 'supplyAdverse' && fedResp === 'tighten') {
+    ctx.strokeStyle='#0F766E'; ctx.lineWidth=2.5; ctx.beginPath();
+    ctx.moveTo(xs(0), ys(8)); ctx.lineTo(xs(10), ys(-2)); ctx.stroke();
+    ctx.fillStyle='#0F766E'; ctx.fillText('AD₂ (Fed tightens)', xs(6), ys(3)+15);
+    newEqY = 2.5; newEqP = 5;
+  }
+
+  // New equilibrium dot
+  ctx.fillStyle='#C8A961'; ctx.beginPath(); ctx.arc(xs(newEqY), ys(newEqP), 6, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#1E3A5F'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 11px Cambria';
+  ctx.fillText(`B (Y=${newEqY}, P=${newEqP})`, xs(newEqY)+10, ys(newEqP)+5);
+
+  // Axis labels
+  ctx.fillStyle='#374151'; ctx.font='bold 12px Calibri';
+  ctx.fillText('Real output Y', padL+W/2-30, padT+H+38);
+  ctx.save(); ctx.translate(15, padT+H/2); ctx.rotate(-Math.PI/2); ctx.fillText('Price level P', -30, 0); ctx.restore();
+
+  // Insight
+  const titles = {
+    'supplyAdverse_neutral': '<strong>Adverse supply shock, Fed neutral.</strong> SRAS shifts up. P rises, Y falls below potential — STAGFLATION. With no policy, prices/wages eventually adjust, SRAS returns to original, Y returns to potential. Slow recovery.',
+    'supplyAdverse_accommodate': '<strong>Adverse supply shock, Fed accommodates.</strong> Fed expands M → AD shifts right. Y returns to potential at A. BUT P rises FURTHER. Cost: higher inflation locked in. (Burns Fed 1973–79.)',
+    'supplyAdverse_tighten': '<strong>Adverse supply shock, Fed tightens.</strong> Fed contracts M → AD shifts left. P falls back to original. BUT Y falls MORE. Cost: deeper recession. (Volcker 1979–82.)',
+    'supplyFavorable_neutral': '<strong>Favorable supply shock.</strong> SRAS shifts down. P falls, Y rises above potential. Best of both worlds in the short run. (Oil price collapse 1985–86; 2014–16.)',
+    'supplyFavorable_accommodate': '<strong>Favorable supply shock, Fed accommodates.</strong> Fed expands → AD right. Y rises further. P returns toward original. Boom.',
+    'supplyFavorable_tighten': '<strong>Favorable supply shock, Fed tightens.</strong> Fed contracts → AD left. P falls more. Y less. Unusual choice.',
+    'demandPos_neutral': '<strong>Positive demand shock.</strong> AD shifts right. Both Y and P rise. Short-run boom; LR price adjustment returns Y to potential at higher P.',
+    'demandNeg_neutral': '<strong>Negative demand shock.</strong> AD shifts left (e.g., COVID 2020). Both Y and P fall. Recession; LR price/wage adjustment restores Y at lower P.'
+  };
+  const key = shock + '_' + (shock.startsWith('supply') ? fedResp : 'neutral');
+  document.getElementById('adas-insight').innerHTML = titles[key] || titles['supplyAdverse_neutral'];
+}
+setShock('supplyAdverse');
+
+// TAB 5: QUIZ
+const quizQs = [
+  { stem: "In a typical recession, consumption ___. Investment moves in the same direction but proportionately ___.",
+    opts: ["rises, more","rises, less","falls, more","falls, less"], a: 3,
+    exp: "Both fall, but investment is MORE volatile than consumption. C falls less than Y; I falls more than Y." },
+  { stem: "An expansion in AD increases ___ in the short run. In the long run, only ___.",
+    opts: ["real GDP, price level","real GDP, velocity","unemployment, P","unemployment, velocity"], a: 0,
+    exp: "AD↑ → SR: Y↑ AND P↑. LR: P↑, Y returns to potential. Money is neutral in LR." },
+  { stem: "Stagflation — lower output AND higher prices — is caused by:",
+    opts: ["AD expansion","AD contraction","favorable supply shock","adverse supply shock"], a: 3,
+    exp: "Adverse supply shock: SRAS up/left → P↑ AND Y↓ together." },
+  { stem: "If the Fed accommodates an adverse supply shock by expanding M, it:",
+    opts: ["stabilizes AD at original level","makes recession deeper",
+           "keeps economy near natural levels","returns P to pre-shock"], a: 2,
+    exp: "Accommodation: AD shifts right, Y returns to potential. Cost: P rises further." },
+  { stem: "Okun's law is the ___ relationship between real GDP and the ___.",
+    opts: ["negative; unemployment","negative; inflation","positive; unemployment","positive; inflation"], a: 0,
+    exp: "Okun: Y rising 1% above trend → unemployment falls ~0.5pp." },
+  { stem: "In the Keynesian Cross with MPC = 0.75, a $2B increase in G raises Y by:",
+    opts: ["$2B","$4B","$6B","$8B"], a: 3,
+    exp: "ΔY = ΔG/(1−MPC) = 2/(1−0.75) = 2/0.25 = $8B." },
+  { stem: "In the Keynesian Cross with MPC = 0.75, a $3B cut in T raises Y by:",
+    opts: ["$3B","$4B","$9B","$12B"], a: 2,
+    exp: "ΔY = ΔT·(−MPC/(1−MPC)) = (−3)·(−3) = +$9B. Tax multiplier in absolute value < G multiplier." },
+  { stem: "The downward slope of AD comes from:",
+    opts: ["sticky prices","real balance effect (M/P on r and I)",
+           "Fisher equation","Okun's law"], a: 1,
+    exp: "P↑ → M/P↓ → r↑ → I↓ → Y↓. The IS-LM channel." },
+  { stem: "A favorable IS shock (e.g., investment boom) in the short run causes:",
+    opts: ["Y↓, r↓","Y↓, r↑","Y↑, r↓","Y↑, r↑"], a: 3,
+    exp: "IS shifts right → equilibrium up the LM curve → both Y AND r rise." },
+  { stem: "In the long run, the AS curve is:",
+    opts: ["horizontal","downward-sloping","upward-sloping","vertical at potential Y"], a: 3,
+    exp: "LRAS is vertical at Ȳ. Prices adjust fully; output set by real factors." }
+];
+
+const quizState = new Array(quizQs.length).fill(null);
+function renderQuiz() {
+  document.getElementById('quiz-total').textContent = quizQs.length;
+  document.getElementById('quiz-list').innerHTML = quizQs.map((q, i) => `
+    <div class="quiz-q" data-i="${i}">
+      <div class="stem">Q${i+1}. ${q.stem}</div>
+      ${q.opts.map((o, j) => `<label><input type="radio" name="q${i}" value="${j}" onchange="checkQuiz(${i}, ${j})">  ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+      <div class="feedback" id="fb-${i}"></div>
+    </div>`).join('');
+}
+function checkQuiz(i, chosen) {
+  const q = quizQs[i], correct = (chosen === q.a);
+  if (quizState[i] === null) quizState[i] = correct;
+  const fb = document.getElementById('fb-' + i);
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = (correct ? '✓ Correct. ' : `✗ Correct answer: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+  document.getElementById('quiz-correct').textContent = quizState.filter(x => x === true).length;
+}
+function resetQuiz() {
+  quizState.fill(null);
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.feedback').forEach(f => f.className = 'feedback');
+  document.getElementById('quiz-correct').textContent = '0';
+}
+renderQuiz();
+</script>
+
+</body>
+</html>

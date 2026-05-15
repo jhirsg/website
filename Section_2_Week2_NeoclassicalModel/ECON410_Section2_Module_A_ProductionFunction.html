@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module A: Production Function</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#0F766E;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:120px 1fr 80px;gap:14px;align-items:center;margin:14px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:16px;text-align:center;margin:12px 0}
+  .formula .accent{color:#C8A961;font-weight:bold}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  .quiz-opt{padding:10px 14px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:13px;cursor:pointer;text-align:left;color:#1F2937;display:block;width:100%;margin:6px 0;font-family:inherit;transition:background .15s}
+  .quiz-opt:hover{background:#f5f5f5}
+  .quiz-opt.ok{background:#ECFDF5;border-color:#047857;color:#1a6b34}
+  .quiz-opt.no{background:#FEF2F2;border-color:#B91C1C;color:#791f1f}
+  .fb{font-size:13px;padding:8px 12px;border-radius:7px;margin-top:8px;display:none;line-height:1.5}
+  .fb.ok{background:#ECFDF5;color:#047857;display:block}
+  .fb.no{background:#FEF2F2;color:#B91C1C;display:block}
+  .score-row{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .btn{padding:8px 18px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn.primary{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .btn.primary:hover{background:#0F2540}
+  canvas{max-width:100%}
+  .note{font-size:11px;color:#6B7280;font-style:italic;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module A</h1>
+    <div class="sub">Production Function Explorer · Mankiw Ch. 3 §3.1</div>
+  </div>
+  <div class="badge">Section 2 · Module A</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('build',this)">1. Build Y = F(K, L)</button>
+    <button class="tab" onclick="sw('crs',this)">2. CRS check</button>
+    <button class="tab" onclick="sw('mp',this)">3. Marginal products</button>
+    <button class="tab" onclick="sw('quiz',this)">4. Quiz</button>
+  </div>
+
+  <!-- TAB 1: BUILD -->
+  <div class="panel on" id="p-build">
+    <p class="desc">Adjust the sliders to set total factor productivity A, capital share α, capital stock K, and labor L. Watch real GDP Y change live.</p>
+    <div class="formula">Y = <span class="accent">A</span> · K<sup>α</sup> · L<sup>(1−α)</sup></div>
+
+    <div class="card">
+      <div class="slider-row">
+        <label>A (TFP)</label>
+        <input type="range" id="A" min="0.5" max="2.0" step="0.05" value="1.0" oninput="upd()">
+        <div class="val" id="vA">1.00</div>
+      </div>
+      <div class="slider-row">
+        <label>α (capital share)</label>
+        <input type="range" id="alpha" min="0.1" max="0.5" step="0.01" value="0.30" oninput="upd()">
+        <div class="val" id="va">0.30</div>
+      </div>
+      <div class="slider-row">
+        <label>K (capital)</label>
+        <input type="range" id="K" min="50" max="500" step="10" value="100" oninput="upd()">
+        <div class="val" id="vK">100</div>
+      </div>
+      <div class="slider-row">
+        <label>L (labor)</label>
+        <input type="range" id="L" min="50" max="500" step="10" value="200" oninput="upd()">
+        <div class="val" id="vL">200</div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Output Y</div><div class="val" id="mY">203.16</div></div>
+      <div class="metric"><div class="lbl">Output per worker (Y/L)</div><div class="val" id="mYL">1.02</div></div>
+      <div class="metric"><div class="lbl">Capital per worker (K/L)</div><div class="val" id="mKL">0.50</div></div>
+      <div class="metric"><div class="lbl">Capital share α·Y</div><div class="val" id="mAY">61.0</div></div>
+      <div class="metric"><div class="lbl">Labor share (1-α)·Y</div><div class="val" id="mLY">142.2</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Concept check</div>
+      <div class="body">In Cobb-Douglas, capital income = α·Y and labor income = (1−α)·Y. With α = 0.30, capital earns 30% of output and labor earns 70%. This matches the U.S. labor share of ≈70% historically (now closer to 60%).</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: CRS -->
+  <div class="panel" id="p-crs">
+    <p class="desc">Constant returns to scale: F(zK, zL) = z·F(K,L). Pick z and compare F(zK, zL) to z·Y.</p>
+    <div class="formula">F( <span class="accent">z</span>K , <span class="accent">z</span>L ) = <span class="accent">z</span> · F(K, L)</div>
+
+    <div class="card">
+      <div class="slider-row">
+        <label>z (scale factor)</label>
+        <input type="range" id="z" min="0.5" max="3" step="0.1" value="2" oninput="updCRS()">
+        <div class="val" id="vz">2.0</div>
+      </div>
+      <div style="font-size:13px;color:#555;margin-top:14px">Using A=1, α=0.30, K=100, L=200 from Tab 1</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">F(K, L)</div><div class="val" id="mFKL">203.16</div></div>
+      <div class="metric"><div class="lbl">F(zK, zL)</div><div class="val" id="mFzKL">406.32</div></div>
+      <div class="metric"><div class="lbl">z · F(K, L)</div><div class="val" id="mzFKL">406.32</div></div>
+      <div class="metric"><div class="lbl">CRS holds?</div><div class="val" id="mCRS" style="color:#047857">✓ YES</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Why this matters</div>
+      <div class="body">CRS lets us replicate: doubling K and L exactly doubles Y. Per-worker output Y/L depends only on K/L, the capital-to-labor ratio. This is the foundation of the Solow growth model (Section 4).</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: MP -->
+  <div class="panel" id="p-mp">
+    <p class="desc">Marginal products: hold one factor fixed and vary the other. Watch each curve flatten — that's diminishing marginal product. Both panels are independent of Tab 1's sliders.</p>
+
+    <!-- ===== LABOR ===== -->
+    <div class="card" style="border-left:4px solid #B45309">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+        <div style="font-size:16px;font-weight:700;color:#B45309;font-family:Cambria,Georgia,serif">Marginal Product of Labor (MPL)</div>
+        <div style="font-size:11px;color:#6B7280;font-style:italic">Hold K fixed, vary L</div>
+      </div>
+      <div class="formula" style="font-size:14px;background:#0F2540">MPL = ∂Y/∂L = (1−α) · A · K<sup>α</sup> · L<sup>(−α)</sup>  =  (1−α)·Y/L</div>
+      <div class="slider-row">
+        <label>A (TFP)</label>
+        <input type="range" id="A_l" min="0.5" max="2.0" step="0.05" value="1.0" oninput="updMPLpanel()">
+        <div class="val" id="vA_l">1.00</div>
+      </div>
+      <div class="slider-row">
+        <label>α (capital share)</label>
+        <input type="range" id="alpha_l" min="0.1" max="0.5" step="0.01" value="0.30" oninput="updMPLpanel()">
+        <div class="val" id="va_l">0.30</div>
+      </div>
+      <div class="slider-row">
+        <label>K (held fixed)</label>
+        <input type="range" id="K_l" min="50" max="500" step="10" value="100" oninput="updMPLpanel()">
+        <div class="val" id="vK_l">100</div>
+      </div>
+      <div class="slider-row">
+        <label>L (current point)</label>
+        <input type="range" id="L_l" min="50" max="500" step="10" value="200" oninput="updMPLpanel()">
+        <div class="val" id="vL_l">200</div>
+      </div>
+      <canvas id="mpchart" width="800" height="380"></canvas>
+      <div class="note">Production function Y(L) with K held fixed. The slope at the red dot IS the MPL there. Increasing K shifts the entire curve UP.</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric amber"><div class="lbl">MPL at L=100</div><div class="val" id="mMP1">0.700</div></div>
+      <div class="metric amber"><div class="lbl">MPL at L=200</div><div class="val" id="mMP2">0.569</div></div>
+      <div class="metric amber"><div class="lbl">MPL at L=300</div><div class="val" id="mMP3">0.503</div></div>
+      <div class="metric amber"><div class="lbl">MPL at current L · = Real wage W/P</div><div class="val" id="mWage">0.569</div></div>
+    </div>
+
+    <div class="check-card" style="background:#FEF3C7;border-color:#B45309">
+      <div class="lbl" style="color:#B45309">Labor side — concept check</div>
+      <div class="body">Each new worker is less productive than the last (less capital to work with). Competitive real wage W/P = MPL. Try doubling K: the MPL curve shifts up — every worker becomes more productive.</div>
+    </div>
+
+    <!-- ===== CAPITAL ===== -->
+    <div class="card" style="border-left:4px solid #0F766E;margin-top:24px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+        <div style="font-size:16px;font-weight:700;color:#0F766E;font-family:Cambria,Georgia,serif">Marginal Product of Capital (MPK)</div>
+        <div style="font-size:11px;color:#6B7280;font-style:italic">Hold L fixed, vary K</div>
+      </div>
+      <div class="formula" style="font-size:14px;background:#0F2540">MPK = ∂Y/∂K = α · A · K<sup>(α−1)</sup> · L<sup>(1−α)</sup>  =  α·Y/K</div>
+      <div class="slider-row">
+        <label>A (TFP)</label>
+        <input type="range" id="A_k" min="0.5" max="2.0" step="0.05" value="1.0" oninput="updMPKpanel()">
+        <div class="val" id="vA_k">1.00</div>
+      </div>
+      <div class="slider-row">
+        <label>α (capital share)</label>
+        <input type="range" id="alpha_k" min="0.1" max="0.5" step="0.01" value="0.30" oninput="updMPKpanel()">
+        <div class="val" id="va_k">0.30</div>
+      </div>
+      <div class="slider-row">
+        <label>L (held fixed)</label>
+        <input type="range" id="L_k" min="50" max="500" step="10" value="200" oninput="updMPKpanel()">
+        <div class="val" id="vL_k">200</div>
+      </div>
+      <div class="slider-row">
+        <label>K (current point)</label>
+        <input type="range" id="K_k" min="50" max="500" step="10" value="100" oninput="updMPKpanel()">
+        <div class="val" id="vK_k">100</div>
+      </div>
+      <canvas id="mpkchart" width="800" height="380"></canvas>
+      <div class="note">Production function Y(K) with L held fixed. The slope at the red dot IS the MPK there. Increasing L shifts the entire curve UP.</div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">MPK at K=50</div><div class="val" id="mPK1">0.487</div></div>
+      <div class="metric green"><div class="lbl">MPK at K=100</div><div class="val" id="mPK2">0.396</div></div>
+      <div class="metric green"><div class="lbl">MPK at K=200</div><div class="val" id="mPK3">0.322</div></div>
+      <div class="metric green"><div class="lbl">MPK at current K · = Real rental R/P</div><div class="val" id="mRental">0.396</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Capital side — concept check</div>
+      <div class="body">Each new unit of capital is less productive than the last (less labor to operate it). Competitive real rental R/P = MPK. Doubling L shifts the MPK curve UP — every machine becomes more productive when there are more workers to operate it.</div>
+    </div>
+
+    <!-- Summary -->
+    <div class="check-card" style="background:#0F2540;border-color:#C8A961;color:#fff">
+      <div class="lbl" style="color:#C8A961">Income distribution check (Euler's theorem)</div>
+      <div class="body" style="color:#fff" id="eulerCheck">MPK·K + MPL·L = ?  ·  Y = ?  ·  Difference = 0.00 (must always be 0 under CRS)</div>
+    </div>
+  </div>
+
+  <!-- TAB 4: QUIZ -->
+  <div class="panel" id="p-quiz">
+    <p class="desc">Four quick questions to lock in the production function intuition.</p>
+    <div id="quiz-cards"></div>
+    <div class="score-row">
+      <span style="font-size:13px;color:#555">Score: <strong id="qscore">0 / 0</strong></span>
+      <button class="btn" onclick="resetQuiz()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function pow(b,e){return Math.pow(b,e)}
+function getFs(){return {A:+A.value, alpha:+alpha.value, K:+K.value, L:+L.value};}
+function upd(){
+  const {A:a, alpha:al, K:k, L:l} = getFs();
+  vA.textContent=a.toFixed(2); va.textContent=al.toFixed(2); vK.textContent=k; vL.textContent=l;
+  const Y = a*pow(k,al)*pow(l,1-al);
+  mY.textContent=Y.toFixed(2);
+  mYL.textContent=(Y/l).toFixed(3);
+  mKL.textContent=(k/l).toFixed(3);
+  mAY.textContent=(al*Y).toFixed(2);
+  mLY.textContent=((1-al)*Y).toFixed(2);
+  updCRS(); updMP();
+}
+function updCRS(){
+  const {A:a, alpha:al, K:k, L:l} = getFs();
+  const z = +document.getElementById('z').value; vz.textContent=z.toFixed(1);
+  const FKL = a*pow(k,al)*pow(l,1-al);
+  const FzKL = a*pow(z*k,al)*pow(z*l,1-al);
+  const zFKL = z*FKL;
+  mFKL.textContent=FKL.toFixed(2);
+  mFzKL.textContent=FzKL.toFixed(2);
+  mzFKL.textContent=zFKL.toFixed(2);
+  const ok = Math.abs(FzKL-zFKL)<0.01;
+  mCRS.textContent = ok?'✓ YES':'✗ NO';
+  mCRS.style.color = ok?'#047857':'#B91C1C';
+}
+function updMP(){
+  // Sync Tab 1's K and L into Tab 3's panels so both panels reflect Tab 1 changes
+  const a = +A.value, al = +alpha.value, k = +K.value, l = +L.value;
+  document.getElementById('A_l').value = a;
+  document.getElementById('alpha_l').value = al;
+  document.getElementById('K_l').value = k;
+  document.getElementById('L_l').value = l;
+  document.getElementById('A_k').value = a;
+  document.getElementById('alpha_k').value = al;
+  document.getElementById('L_k').value = l;
+  document.getElementById('K_k').value = k;
+  updMPLpanel(); updMPKpanel();
+}
+
+function getMPLState(){
+  return {
+    A: +document.getElementById('A_l').value,
+    alpha: +document.getElementById('alpha_l').value,
+    K: +document.getElementById('K_l').value,
+    L: +document.getElementById('L_l').value
+  };
+}
+function updMPLpanel(){
+  const s = getMPLState();
+  document.getElementById('vA_l').textContent = s.A.toFixed(2);
+  document.getElementById('va_l').textContent = s.alpha.toFixed(2);
+  document.getElementById('vK_l').textContent = s.K;
+  document.getElementById('vL_l').textContent = s.L;
+  const mpl = (lv) => (1 - s.alpha) * s.A * pow(s.K, s.alpha) * pow(lv, -s.alpha);
+  mMP1.textContent = mpl(100).toFixed(3);
+  mMP2.textContent = mpl(200).toFixed(3);
+  mMP3.textContent = mpl(300).toFixed(3);
+  mWage.textContent = mpl(s.L).toFixed(3);
+  drawMPL();
+  updEulerCheck();
+}
+function drawMPL(){
+  const s = getMPLState();
+  drawProdCurve('mpchart', {
+    xMin: 10, xMax: 500, xLabel: 'Labor (L)', yLabel: 'Output (Y)',
+    fixedLabel: 'K = ' + s.K + ', A = ' + s.A.toFixed(2) + ', α = ' + s.alpha.toFixed(2),
+    Yfn: (lv) => s.A * pow(s.K, s.alpha) * pow(lv, 1 - s.alpha),
+    currentX: s.L, color: '#B45309'
+  });
+}
+
+function getMPKState(){
+  return {
+    A: +document.getElementById('A_k').value,
+    alpha: +document.getElementById('alpha_k').value,
+    L: +document.getElementById('L_k').value,
+    K: +document.getElementById('K_k').value
+  };
+}
+function updMPKpanel(){
+  const s = getMPKState();
+  document.getElementById('vA_k').textContent = s.A.toFixed(2);
+  document.getElementById('va_k').textContent = s.alpha.toFixed(2);
+  document.getElementById('vL_k').textContent = s.L;
+  document.getElementById('vK_k').textContent = s.K;
+  const mpk = (kv) => s.alpha * s.A * pow(kv, s.alpha - 1) * pow(s.L, 1 - s.alpha);
+  mPK1.textContent = mpk(50).toFixed(3);
+  mPK2.textContent = mpk(100).toFixed(3);
+  mPK3.textContent = mpk(200).toFixed(3);
+  mRental.textContent = mpk(s.K).toFixed(3);
+  drawMPK();
+  updEulerCheck();
+}
+function drawMPK(){
+  const s = getMPKState();
+  drawProdCurve('mpkchart', {
+    xMin: 10, xMax: 500, xLabel: 'Capital (K)', yLabel: 'Output (Y)',
+    fixedLabel: 'L = ' + s.L + ', A = ' + s.A.toFixed(2) + ', α = ' + s.alpha.toFixed(2),
+    Yfn: (kv) => s.A * pow(kv, s.alpha) * pow(s.L, 1 - s.alpha),
+    currentX: s.K, color: '#0F766E'
+  });
+}
+
+function updEulerCheck(){
+  const sL = getMPLState();
+  const Y = sL.A * pow(sL.K, sL.alpha) * pow(sL.L, 1 - sL.alpha);
+  const mpkV = sL.alpha * sL.A * pow(sL.K, sL.alpha - 1) * pow(sL.L, 1 - sL.alpha);
+  const mplV = (1 - sL.alpha) * sL.A * pow(sL.K, sL.alpha) * pow(sL.L, -sL.alpha);
+  const sum = mpkV * sL.K + mplV * sL.L;
+  const elem = document.getElementById('eulerCheck');
+  if(elem){
+    elem.innerHTML =
+      'Using Labor-panel state (A=' + sL.A.toFixed(2) + ', α=' + sL.alpha.toFixed(2) +
+      ', K=' + sL.K + ', L=' + sL.L + '):<br>' +
+      'MPK·K + MPL·L = ' + (mpkV*sL.K).toFixed(2) + ' + ' + (mplV*sL.L).toFixed(2) +
+      ' = <strong>' + sum.toFixed(2) + '</strong>' +
+      '&nbsp;&nbsp;·&nbsp;&nbsp; Y = <strong>' + Y.toFixed(2) + '</strong>' +
+      '&nbsp;&nbsp;·&nbsp;&nbsp; Difference = ' + (sum-Y).toFixed(4) +
+      ' (always 0 under CRS — Euler’s theorem ✓)';
+  }
+}
+
+function drawProdCurve(canvasId, opts){
+  const c = document.getElementById(canvasId);
+  if(!c || !c.getContext) return;
+  const ctx = c.getContext('2d');
+  const W = c.width, H = c.height;
+  ctx.clearRect(0, 0, W, H);
+  const margin = {l: 60, r: 20, t: 30, b: 45};
+  let yMax = opts.Yfn(opts.xMax) * 1.1;
+  if(yMax < 1) yMax = 1;
+  ctx.strokeStyle = '#E5E7EB'; ctx.lineWidth = 1;
+  for(let g = 0; g <= 5; g++){
+    const yy = margin.t + (H - margin.t - margin.b) * g / 5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W - margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle = '#374151'; ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H - margin.b); ctx.lineTo(W - margin.r, H - margin.b); ctx.stroke();
+  ctx.fillStyle = '#6B7280'; ctx.font = '11px sans-serif';
+  for(let i = 0; i <= 5; i++){
+    const xv = opts.xMin + (opts.xMax - opts.xMin) * i / 5;
+    const xx = margin.l + (W - margin.l - margin.r) * i / 5;
+    ctx.fillText(Math.round(xv).toString(), xx - 10, H - margin.b + 15);
+  }
+  for(let g = 0; g <= 5; g++){
+    const yv = yMax * (5 - g) / 5;
+    const yy = margin.t + (H - margin.t - margin.b) * g / 5;
+    ctx.fillText(yv.toFixed(0), 10, yy + 4);
+  }
+  ctx.fillStyle = '#1F2937'; ctx.font = '13px sans-serif';
+  ctx.fillText(opts.xLabel, W / 2 - 35, H - 8);
+  ctx.save(); ctx.translate(15, H / 2 + 30); ctx.rotate(-Math.PI / 2);
+  ctx.fillText(opts.yLabel, 0, 0); ctx.restore();
+  ctx.fillStyle = '#6B7280'; ctx.font = 'italic 11px sans-serif';
+  ctx.fillText(opts.fixedLabel, margin.l + 6, margin.t - 8);
+  ctx.strokeStyle = opts.color; ctx.lineWidth = 3; ctx.beginPath();
+  for(let i = 0; i <= 100; i++){
+    const xv = opts.xMin + (opts.xMax - opts.xMin) * i / 100;
+    const yv = opts.Yfn(xv);
+    const xx = margin.l + (W - margin.l - margin.r) * (xv - opts.xMin) / (opts.xMax - opts.xMin);
+    const yy = margin.t + (H - margin.t - margin.b) * (1 - yv / yMax);
+    if(i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+  const xc = opts.currentX;
+  const yc = opts.Yfn(xc);
+  const px = margin.l + (W - margin.l - margin.r) * (xc - opts.xMin) / (opts.xMax - opts.xMin);
+  const py = margin.t + (H - margin.t - margin.b) * (1 - yc / yMax);
+  ctx.fillStyle = '#B91C1C'; ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI * 2); ctx.fill();
+  const eps = 0.5;
+  const slope = (opts.Yfn(xc + eps) - opts.Yfn(xc - eps)) / (2 * eps);
+  const dx = (opts.xMax - opts.xMin) * 0.10;
+  function toPx(xv, yv){
+    return [
+      margin.l + (W - margin.l - margin.r) * (xv - opts.xMin) / (opts.xMax - opts.xMin),
+      margin.t + (H - margin.t - margin.b) * (1 - yv / yMax)
+    ];
+  }
+  const [tx1, ty1] = toPx(xc - dx, yc - slope * dx);
+  const [tx2, ty2] = toPx(xc + dx, yc + slope * dx);
+  ctx.strokeStyle = '#B91C1C'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(tx1, ty1); ctx.lineTo(tx2, ty2); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#B91C1C'; ctx.font = 'bold 11px sans-serif';
+  ctx.fillText('slope = ' + slope.toFixed(3) + '  (= MP)', px + 10, py - 8);
+}
+
+const quizQs = [
+  {q:"For Y = K^0.4·L^0.6 with K=100, L=400, what is Y?", opts:["100","229.7","400","500"], a:1,
+   ex:"Y = 100^0.4 · 400^0.6 = 6.31 · 36.41 ≈ 229.7"},
+  {q:"With α = 0.4 and Y = $20T, what is total LABOR income?", opts:["$8T","$12T","$16T","$20T"], a:1,
+   ex:"Labor share = 1−α = 0.6. Labor income = 0.6 · $20T = $12T."},
+  {q:"If A doubles (technology shock), what happens to MPL?", opts:["MPL doubles","MPL halves","MPL unchanged","MPL falls"], a:0,
+   ex:"MPL = (1−α)·A·(K/L)^α scales linearly with A. So MPL doubles. Both factors gain."},
+  {q:"Doubling K and L (CRS) — what happens to per-worker output Y/L?", opts:["Doubles","Stays the same","Halves","Quadruples"], a:1,
+   ex:"Y/L = A·(K/L)^α depends only on K/L, NOT on the absolute scale."}
+];
+let answered={};
+function buildQuiz(){
+  answered={};
+  qscore.textContent='0 / 0';
+  const c = document.getElementById('quiz-cards'); c.innerHTML='';
+  quizQs.forEach((q,i)=>{
+    const d=document.createElement('div'); d.className='card';
+    let html = '<p style="font-size:14px;font-weight:600;color:#1E3A5F;margin-bottom:10px">Q'+(i+1)+'.  '+q.q+'</p>';
+    q.opts.forEach((o,j)=>{ html += '<button class="quiz-opt" id="qo-'+i+'-'+j+'" onclick="ansQuiz('+i+','+j+')">'+o+'</button>'; });
+    html += '<div class="fb" id="fb-'+i+'"></div>';
+    d.innerHTML = html; c.appendChild(d);
+  });
+}
+function ansQuiz(i,j){
+  if(answered[i]!==undefined) return;
+  const q = quizQs[i];
+  const ok = (j===q.a);
+  answered[i] = ok;
+  const fb = document.getElementById('fb-'+i);
+  fb.className='fb '+(ok?'ok':'no');
+  fb.innerHTML = '<strong>'+(ok?'Correct!':'Not quite.')+'</strong> '+q.ex;
+  document.getElementById('qo-'+i+'-'+j).className='quiz-opt '+(ok?'ok':'no');
+  if(!ok) document.getElementById('qo-'+i+'-'+q.a).className='quiz-opt ok';
+  for(let k=0;k<q.opts.length;k++) document.getElementById('qo-'+i+'-'+k).disabled=true;
+  const corr = Object.values(answered).filter(Boolean).length;
+  qscore.textContent = corr+' / '+Object.keys(answered).length;
+}
+function resetQuiz(){buildQuiz();}
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='mp'){ drawMPL(); drawMPK(); }
+}
+
+upd(); buildQuiz(); updMPLpanel(); updMPKpanel();
+</script>
+</body>
+</html>

@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jorge Hirs-Garzón — Economist</title>
+<meta name="description" content="Jorge Hirs-Garzón, Ph.D. Candidate in Economics at Texas A&M University. Research on macroeconomics, fiscal policy, and monetary policy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #1d4e89;
+  --blue-dark: #143661;
+  --blue-light: #e8f0fa;
+  --ink: #1a1a1a;
+  --text: #2d2d2d;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --bg-soft: #fafbfc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4 {
+  font-family: 'Crimson Pro', Georgia, serif;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.25;
+}
+a {
+  color: var(--blue);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover { color: var(--blue-dark); text-decoration: underline; }
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+  z-index: 100;
+  padding: 1rem 0;
+}
+.nav-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.nav-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+.nav-links a, .nav-links button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 500;
+  position: relative;
+  padding: 0;
+}
+.nav-links a:hover, .nav-links button:hover {
+  color: var(--blue);
+  text-decoration: none;
+}
+.nav-links a::after, .nav-links button::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--blue);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover::after,
+.nav-links button:hover::after,
+.nav-links .active::after { width: 100%; }
+.nav-links .active { color: var(--blue); }
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.page {
+  display: none;
+  min-height: calc(100vh - 70px);
+  padding: 6rem 0 4rem;
+  animation: fadeIn 0.4s ease;
+}
+.page.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 1rem;
+}
+h2.page-title {
+  font-size: 2.4rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+h2.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 50px; height: 3px;
+  background: var(--blue);
+}
+#home { padding-top: 7rem; }
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 290px;
+  gap: 4rem;
+  align-items: center;
+  min-height: 70vh;
+}
+.hero-text h1 {
+  font-size: 3.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.hero-affiliation {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+.tag {
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  border-radius: 999px;
+}
+.hero-pitch {
+  font-size: 1.15rem;
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  max-width: 560px;
+}
+.hero-intro {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 2rem;
+  max-width: 560px;
+}
+.hero-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-primary {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+.btn-primary:hover {
+  background: var(--blue-dark);
+  border-color: var(--blue-dark);
+  color: white;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.btn-secondary {
+  background: white;
+  color: var(--text);
+}
+.btn-secondary:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  text-decoration: none;
+}
+.photo-wrap {
+  display: flex;
+  justify-content: center;
+}
+.photo {
+  width: 270px;
+  height: 330px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 24px rgba(20, 54, 97, 0.1);
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+  gap: 3rem;
+  align-items: start;
+}
+.about-content {
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+.about-content p { margin-bottom: 1.25rem; }
+.about-side .photo {
+  width: 220px;
+  height: 270px;
+  margin-bottom: 1rem;
+}
+.about-side .quick-info {
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.about-side .quick-info strong { color: var(--ink); }
+.about-side .info-block {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.about-side .info-block:last-child { border-bottom: none; }
+.cv-content { max-width: 760px; }
+.cv-section { margin-bottom: 2.5rem; }
+.cv-section-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+.cv-entry {
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.cv-entry:last-child { border-bottom: none; }
+.cv-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+.cv-entry-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.12rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.cv-entry-date {
+  font-size: 0.88rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+.cv-entry-org {
+  font-size: 0.98rem;
+  color: var(--text);
+  font-style: italic;
+}
+.cv-entry-detail {
+  font-size: 0.93rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+.cv-list {
+  list-style: none;
+  padding: 0;
+}
+.cv-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+.cv-list li:last-child { border-bottom: none; }
+.cv-download {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.cv-download-text strong {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.cv-download-text span {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.papers-group { margin-bottom: 3rem; }
+.papers-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+.paper {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.paper:last-child { border-bottom: none; }
+.paper.jmp {
+  background: linear-gradient(to right, var(--blue-light), transparent 60%);
+  padding: 1.4rem;
+  margin: 0 -1.4rem 0.25rem -1.4rem;
+  border-bottom: none;
+  border-left: 3px solid var(--blue);
+  border-radius: 0 6px 6px 0;
+}
+.jmp-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: white;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  margin-bottom: 0.6rem;
+  border: 1px solid var(--blue);
+}
+.paper-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.22rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+  line-height: 1.35;
+}
+.paper-meta {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.paper-meta .journal {
+  font-style: italic;
+  color: var(--text);
+}
+.paper-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.paper-link {
+  font-size: 0.82rem;
+  padding: 0.28rem 0.7rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--text);
+  font-weight: 500;
+}
+.paper-link:hover {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+  text-decoration: none;
+}
+.jmp-figure {
+  margin: 1.5rem 0 1.25rem;
+  text-align: center;
+}
+.jmp-figure img {
+  max-width: 480px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.6rem;
+  box-shadow: 0 4px 14px rgba(20, 54, 97, 0.06);
+}
+.jmp-figure figcaption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.7rem;
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.award-banner {
+  background: linear-gradient(135deg, var(--blue-light) 0%, #f4f8fd 100%);
+  border: 1px solid #c6dbf0;
+  border-left: 4px solid var(--blue);
+  padding: 1.5rem 1.75rem;
+  border-radius: 6px;
+  margin-bottom: 2.5rem;
+}
+.award-banner .award-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.4rem;
+}
+.award-banner h3 {
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin-bottom: 0.3rem;
+}
+.award-banner p {
+  font-size: 0.95rem;
+  color: var(--text);
+  margin: 0;
+}
+.teaching-philosophy {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+.teaching-section { margin-bottom: 2.5rem; }
+.teaching-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+}
+.teaching-section .role {
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 1.25rem;
+}
+.recognition {
+  font-size: 0.95rem;
+  color: var(--text);
+  padding: 0.75rem 1rem;
+  background: var(--bg-soft);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 4px 4px 0;
+  margin-bottom: 1.5rem;
+}
+.recognition strong { color: var(--ink); }
+.course {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.course:last-child { border-bottom: none; }
+.course-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.course-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.course-eval {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blue);
+  padding: 0.2rem 0.6rem;
+  background: var(--blue-light);
+  border-radius: 4px;
+}
+.course-meta {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.course-comments { margin-top: 0.75rem; }
+.course-comments summary {
+  font-size: 0.88rem;
+  color: var(--blue);
+  cursor: pointer;
+  font-weight: 500;
+  padding: 0.3rem 0;
+  user-select: none;
+}
+.course-comments summary:hover { text-decoration: underline; }
+.comment {
+  font-size: 0.93rem;
+  line-height: 1.6;
+  color: var(--text);
+  font-style: italic;
+  padding: 0.7rem 1rem;
+  border-left: 2px solid var(--line);
+  margin: 0.6rem 0;
+  background: var(--bg-soft);
+}
+.simple-course-list {
+  list-style: none;
+  padding: 0;
+}
+.simple-course-list li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.98rem;
+}
+.simple-course-list li:last-child { border-bottom: none; }
+.policy-intro {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+.contact-block {
+  background: var(--bg-soft);
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+}
+footer {
+  padding: 2.5rem 0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+footer a { color: var(--muted); margin: 0 0.5rem; }
+.macrolab-intro {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+.macrolab-preview {
+  margin: 0 0 2.5rem;
+  max-width: 760px;
+}
+.macrolab-preview-frame {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.5rem;
+  box-shadow: 0 6px 20px rgba(20, 54, 97, 0.08);
+  overflow: hidden;
+}
+.macrolab-preview-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.macrolab-preview-caption {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  line-height: 1.55;
+  font-style: italic;
+}
+.macrolab-license {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  max-width: 760px;
+  line-height: 1.65;
+}
+.macrolab-license strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.macrolab-license em {
+  color: var(--text);
+}
+.lab-week {
+  padding: 1.5rem 1.6rem;
+  margin-bottom: 1.5rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 8px 8px 0;
+}
+.lab-week-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.lab-week-titles {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.lab-week-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid var(--blue);
+}
+.lab-week-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+.lab-guide-link {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--blue);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lab-guide-link:hover {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+  text-decoration: none;
+}
+.lab-week-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.lab-modules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+.lab-module {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.7rem 0.9rem;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 0.92rem;
+  transition: all 0.2s ease;
+}
+.lab-module:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(20, 54, 97, 0.08);
+}
+.lab-module-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  font-weight: 700;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+.lab-module:hover .lab-module-letter {
+  background: var(--blue);
+  color: white;
+}
+.lab-module-name {
+  font-weight: 500;
+  line-height: 1.3;
+}
+.lab-note {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  max-width: 760px;
+}
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0; right: 0;
+    background: white;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    gap: 1rem;
+    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+  }
+  .nav-links.open { display: flex; }
+  .menu-toggle { display: block; }
+  .hero-grid, .about-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+  .hero-text h1 { font-size: 2.3rem; }
+  .hero-tags, .hero-links { justify-content: center; }
+  .photo-wrap { order: -1; }
+  .photo { width: 200px; height: 240px; }
+  .hero-pitch, .hero-intro { margin-left: auto; margin-right: auto; }
+  .about-grid { text-align: left; }
+  .about-side { display: flex; flex-direction: column; align-items: center; }
+  .page { padding: 5rem 0 2.5rem; }
+  #home { padding-top: 6rem; }
+  h2.page-title { font-size: 1.9rem; }
+  .paper.jmp { margin-left: -1rem; margin-right: -1rem; padding: 1.2rem 1rem; }
+  .course-header { flex-direction: column; align-items: flex-start; }
+  .lab-week-header { flex-direction: column; align-items: flex-start; }
+  .lab-week { padding: 1.25rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <span class="nav-name" onclick="showPage('about')">Jorge Hirs-Garzón</span>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+    <ul class="nav-links">
+      <li><button onclick="showPage('about')" data-page="about">About</button></li>
+      <li><button onclick="showPage('cv')" data-page="cv">CV</button></li>
+      <li><button onclick="showPage('research')" data-page="research">Research</button></li>
+      <li><button onclick="showPage('teaching')" data-page="teaching">Teaching</button></li>
+      <li><button onclick="showPage('macrolab')" data-page="macrolab">Macro Lab</button></li>
+      <li><button onclick="showPage('policy')" data-page="policy">Policy Work</button></li>
+    </ul>
+  </div>
+</nav>
+<div class="page active" id="about">
+  <div class="container">
+    <div class="section-label">About</div>
+    <h2 class="page-title">About Me</h2>
+    <div class="about-grid">
+      <div class="about-content">
+        <p>
+          I am a Ph.D. Candidate in <a href="https://artsci.tamu.edu/economics/index.html" target="_blank" rel="noopener">Economics at Texas A&amp;M University</a> (expected 2027), specializing in macroeconomics, monetary economics, and fiscal policy. My research investigates how private-sector beliefs, attention, and firm heterogeneity shape the transmission of macroeconomic policies, drawing on firm-level microdata and macroeconomic modeling.
+        </p>
+        <p>
+          My job market paper, <em>"Decoding Unconventional Monetary Policy: The Role of Firm-Level Heterogeneity"</em>, studies how the real effects of monetary policy depend on the informational content of policy announcements and on firms' attention and financial conditions.
+        </p>
+        <p>
+          In my teaching, I combine rigorous economic analysis with real-world problems to help students develop disciplined reasoning they can apply well beyond the classroom. I am a <a href="Hirs%20Garzon_AFF.pdf" target="_blank" rel="noopener">CIRTL Associate Fellow</a> of the <a href="https://cte.tamu.edu/programming/programs-and-events-for-gspdt/academy-for-future-faculty.html" target="_blank" rel="noopener">Academy for Future Faculty</a> at Texas A&amp;M.
+        </p>
+        <p>
+          Beyond academia, I have served as a consultant for the Inter-American Development Bank and contribute to policy-oriented research with direct implications for policymaking. I am a member of the <a href="https://redinvestigadores.org/" target="_blank" rel="noopener">Economics Research Network</a> of the Colombian Central Bank.
+        </p>
+        <p>
+          You can find my CV <a href="#" onclick="showPage('cv'); return false;">here</a>, and you can contact me at <a href="mailto:jorgehirs@tamu.edu">jorgehirs@tamu.edu</a>.
+        </p>
+      </div>
+      <div class="about-side">
+        <div class="photo">
+          <img src="photo.png" alt="Jorge Hirs-Garzón">
+        </div>
+        <div class="contact-block">
+          <div class="quick-info">
+            <div class="info-block">
+              <strong>Affiliation</strong><br>
+              Department of Economics<br>
+              Texas A&amp;M University
+            </div>
+            <div class="info-block">
+              <strong>Fields</strong><br>
+              Macroeconomics<br>
+              Fiscal & Monetary Policy
+            </div>
+            <div class="info-block">
+              <strong>Email</strong><br>
+              <a href="mailto:jorgehirs@tamu.edu">jorgehirs@tamu.edu</a>
+            </div>
+            <div class="info-block" style="border-bottom:none;">
+              <strong>Find me</strong><br>
+              <a href="https://scholar.google.com/citations?user=cVKtLj8AAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a><br>
+              <a href="https://www.linkedin.com/in/jorge-hirs-2868b9399" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="page" id="cv">
+  <div class="container">
+    <div class="section-label">Curriculum Vitae</div>
+    <h2 class="page-title">CV</h2>
+    <div class="cv-content">
+      <div class="cv-download">
+        <div class="cv-download-text">
+          <strong>Curriculum Vitae</strong>
+          <span>Jorge_Hirs_CV.pdf — last updated Spring 2026</span>
+        </div>
+        <a href="Jorge_Hirs_CV.pdf" target="_blank" class="btn btn-primary" id="cv-link">Download PDF</a>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Education</h3>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Ph.D. in Economics</span>
+            <span class="cv-entry-date">2022 – 2027 (expected)</span>
+          </div>
+          <div class="cv-entry-org">Texas A&amp;M University</div>
+          <div class="cv-entry-detail">Committee: Tatevik Sekhposyan (Chair), Sarah Zubairy (Co-Chair), Pedro Bento.</div>
+        </div>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">B.A. in Economics</span>
+            <span class="cv-entry-date">2012 – 2017</span>
+          </div>
+          <div class="cv-entry-org">Universidad del Valle, Colombia</div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Research Fields</h3>
+        <p style="font-size:1rem; color:var(--text);">Macroeconomics · Monetary Economics · Fiscal Policy</p>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Affiliations</h3>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Economics Research Network</span>
+            <span class="cv-entry-date">2023 – present</span>
+          </div>
+          <div class="cv-entry-org">Banco de la República (Central Bank of Colombia)</div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Professional Experience</h3>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Consultant, Fiscal Division</span>
+            <span class="cv-entry-date">Summers 2023, 2024, 2025</span>
+          </div>
+          <div class="cv-entry-org">Inter-American Development Bank · Washington, D.C. / Bogotá</div>
+        </div>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Consultant–Research Fellow</span>
+            <span class="cv-entry-date">Nov 2018 – Jul 2022</span>
+          </div>
+          <div class="cv-entry-org">Inter-American Development Bank · Bogotá</div>
+        </div>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Analyst, Credit Risk Department</span>
+            <span class="cv-entry-date">Dec 2017 – Oct 2018</span>
+          </div>
+          <div class="cv-entry-org">Financial Superintendence of Colombia · Bogotá</div>
+        </div>
+        <div class="cv-entry">
+          <div class="cv-entry-header">
+            <span class="cv-entry-title">Research Assistant</span>
+            <span class="cv-entry-date">Jan – Dec 2016</span>
+          </div>
+          <div class="cv-entry-org">Banco de la República (Central Bank of Colombia) · Bogotá</div>
+        </div>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Honors &amp; Awards</h3>
+        <ul class="cv-list">
+          <li><strong>Best Graduate Student Course Instructor</strong>, Department of Economics, Texas A&amp;M University · 2025</li>
+          <li><strong>NH Webber Scholarship</strong>, Private Enterprise Research Center, Texas A&amp;M University · 2025</li>
+          <li><strong>E. Ralph Daniel Scholarship</strong>, Private Enterprise Research Center, Texas A&amp;M University · 2024</li>
+          <li><strong>Honorable Mention, Outstanding Teaching Assistant</strong>, Department of Economics, Texas A&amp;M University · 2023–2024</li>
+          <li><strong>Graduate Assistantship</strong>, Department of Economics, Texas A&amp;M University · 2022–present</li>
+          <li><strong>Academic Excellence Award</strong>, Universidad del Valle · 2012–2016</li>
+          <li><strong>Academy for Future Faculty (AFF) Certification</strong>, Center for Teaching Excellence, Texas A&amp;M · 2026</li>
+        </ul>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Professional Service</h3>
+        <p style="font-size:0.98rem; line-height:1.7; margin-bottom:0.6rem;"><strong>Refereeing:</strong> Energy Economics (2 reports), Journal of Real Estate Finance and Economics, Applied Economics Letters.</p>
+        <p style="font-size:0.98rem; line-height:1.7; margin-bottom:0.6rem;"><strong>Departmental:</strong> Guest Speaker, Teaching Course for Economics Ph.D. Students, Texas A&amp;M University (2026); Mentor for Ph.D. Students, Department of Economics, Texas A&amp;M University (2023–present).</p>
+      </div>
+      <div class="cv-section">
+        <h3 class="cv-section-title">Skills &amp; Languages</h3>
+        <p style="font-size:0.98rem; line-height:1.7;"><strong>Software:</strong> Stata, MATLAB, R, Python</p>
+        <p style="font-size:0.98rem; line-height:1.7;"><strong>Languages:</strong> Spanish (native), English (fluent)</p>
+      </div>
+      <p style="font-size:0.92rem; color:var(--muted); margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--line);">
+        References available upon request. Full CV available as PDF above.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="page" id="research">
+  <div class="container">
+    <div class="section-label">Research</div>
+    <h2 class="page-title">Research</h2>
+    <div class="papers-group">
+      <div class="papers-subtitle">Job Market Paper</div>
+      <div class="paper jmp">
+        <span class="jmp-badge">Job Market Paper</span>
+        <div class="paper-title">Decoding Unconventional Monetary Policy: The Role of Firm-Level Heterogeneity</div>
+        <div class="paper-meta">Sole-authored</div>
+        <p style="font-size:0.96rem; line-height:1.65; color:var(--text); margin-top:0.6rem;">
+          This paper studies how monetary policy—both conventional and unconventional—transmits to firm investment, emphasizing the roles of <em>attention</em> and <em>financial conditions</em>. I construct a firm-level measure of attention to monetary policy using earnings conference call transcripts and identify conventional, Odyssean, and Delphic policy shocks from high-frequency asset price movements around FOMC announcements. The effects of policy depend on its informational content: Odyssean forward guidance—reflecting commitment to a future policy path—generates stronger investment responses among attentive firms, while Delphic guidance—conveying the central bank&rsquo;s assessment of economic fundamentals—and conventional policy transmit primarily through financial conditions, with a limited role for attention. I rationalize these findings with a framework in which firms differ in attention and financial fragility, and policy affects investment through expected financing costs and economic fundamentals. The results imply that the real effects of monetary policy depend on both the type of information conveyed and firm-level heterogeneity.
+        </p>
+        <div class="paper-links">
+          <a href="mailto:jorgehirs@tamu.edu" class="paper-link">Draft on request</a>
+        </div>
+      </div>
+    </div>
+    <div class="papers-group">
+      <div class="papers-subtitle">Working Papers</div>
+      <div class="paper">
+        <div class="paper-title">Fiscal Assessments Through the Lens of Firms: Corporate Perceptions and the Transmission of Fiscal Policy</div>
+        <div class="paper-meta">with L. Andrian and O. Valencia · <span class="journal">Submitted</span></div>
+        <div class="paper-links">
+          <a href="mailto:jorgehirs@tamu.edu" class="paper-link">Draft on request</a>
+          <a href="https://drive.google.com/file/d/1NBk_2b-p26y_e6cVA4f68eLWZPvDkVVn/view?usp=sharing" target="_blank" rel="noopener" class="paper-link">AI Podcast</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">How Partisanship Shapes Economic Expectations: Evidence from the 2025 U.S. Tariff Announcement</div>
+        <div class="paper-meta">with <a href="https://sites.google.com/view/twhwang/home" target="_blank" rel="noopener">Taewon Hwang</a> and <a href="https://www.yoonjoojo.com/home" target="_blank" rel="noopener">Yoon Joo Jo</a> · <span class="journal">Submitted</span></div>
+        <div class="paper-links">
+          <a href="mailto:jorgehirs@tamu.edu" class="paper-link">Draft on request</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Firm-Level Risk Perceptions and the Transmission of Monetary Policy Shocks</div>
+        <div class="paper-meta"><span class="journal">Submitted</span></div>
+        <div class="paper-links">
+          <a href="mailto:jorgehirs@tamu.edu" class="paper-link">Draft on request</a>
+          <a href="https://drive.google.com/file/d/1E0jfR_kblldBfOPsRqlV2SlRvY8vGKKG/view?usp=sharing" target="_blank" rel="noopener" class="paper-link">AI Podcast</a>
+        </div>
+      </div>
+    </div>
+    <div class="papers-group">
+      <div class="papers-subtitle">Publications</div>
+      <div class="paper">
+        <div class="paper-title">Fiscal Rules and Economic Cycles: Quality (Always) Matters</div>
+        <div class="paper-meta">with L. Andrian, O. Valencia and I. Urrea · <span class="journal">European Journal of Political Economy</span>, Vol. 85, 102591, December 2024</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S0176268024000934" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Global Effects of US Uncertainty: Real and Financial Shocks on Real and Financial Markets</div>
+        <div class="paper-meta">with J. Gómez-González and J.M. Uribe · <span class="journal">Economic Systems</span>, Vol. 48(3), 101180, September 2024</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S0939362524000025" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Financial and Macroeconomic Uncertainties and Real Estate Markets</div>
+        <div class="paper-meta">with J. Gómez-González, S. Sanin-Restrepo and J.M. Uribe · <span class="journal">Eastern Economic Journal</span>, Vol. 50(1), pp. 29–53, 2024</div>
+        <div class="paper-links">
+          <a href="https://link.springer.com/article/10.1057/s41302-023-00263-0" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Interdependent Capital Structure Choices and the Macroeconomy</div>
+        <div class="paper-meta">with J. Gómez-González and J.M. Uribe · <span class="journal">North American Journal of Economics and Finance</span>, Vol. 62, 101750, 2022</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S1062940822000985" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Spillovers Beyond the Variance: Higher-Order Risk Linkages Between Commodity Markets and Global Financial Markets</div>
+        <div class="paper-meta">with J. Gómez-González and J.M. Uribe · <span class="journal">Journal of Commodity Markets</span>, Vol. 28, 100258, 2022</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S2405851322000162" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Dynamic Spillovers Between REITs and Stock Markets in Global Financial Markets</div>
+        <div class="paper-meta">with J. Gómez-González · <span class="journal">Journal of Real Estate Portfolio Management</span>, 27(1), 20–28, 2021</div>
+        <div class="paper-links">
+          <a href="https://www.tandfonline.com/doi/full/10.1080/10835547.2021.1981569" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Dynamic Relations Between Oil and Stock Markets: Volatility Spillovers, Networks and Causality</div>
+        <div class="paper-meta">with J. Gómez-González and S. Sanin-Restrepo · <span class="journal">International Economics</span>, Vol. 165, pp. 37–50, 2021</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S2110701720302833" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Dynamic Relations Between Oil and Stock Market Returns: A Multi-Country Study</div>
+        <div class="paper-meta">with J. Gómez-González and J. Gamboa-Arbeláez · <span class="journal">North American Journal of Economics and Finance</span>, Vol. 51, 101082, 2020</div>
+        <div class="paper-links">
+          <a href="https://www.sciencedirect.com/science/article/abs/pii/S1062940819302499" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Giving and Receiving: Exploring the Predictive-Causality Between Oil Prices and Exchange Rates</div>
+        <div class="paper-meta">with J. Gómez-González and J.M. Uribe · <span class="journal">International Finance</span>, Vol. 23(1), pp. 175–194, 2020</div>
+        <div class="paper-links">
+          <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/infi.12354" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">When Bubble Meets Bubble: Contagion in OECD Countries</div>
+        <div class="paper-meta">with J. Gamboa-Arbeláez, J. Gómez-González and A. Pinchao-Rosero · <span class="journal">Journal of Real Estate Finance and Economics</span>, Vol. 56(4), pp. 546–566, 2018</div>
+        <div class="paper-links">
+          <a href="https://link.springer.com/article/10.1007/s11146-017-9605-4" target="_blank" rel="noopener" class="paper-link">Journal</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="page" id="teaching">
+  <div class="container">
+    <div class="section-label">Teaching</div>
+    <h2 class="page-title">Teaching</h2>
+    <div class="award-banner">
+      <div class="award-label">★ Recognition</div>
+      <h3>Best Graduate Student Course Instructor, 2025</h3>
+      <p>Department of Economics, Texas A&amp;M University</p>
+    </div>
+    <p class="teaching-philosophy">
+      My teaching philosophy rests on the belief that economics is not a collection of models to memorize but a framework for making sense of the world. I want students to leave my courses with a way of thinking — one that helps them evaluate evidence, reason through trade-offs, and form disciplined judgments about complex questions. Because students arrive with different backgrounds, my role is to guide them as they turn curiosity into structured reasoning and the confidence to apply it independently. As a <a href="Hirs%20Garzon_AFF.pdf" target="_blank" rel="noopener">CIRTL Associate Fellow</a> of the Academy for Future Faculty, I am committed to evidence-based, student-centered teaching. Please make sure to review the <a href="#" onclick="showPage('macrolab'); return false;">Macro Lab</a>, an open, browser-based companion to <em>Intermediate Macroeconomics</em> where students experiment with the core models of the course and build intuition through hands-on simulation.
+    </p>
+    <div class="teaching-section">
+      <h3>Department of Economics, Texas A&amp;M University</h3>
+      <div class="role">Instructor of Record · <a href="https://www.ratemyprofessors.com/professor/3103342" target="_blank" rel="noopener" style="font-weight:500; letter-spacing:normal; text-transform:none;">Rate My Professors</a></div>
+      <div class="course">
+        <div class="course-header">
+          <div class="course-name">Contemporary Economic Issues (Undergraduate) — Fall 2025</div>
+          <div class="course-eval">4.92 / 5</div>
+        </div>
+        <div class="course-meta">
+          <a href="https://drive.google.com/file/d/1jN6w7xbyzfKv-1ULrhPU8EuDU7J2lVgu/view?usp=sharing" target="_blank" rel="noopener">Syllabus</a>
+        </div>
+        <details class="course-comments">
+          <summary>Selected student comments</summary>
+          <div class="comment">"The learning environment was extremely effective and engaging. The professor allowed us to not only learn through him, but through one another."</div>
+          <div class="comment">"He made me actually want to be in class and engage with the material. Very amazing person through and through."</div>
+          <div class="comment">"This class actually let me apply the knowledge I had, which was very helpful as opposed to just a theory-based math class."</div>
+          <div class="comment">"This course helped me greatly in interviews where macroeconomics were an important topic."</div>
+          <div class="comment">"He made sure students truly learned the topic discussed. With many assignments being open-ended, testing your own ability to critically think."</div>
+          <div class="comment">"Many lessons weren't just to learn in the moment for the test, but rather stuck with me as true findings in recent economic issues in today's society."</div>
+        </details>
+      </div>
+      <div class="course">
+        <div class="course-header">
+          <div class="course-name">Contemporary Economic Issues (Undergraduate) — Spring 2025</div>
+          <div class="course-eval">4.87 / 5</div>
+        </div>
+        <div class="course-meta">
+          <a href="https://drive.google.com/file/d/1Q5bwihe8Y5ymtkVOER_fK8AVdylqZdH2/view?usp=sharing" target="_blank" rel="noopener">Syllabus</a>
+        </div>
+        <details class="course-comments">
+          <summary>Selected student comments</summary>
+          <div class="comment">"Great professor who genuinely cares about students and course learning."</div>
+          <div class="comment">"He is an excellent instructor. We were provided with a learning environment that encourages everyone to feel comfortable sharing their knowledge."</div>
+          <div class="comment">"He was a wonderful professor — I would take his class again a hundred times out of a hundred. Very nice man as well."</div>
+          <div class="comment">"He did his best to keep everyone engaged and found new ways to get people to participate. He took the time to learn our names and speak to us when we entered and exited the classroom. You could tell he has motivation to teach."</div>
+          <div class="comment">"Created the best learning environment that I have had at A&amp;M."</div>
+        </details>
+      </div>
+    </div>
+    <div class="teaching-section">
+      <h3 style="font-size:1.3rem;">Teaching Assistant</h3>
+      <div class="recognition">
+        <strong>Honorable Mention</strong> for Outstanding Teaching Assistant, Department of Economics, Texas A&amp;M University, 2023–2024.
+      </div>
+      <ul class="simple-course-list">
+        <li>Introduction to Economic Data Analysis (Undergraduate) — Spring 2026</li>
+        <li>Contemporary Economic Issues (Undergraduate) — Fall 2023, Fall 2024</li>
+        <li>Macroeconomic Theory (Undergraduate) — Fall 2022, Spring 2023, Spring 2024</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="page" id="macrolab">
+  <div class="container">
+    <div class="section-label">Teaching · ECON 410</div>
+    <h2 class="page-title">Macro Lab</h2>
+
+    <p class="macrolab-intro">
+      <strong>Macro Lab</strong> is an open, interactive companion to <em>Intermediate Macroeconomics (ECON 410)</em> that I am building to help students move from passive reading to active experimentation with the core models of the course. Each section pairs a structured lab guide with a set of browser-based modules where students adjust parameters, observe dynamics, and develop intuition for the mechanics behind the math. The lab is a work in progress and is openly available — students and instructors are welcome to use and adapt the materials.
+    </p>
+
+    <div class="lab-week">
+      <div class="lab-week-header">
+        <div class="lab-week-titles">
+          <span class="lab-week-num">Section 1</span>
+          <h3 class="lab-week-title">Macroeconomic Overview &amp; GDP</h3>
+        </div>
+        <div class="lab-week-actions">
+          <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_LabGuide.docx" class="lab-guide-link" download>Lab Guide</a>
+          <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_ExamReview.html" target="_blank" rel="noopener" class="lab-guide-link">Exam Review</a>
+        </div>
+      </div>
+      <div class="lab-modules">
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_A_MacroOverview.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">A</span><span class="lab-module-name">Macro Overview</span>
+        </a>
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_B_GDPAccounting.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">B</span><span class="lab-module-name">GDP Accounting</span>
+        </a>
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_C_RealNominal.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">C</span><span class="lab-module-name">Real vs. Nominal</span>
+        </a>
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_D_Unemployment.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">D</span><span class="lab-module-name">Unemployment</span>
+        </a>
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_E_ExamPrep.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">E</span><span class="lab-module-name">Exam Prep</span>
+        </a>
+        <a href="Section_1_Week1_MacroOverview_GDP/ECON410_Section1_Module_F_DeeperDive.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">F</span><span class="lab-module-name">Deeper Dive</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="lab-week">
+      <div class="lab-week-header">
+        <div class="lab-week-titles">
+          <span class="lab-week-num">Section 2</span>
+          <h3 class="lab-week-title">The Neoclassical Model</h3>
+        </div>
+        <div class="lab-week-actions">
+          <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_LabGuide.docx" class="lab-guide-link" download>Lab Guide</a>
+          <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_ExamReview.html" target="_blank" rel="noopener" class="lab-guide-link">Exam Review</a>
+        </div>
+      </div>
+      <div class="lab-modules">
+        <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_Module_A_ProductionFunction.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">A</span><span class="lab-module-name">Production Function</span>
+        </a>
+        <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_Module_B_FactorMarkets.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">B</span><span class="lab-module-name">Factor Markets</span>
+        </a>
+        <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_Module_C_GoodsMarket.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">C</span><span class="lab-module-name">Goods Market</span>
+        </a>
+        <a href="Section_2_Week2_NeoclassicalModel/ECON410_Section2_Module_D_DeeperDive.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">D</span><span class="lab-module-name">Deeper Dive</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="lab-week">
+      <div class="lab-week-header">
+        <div class="lab-week-titles">
+          <span class="lab-week-num">Section 3</span>
+          <h3 class="lab-week-title">Money &amp; Inflation</h3>
+        </div>
+        <div class="lab-week-actions">
+          <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_LabGuide.docx" class="lab-guide-link" download>Lab Guide</a>
+          <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_ExamReview.html" target="_blank" rel="noopener" class="lab-guide-link">Exam Review</a>
+        </div>
+      </div>
+      <div class="lab-modules">
+        <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_Module_A_MoneyBanking.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">A</span><span class="lab-module-name">Money &amp; Banking</span>
+        </a>
+        <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_Module_B_QuantityTheory.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">B</span><span class="lab-module-name">Quantity Theory</span>
+        </a>
+        <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_Module_C_FisherEquation.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">C</span><span class="lab-module-name">Fisher Equation</span>
+        </a>
+        <a href="Section_3_Week3_MoneyInflation/ECON410_Section3_Module_D_DeeperDive.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">D</span><span class="lab-module-name">Deeper Dive</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="lab-week">
+      <div class="lab-week-header">
+        <div class="lab-week-titles">
+          <span class="lab-week-num">Section 4</span>
+          <h3 class="lab-week-title">Unemployment &amp; Growth</h3>
+        </div>
+        <div class="lab-week-actions">
+          <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_LabGuide.docx" class="lab-guide-link" download>Lab Guide</a>
+          <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_ExamReview.html" target="_blank" rel="noopener" class="lab-guide-link">Exam Review</a>
+        </div>
+      </div>
+      <div class="lab-modules">
+        <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_Module_A_BathtubModel.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">A</span><span class="lab-module-name">Bathtub Model</span>
+        </a>
+        <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_Module_B_SolowModel.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">B</span><span class="lab-module-name">Solow Model</span>
+        </a>
+        <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_Module_C_Convergence.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">C</span><span class="lab-module-name">Convergence</span>
+        </a>
+        <a href="Section_4_Week4_UnemploymentGrowth/ECON410_Section4_Module_D_DeeperDive.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">D</span><span class="lab-module-name">Deeper Dive</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="lab-week">
+      <div class="lab-week-header">
+        <div class="lab-week-titles">
+          <span class="lab-week-num">Section 5</span>
+          <h3 class="lab-week-title">Business Cycles &amp; IS–LM</h3>
+        </div>
+        <div class="lab-week-actions">
+          <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_LabGuide.docx" class="lab-guide-link" download>Lab Guide</a>
+          <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_ExamReview.html" target="_blank" rel="noopener" class="lab-guide-link">Exam Review</a>
+        </div>
+      </div>
+      <div class="lab-modules">
+        <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_Module_A_KeynesianCross.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">A</span><span class="lab-module-name">Keynesian Cross</span>
+        </a>
+        <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_Module_B_ISLM.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">B</span><span class="lab-module-name">IS–LM</span>
+        </a>
+        <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_Module_C_ADAS.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">C</span><span class="lab-module-name">AD–AS</span>
+        </a>
+        <a href="Section_5_Week5_BusinessCycles_ISLM/ECON410_Section5_Module_D_DeeperDive.html" target="_blank" rel="noopener" class="lab-module">
+          <span class="lab-module-letter">D</span><span class="lab-module-name">Deeper Dive</span>
+        </a>
+      </div>
+    </div>
+
+    <p class="lab-note">
+      Lab Guides are provided in Word format and contain the worksheets that accompany each set of interactive modules. Additional sections will be added as the lab develops. For questions, suggestions, or to use these materials in your own class, please <a href="mailto:jorgehirs@tamu.edu">get in touch</a>.
+    </p>
+
+    <p class="macrolab-license">
+      <strong>License.</strong> All Macro Lab materials are released under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution 4.0 International License (CC BY 4.0)</a>. You are free to use, adapt, and share these materials in your own classroom, with attribution. <strong>Suggested citation:</strong> Hirs-Garzón, J. (2026). <em>Macro Lab: Interactive Modules for Intermediate Macroeconomics (ECON 410)</em>.
+    </p>
+  </div>
+</div>
+
+<div class="page" id="policy">
+  <div class="container">
+    <div class="section-label">Policy</div>
+    <h2 class="page-title">Policy Work</h2>
+    <p class="policy-intro">
+      I work at the intersection of academic research and economic policymaking, producing analysis that informs fiscal and monetary policy debates in Latin America and beyond. My policy-oriented work — published primarily through the <strong>Inter-American Development Bank (IDB)</strong> — focuses on fiscal rules, sovereign risk, public investment, and macrofiscal outcomes. I am a member of the <a href="https://redinvestigadores.org/" target="_blank" rel="noopener">Economics Research Network</a> of the Colombian Central Bank.
+    </p>
+    <div class="papers-group">
+      <div class="papers-subtitle">Policy Reports &amp; Notes</div>
+      <div class="paper">
+        <div class="paper-title">The Evolution of External Shocks and Macrofiscal Outcomes in the Andes</div>
+        <div class="paper-meta">with J.L. Saboin, L. Andrian, and A. Chávez · <span class="journal">Inter-American Development Bank</span>, 2024</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/en/evolution-external-shocks-and-macrofiscal-outcomes-andes" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Instituciones fiscales en los países de la Región Andina y retos derivados del proceso de descarbonización</div>
+        <div class="paper-meta">with L. Andrian and O. Valencia · <span class="journal">Inter-American Development Bank</span>, 2023</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/instituciones-fiscales-en-los-paises-de-la-region-andina-y-retos-derivados-del-proceso-de" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Prioridades para la digitalización empresarial en América Latina y el Caribe</div>
+        <div class="paper-meta">with F. Vargas · <span class="journal">Inter-American Development Bank</span>, 2023</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/prioridades-para-la-digitalizacion-empresarial-en-america-latina-y-el-caribe" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Planificación y priorización ex ante de la inversión pública en los países andinos</div>
+        <div class="paper-meta">with E. Armendáriz, L.G. Andrian, and E. Contreras · <span class="journal">Inter-American Development Bank</span>, 2021</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/planificacion-y-priorizacion-ex-ante-de-la-inversion-publica-en-los-paises-andinos" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Colombia: Desafíos de Desarrollo en Tiempos de COVID-19</div>
+        <div class="paper-meta">with L. Andrian · <span class="journal">Inter-American Development Bank</span>, 2020</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/colombia-desafios-del-desarrollo-en-tiempos-de-covid-19" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Las finanzas públicas y la crisis por Covid-19 en los países andinos</div>
+        <div class="paper-meta">with L. Andrian and M.C. Deza · <span class="journal">Inter-American Development Bank</span>, 2020</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/las-finanzas-publicas-y-la-crisis-por-covid-19-en-los-paises-andinos" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">LAC Post COVID-19: Challenges and Opportunities for the Andean Region</div>
+        <div class="paper-meta">with E. Abuelafia et al. · <span class="journal">Inter-American Development Bank</span>, 2020</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/en/lac-post-covid-19-challenges-and-opportunities-for-the-andean-region" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Notas de infraestructura de país: Región andina</div>
+        <div class="paper-meta">with L.G. Andrian et al. · <span class="journal">Inter-American Development Bank</span>, 2019</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/notas-de-infraestructura-de-pais-region-andina" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">Impacto de Subsidios en el Agro: Una mirada desde el sector cafetero</div>
+        <div class="paper-meta">with J. Echavarría, J. Gamboa-Arbeláez, and M. Villamizar-Villegas · <span class="journal">Borradores de Economía, Banco de la República</span>, No. 1021, 2017</div>
+        <div class="paper-links">
+          <a href="https://investiga.banrep.gov.co/es/content/impacto-de-subsidios-en-el-agro-una-mirada-desde-el-sector-cafetero-0" target="_blank" rel="noopener" class="paper-link">Working Paper</a>
+        </div>
+      </div>
+      <div class="paper">
+        <div class="paper-title">El programa de apoyos para estudios en el exterior del Banco de la República y la formación del capital humano en el área económica en Colombia</div>
+        <div class="paper-meta">with J. Gamboa-Arbeláez, J. Gómez-González, A. Meisel-Roca, and J. Ojeda-Joya · <span class="journal">Borradores de Economía, Banco de la República</span>, No. 973, 2016</div>
+        <div class="paper-links">
+          <a href="https://www.banrep.gov.co/es/borrador-973" target="_blank" rel="noopener" class="paper-link">Working Paper</a>
+        </div>
+      </div>
+    </div>
+    <div class="papers-group">
+      <div class="papers-subtitle">Books (Editor)</div>
+      <div class="paper">
+        <div class="paper-title">Cómo acelerar el crecimiento económico y fortalecer la clase media: Colombia</div>
+        <div class="paper-meta">L. Andrián and J. Hirs (Editors) · <span class="journal">Inter-American Development Bank</span>, 2020</div>
+        <div class="paper-links">
+          <a href="https://publications.iadb.org/es/como-acelerar-el-crecimiento-economico-y-fortalecer-la-clase-media-colombia" target="_blank" rel="noopener" class="paper-link">IDB Publication</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="container">
+    © 2026 Jorge Hirs-Garzón ·
+    <a href="mailto:jorgehirs@tamu.edu">Email</a> ·
+    <a href="https://scholar.google.com/citations?user=cVKtLj8AAAAJ&hl=en" target="_blank" rel="noopener">Scholar</a> ·
+    <a href="https://www.linkedin.com/in/jorge-hirs-2868b9399" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</footer>
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector('.nav-links button[data-page="' + id + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+  document.querySelector('.nav-links').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (history.pushState) history.pushState(null, '', '#' + id);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = window.location.hash.slice(1);
+  if (hash && document.getElementById(hash)) showPage(hash);
+});
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.slice(1);
+  if (hash && document.getElementById(hash)) showPage(hash);
+});
+</script>
+</body>
+</html>

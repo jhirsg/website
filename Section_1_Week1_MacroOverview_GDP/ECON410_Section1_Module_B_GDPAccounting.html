@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module B: GDP Accounting</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f7f5;color:#1a1a1a}
+  .header{background:#500000;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#e8c87a;margin-top:2px}
+  .badge{background:#1a2a5e;color:#c8a96e;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:7px 15px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit;transition:all .15s}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1a2a5e;color:#fff;border-color:#1a2a5e}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:16px 18px;margin:10px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .ctrl{display:flex;align-items:center;gap:10px;margin:7px 0;flex-wrap:wrap}
+  .ctrl label{font-size:13px;color:#555;min-width:230px}
+  .ctrl input[type=range]{flex:1;min-width:100px}
+  .ctrl .out{font-size:13px;font-weight:600;min-width:72px;text-align:right;color:#1a1a1a}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:14px 0}
+  .metric{background:#f4f4f4;border-radius:8px;padding:10px 14px}
+  .metric .lbl{font-size:11px;color:#666;margin-bottom:4px}
+  .metric .val{font-size:19px;font-weight:600;color:#1a1a1a}
+  .bar-wrap{margin:5px 0}
+  .bar-label{display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:3px}
+  .bar-track{height:20px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:4px;transition:width .3s;min-width:2px}
+  .eq-box{background:#1a2a5e;color:#fff;border-radius:8px;padding:12px 16px;margin:12px 0;font-size:14px;font-weight:500}
+  .eq-box strong{color:#c8a96e}
+  .pill{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;margin:2px}
+  .pill.green{background:#e6f4ea;color:#1a6b34}
+  .pill.red{background:#fde8e8;color:#922b21}
+  .pill.amber{background:#fef3e2;color:#784212}
+  .pill.blue{background:#e8f0fe;color:#1a3a8a}
+  .divider{border:none;border-top:1px solid #eee;margin:14px 0}
+  .comp-btn{padding:7px 14px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;margin:3px;font-family:inherit;transition:all .15s}
+  .comp-btn:hover{background:#f0f0f0}
+  .comp-btn.sel-C{background:#e8f0fe;color:#0c447c;border-color:#185FA5;font-weight:600}
+  .comp-btn.sel-I{background:#e6f4ea;color:#27500a;border-color:#3B6D11;font-weight:600}
+  .comp-btn.sel-G{background:#fef3e2;color:#633806;border-color:#854F0B;font-weight:600}
+  .comp-btn.sel-NX{background:#fde8e8;color:#791f1f;border-color:#A32D2D;font-weight:600}
+  .comp-btn.sel-Excluded{background:#f4f4f4;color:#444;border-color:#888;font-weight:600}
+  .res-row{padding:6px 0;font-size:12px;border-bottom:1px solid #f0f0f0;line-height:1.5}
+  .res-row:last-child{border:none}
+  .btn{padding:7px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn:hover{background:#f0f0f0}
+  .btn.primary{background:#500000;color:#fff;border-color:#500000}
+  .btn.primary:hover{background:#6a0000}
+  .build-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;margin:6px 0;background:#fff;cursor:pointer;transition:background .1s}
+  .build-row:hover{background:#f9f9f9}
+  .build-row input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#500000}
+  .build-row label{font-size:13px;cursor:pointer;color:#1a1a1a;flex:1;line-height:1.4}
+  .note{font-size:11px;color:#888;margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <div class="header h1">ECON 410 — Interactive Module B</div>
+    <div class="sub">GDP Accounting: Y = C + I + G + NX · Texas A&M University</div>
+  </div>
+  <div class="badge">Section B · Ch. 2</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('calc',this)">Y = C+I+G+NX calculator</button>
+    <button class="tab" onclick="sw('classify',this)">Classify transactions</button>
+    <button class="tab" onclick="sw('build',this)">Build an economy</button>
+  </div>
+
+  <!-- TAB 1: CALCULATOR -->
+  <div class="panel on" id="p-calc">
+    <p class="desc">Adjust each component and watch GDP update. Values in billions of dollars (B).</p>
+    <div class="ctrl"><label>C — Household consumption</label><input type="range" id="c" min="5000" max="22000" step="100" value="14200" oninput="calcGDP()"><span class="out" id="c-o">$14,200B</span></div>
+    <div class="ctrl"><label>I — Business fixed investment</label><input type="range" id="ibf" min="500" max="5000" step="50" value="2800" oninput="calcGDP()"><span class="out" id="ibf-o">$2,800B</span></div>
+    <div class="ctrl"><label>I — Residential investment</label><input type="range" id="ires" min="200" max="2000" step="50" value="700" oninput="calcGDP()"><span class="out" id="ires-o">$700B</span></div>
+    <div class="ctrl"><label>I — Inventory change</label><input type="range" id="iinv" min="-200" max="400" step="10" value="100" oninput="calcGDP()"><span class="out" id="iinv-o">$100B</span></div>
+    <div class="ctrl"><label>G — Federal gov't purchases</label><input type="range" id="gf" min="500" max="4000" step="50" value="1500" oninput="calcGDP()"><span class="out" id="gf-o">$1,500B</span></div>
+    <div class="ctrl"><label>G — State &amp; local purchases</label><input type="range" id="gs" min="500" max="4000" step="50" value="2400" oninput="calcGDP()"><span class="out" id="gs-o">$2,400B</span></div>
+    <div class="ctrl"><label>X — Exports</label><input type="range" id="exp" min="500" max="5000" step="50" value="3100" oninput="calcGDP()"><span class="out" id="exp-o">$3,100B</span></div>
+    <div class="ctrl"><label>M — Imports</label><input type="range" id="imp" min="500" max="6000" step="50" value="3900" oninput="calcGDP()"><span class="out" id="imp-o">$3,900B</span></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">C total</div><div class="val" id="r-c" style="color:#185FA5">$14,200B</div></div>
+      <div class="metric"><div class="lbl">I total</div><div class="val" id="r-i" style="color:#3B6D11">$3,600B</div></div>
+      <div class="metric"><div class="lbl">G total</div><div class="val" id="r-g" style="color:#854F0B">$3,900B</div></div>
+      <div class="metric"><div class="lbl">NX = X − M</div><div class="val" id="r-nx">-$800B</div></div>
+      <div class="metric"><div class="lbl">GDP (Y)</div><div class="val" id="r-y" style="color:#500000;font-size:22px">$20,900B</div></div>
+    </div>
+    <div class="bar-wrap"><div class="bar-label"><span>C share</span><span id="bc-pct">68%</span></div><div class="bar-track"><div class="bar-fill" id="bc-bar" style="background:#185FA5;width:68%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>I share</span><span id="bi-pct">17%</span></div><div class="bar-track"><div class="bar-fill" id="bi-bar" style="background:#3B6D11;width:17%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>G share</span><span id="bg-pct">19%</span></div><div class="bar-track"><div class="bar-fill" id="bg-bar" style="background:#854F0B;width:19%"></div></div></div>
+    <div class="bar-wrap"><div class="bar-label"><span>|NX| share</span><span id="bnx-pct">4%</span></div><div class="bar-track"><div class="bar-fill" id="bnx-bar" style="background:#A32D2D;width:4%"></div></div></div>
+    <div class="eq-box" id="eq-line">Y = $14,200B + $3,600B + $3,900B &minus; $800B = <strong>$20,900B</strong></div>
+    <p class="note">Transfer payments (Social Security, Medicare) are excluded from G — they do not represent purchases of new output.</p>
+  </div>
+
+  <!-- TAB 2: CLASSIFY -->
+  <div class="panel" id="p-classify">
+    <p class="desc">For each transaction, choose the correct GDP component (C, I, G, NX) or mark it as Excluded. A new set is generated each time.</p>
+    <div id="classify-list"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn primary" onclick="checkClassify()">Check answers</button>
+      <button class="btn" onclick="buildClassify()">New set</button>
+    </div>
+    <div id="cl-feedback" style="margin-top:12px"></div>
+  </div>
+
+  <!-- TAB 3: BUILD -->
+  <div class="panel" id="p-build">
+    <p class="desc">You are the BEA economist. Check which items should be included in GDP. Uncheck items that should be excluded.</p>
+    <div id="build-items"></div>
+    <div class="divider"></div>
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Items included</div><div class="val" id="bld-count">0</div></div>
+      <div class="metric"><div class="lbl">GDP total</div><div class="val" id="bld-gdp" style="color:#185FA5">$0B</div></div>
+      <div class="metric"><div class="lbl">Items excluded</div><div class="val" id="bld-excl">0</div></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button class="btn primary" onclick="checkBuild()">Check my decisions</button>
+      <button class="btn" onclick="buildBuild()">Reset</button>
+    </div>
+    <div id="bld-score" style="margin-top:12px;font-size:13px"></div>
+  </div>
+</div>
+
+<script>
+function calcGDP(){
+  const c=+document.getElementById('c').value;
+  const ibf=+document.getElementById('ibf').value;
+  const ires=+document.getElementById('ires').value;
+  const iinv=+document.getElementById('iinv').value;
+  const gf=+document.getElementById('gf').value;
+  const gs=+document.getElementById('gs').value;
+  const exp=+document.getElementById('exp').value;
+  const imp=+document.getElementById('imp').value;
+  const I=ibf+ires+iinv, G=gf+gs, NX=exp-imp, Y=c+I+G+NX;
+  ['c','ibf','ires','iinv','gf','gs','exp','imp'].forEach(id=>{
+    const v=+document.getElementById(id).value;
+    document.getElementById(id+'-o').textContent=(v<0?'-$'+Math.abs(v).toLocaleString():'$'+v.toLocaleString())+'B';
+  });
+  document.getElementById('r-c').textContent='$'+c.toLocaleString()+'B';
+  document.getElementById('r-i').textContent='$'+I.toLocaleString()+'B';
+  document.getElementById('r-g').textContent='$'+G.toLocaleString()+'B';
+  document.getElementById('r-nx').textContent=(NX<0?'-$'+Math.abs(NX).toLocaleString():'$'+NX.toLocaleString())+'B';
+  document.getElementById('r-y').textContent='$'+Y.toLocaleString()+'B';
+  const cs=Math.max(0,Math.round(c/Y*100)), is=Math.max(0,Math.round(I/Y*100));
+  const gs2=Math.max(0,Math.round(G/Y*100)), nxs=Math.round(Math.abs(NX)/Y*100);
+  document.getElementById('bc-pct').textContent=cs+'%';document.getElementById('bc-bar').style.width=cs+'%';
+  document.getElementById('bi-pct').textContent=is+'%';document.getElementById('bi-bar').style.width=is+'%';
+  document.getElementById('bg-pct').textContent=gs2+'%';document.getElementById('bg-bar').style.width=gs2+'%';
+  document.getElementById('bnx-pct').textContent=nxs+'%';document.getElementById('bnx-bar').style.width=nxs+'%';
+  document.getElementById('eq-line').innerHTML=`Y = $${c.toLocaleString()}B + $${I.toLocaleString()}B + $${G.toLocaleString()}B ${NX<0?'&minus; $'+Math.abs(NX).toLocaleString():'+ $'+NX.toLocaleString()}B = <strong>$${Y.toLocaleString()}B</strong>`;
+}
+calcGDP();
+
+const classifyBank=[
+  {tx:'A student pays $30,000 tuition to a private university',ans:'C',why:'Private education = service purchased by household → Consumption (C).'},
+  {tx:'Amazon builds a new $2B fulfillment warehouse',ans:'I',why:'Business fixed investment in a new structure → Investment (I).'},
+  {tx:'Federal government pays army salaries',ans:'G',why:'Government purchases of labor services → Government (G).'},
+  {tx:'A retired worker receives Medicare benefits',ans:'Excluded',why:'Transfer payment — healthcare benefit, not a purchase of new output. EXCLUDED.'},
+  {tx:'A US firm exports $500M of grain to Japan',ans:'NX',why:'Export raises X, increasing Net Exports. US-produced output sold abroad.'},
+  {tx:'A consumer buys a $50,000 Tesla',ans:'C',why:'Purchase of a durable consumer good → Consumption (C).'},
+  {tx:'A firm produces 1,000 units but only sells 800',ans:'I',why:'Unsold 200 units enter inventory → counted as Inventory Investment (I).'},
+  {tx:'A family buys a 10-year-old house for $400,000',ans:'Excluded',why:'Resale of existing property — not new production. EXCLUDED.'},
+  {tx:'The city government buys 10 new police cars',ans:'G',why:'Government purchase of durable goods → Government (G).'},
+  {tx:'A US consumer buys a Sony TV made in Japan',ans:'NX',why:'Import raises M, reducing Net Exports (NX more negative). Subtracted from GDP.'},
+  {tx:'A homeowner paints their own house on the weekend',ans:'Excluded',why:'Non-market activity — no market transaction. EXCLUDED.'},
+  {tx:'A startup buys $5M of Apple shares on the NYSE',ans:'Excluded',why:'Financial investment ≠ GDP investment. Transfer of existing assets. EXCLUDED.'},
+];
+let clItems=[], clUserAnswers={};
+function buildClassify(){
+  const shuffled=[...classifyBank].sort(()=>Math.random()-.5).slice(0,6);
+  clItems=shuffled; clUserAnswers={};
+  document.getElementById('cl-feedback').innerHTML='';
+  const c=document.getElementById('classify-list');c.innerHTML='';
+  shuffled.forEach((it,i)=>{
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`<p style="font-size:13px;margin:0 0 8px;line-height:1.5;color:#1a1a1a">${it.tx}</p>`+
+      `<div>`+
+      ['C','I','G','NX','Excluded'].map(opt=>`<button class="comp-btn" id="cl-${i}-${opt}" onclick="selectCl(${i},'${opt}')">${opt}</button>`).join('')+
+      `</div>`;
+    c.appendChild(div);
+  });
+}
+function selectCl(i,opt){
+  clUserAnswers[i]=opt;
+  ['C','I','G','NX','Excluded'].forEach(o=>{
+    const b=document.getElementById(`cl-${i}-${o}`);
+    if(b){b.className='comp-btn';if(o===opt)b.classList.add('sel-'+o);}
+  });
+}
+function checkClassify(){
+  let correct=0,fb='';
+  clItems.forEach((it,i)=>{
+    const ua=clUserAnswers[i];
+    if(!ua){fb+=`<div class="res-row"><span class="pill amber">Skipped</span> ${it.tx}</div>`;return;}
+    const ok=(ua===it.ans);if(ok)correct++;
+    fb+=`<div class="res-row"><span class="pill ${ok?'green':'red'}">${ok?'Correct':'Wrong — '+it.ans}</span> ${it.tx}<br><span style="color:#666">${it.why}</span></div>`;
+  });
+  const tried=Object.keys(clUserAnswers).length;
+  document.getElementById('cl-feedback').innerHTML=`<div class="card"><p style="font-size:14px;font-weight:600;color:#500000;margin-bottom:10px">${correct} / ${tried} correct</p>${fb}</div>`;
+}
+buildClassify();
+
+const buildBank=[
+  {item:'Household spending on groceries ($800B)',incl:true,comp:'C',amt:800},
+  {item:'New factory built by a domestic firm ($1,200B)',incl:true,comp:'I',amt:1200},
+  {item:'Unemployment insurance payments ($400B)',incl:false,comp:'Excluded',amt:0},
+  {item:'State government hires school teachers ($950B)',incl:true,comp:'G',amt:950},
+  {item:'US exports cars to Canada ($600B)',incl:true,comp:'NX',amt:600},
+  {item:'Consumers import electronics from China ($900B)',incl:true,comp:'NX',amt:-900},
+  {item:'Resale of existing homes ($2,000B)',incl:false,comp:'Excluded',amt:0},
+  {item:'New residential housing construction ($700B)',incl:true,comp:'I',amt:700},
+  {item:'Social Security checks mailed ($1,100B)',incl:false,comp:'Excluded',amt:0},
+  {item:'Federal defense spending ($850B)',incl:true,comp:'G',amt:850},
+];
+function buildBuild(){
+  const c=document.getElementById('build-items');c.innerHTML='';
+  buildBank.forEach((item,i)=>{
+    const div=document.createElement('div');div.className='build-row';
+    div.innerHTML=`<input type="checkbox" id="bld-${i}" onchange="updateBuild()"><label for="bld-${i}">${item.item}</label>`;
+    c.appendChild(div);
+  });
+  updateBuild();document.getElementById('bld-score').innerHTML='';
+}
+function updateBuild(){
+  let incl=0,excl=0,gdp=0;
+  buildBank.forEach((item,i)=>{const chk=document.getElementById('bld-'+i);if(chk.checked){incl++;gdp+=item.amt;}else excl++;});
+  document.getElementById('bld-count').textContent=incl;
+  document.getElementById('bld-excl').textContent=excl;
+  document.getElementById('bld-gdp').textContent='$'+gdp.toLocaleString()+'B';
+}
+function checkBuild(){
+  let correct=0,fb='';
+  buildBank.forEach((item,i)=>{
+    const chk=document.getElementById('bld-'+i);const ok=chk.checked===item.incl;if(ok)correct++;
+    fb+=`<div class="res-row"><span class="pill ${ok?'green':'red'}">${ok?'Correct':'Wrong'}</span> ${item.item} — should be <strong>${item.incl?'included ('+item.comp+')':'excluded'}</strong></div>`;
+  });
+  document.getElementById('bld-score').innerHTML=`<div class="card"><p style="font-size:14px;font-weight:600;color:#500000;margin-bottom:10px">${correct}/${buildBank.length} correct</p>${fb}</div>`;
+}
+buildBuild();
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');btn.classList.add('on');
+}
+</script>
+</body>
+</html>

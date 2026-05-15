@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module B: Factor Markets</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#0F766E;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#0F766E;color:#fff;border-color:#0F766E}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:140px 1fr 80px;gap:14px;align-items:center;margin:14px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .euler-row{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:14px 18px;margin:12px 0;font-family:Consolas,monospace;font-size:14px}
+  .euler-row .label{display:inline-block;width:200px;color:#1F2937;font-weight:bold}
+  .euler-row .num{color:#1E3A5F;font-weight:bold;float:right}
+  .scenario-card{padding:14px 16px;border:1px solid #E5E7EB;border-radius:8px;margin:8px 0;background:#fff;cursor:pointer;transition:all .15s}
+  .scenario-card:hover{background:#FCFAF6;border-color:#0F766E}
+  .scenario-card.on{background:#FCFAF6;border-color:#0F766E;border-width:2px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module B</h1>
+    <div class="sub">Factor Markets & Income Distribution · Mankiw Ch. 3 §3.2</div>
+  </div>
+  <div class="badge">Section 2 · Module B</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('hire',this)">1. Firm hires labor</button>
+    <button class="tab" onclick="sw('eul',this)">2. Income distribution</button>
+    <button class="tab" onclick="sw('shock',this)">3. Shocks</button>
+  </div>
+
+  <!-- TAB 1: HIRE -->
+  <div class="panel on" id="p-hire">
+    <p class="desc">A firm hires labor up to the point where MPL = real wage. Move the wage slider and watch the firm's optimal labor demand respond.</p>
+    <div class="formula">P · MPL = W &nbsp;&nbsp;⇒&nbsp;&nbsp; <span class="accent">MPL = W / P</span></div>
+
+    <div class="card">
+      <canvas id="hireChart" width="800" height="380"></canvas>
+      <div class="slider-row" style="margin-top:14px">
+        <label>Real wage W/P</label>
+        <input type="range" id="wage" min="0.20" max="1.50" step="0.01" value="0.70" oninput="updHire()">
+        <div class="val" id="vwage">0.70</div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Optimal labor L*</div><div class="val" id="hL">152</div></div>
+      <div class="metric green"><div class="lbl">MPL at L*</div><div class="val" id="hMPL">0.700</div></div>
+      <div class="metric"><div class="lbl">Output Y</div><div class="val" id="hY">158.5</div></div>
+      <div class="metric amber"><div class="lbl">Profit Y - WL</div><div class="val" id="hProf">52.0</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">How to read it</div>
+      <div class="body">The downward-sloping curve is MPL — diminishing because of fixed K. The horizontal line is the real wage. The firm hires up to where the two cross. A higher wage → fewer workers hired. Profit before capital costs = total output minus labor bill = Y − W·L.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: EULER -->
+  <div class="panel" id="p-eul">
+    <p class="desc">Euler's theorem: under CRS, paying every factor its marginal product EXACTLY exhausts output. Verify this with the live calculation below.</p>
+    <div class="formula">Y = MPK · K + MPL · L</div>
+
+    <div class="card">
+      <div class="slider-row">
+        <label>α (capital share)</label>
+        <input type="range" id="ealpha" min="0.1" max="0.5" step="0.02" value="0.30" oninput="updEul()">
+        <div class="val" id="vealpha">0.30</div>
+      </div>
+      <div class="slider-row">
+        <label>K</label>
+        <input type="range" id="eK" min="50" max="300" step="10" value="100" oninput="updEul()">
+        <div class="val" id="veK">100</div>
+      </div>
+      <div class="slider-row">
+        <label>L</label>
+        <input type="range" id="eL" min="50" max="500" step="10" value="200" oninput="updEul()">
+        <div class="val" id="veL">200</div>
+      </div>
+    </div>
+
+    <div class="euler-row">
+      <span class="label">Total Output Y</span> <span class="num" id="eY">203.16</span>
+    </div>
+    <div class="euler-row" style="border-left:4px solid #0F766E">
+      <span class="label">Capital income MPK·K</span> <span class="num" id="eCap">61.0</span>
+    </div>
+    <div class="euler-row" style="border-left:4px solid #B45309">
+      <span class="label">Labor income MPL·L</span> <span class="num" id="eLab">142.2</span>
+    </div>
+    <div class="euler-row" style="background:#1E3A5F;color:#fff">
+      <span class="label" style="color:#C8A961">Sum (must equal Y)</span> <span class="num" style="color:#C8A961" id="eSum">203.16</span>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Why exact?</div>
+      <div class="body">For any CRS function, F(K, L) = MPK·K + MPL·L exactly (Euler's theorem). For Cobb-Douglas: capital income = α·Y, labor income = (1−α)·Y. There is NO room for economic profit when CRS firms compete freely. Profits in real life come from market power, intangibles, or risk premia.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: SHOCKS -->
+  <div class="panel" id="p-shock">
+    <p class="desc">Click a scenario to apply a shock and see how factor prices, output, and shares respond. Each scenario shows the new equilibrium relative to baseline.</p>
+    <div id="scenarios"></div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Output Y</div><div class="val" id="sY">203.2</div></div>
+      <div class="metric green"><div class="lbl">Real wage W/P</div><div class="val" id="sW">0.711</div></div>
+      <div class="metric amber"><div class="lbl">Real rental R/P</div><div class="val" id="sR">0.609</div></div>
+      <div class="metric"><div class="lbl">Labor share</div><div class="val" id="sLS">70%</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">What you should notice</div>
+      <div class="body">A productivity boom (A↑) raises BOTH the real wage and the real rental — both factors gain proportionally. A capital infusion (K↑) raises wages but lowers the rental (capital is now less scarce). Labor share is constant under Cobb-Douglas (always 1−α) — challenging the empirical finding that the labor share has fallen since 1980.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function pow(b,e){return Math.pow(b,e)}
+const A0=1, ALPHA=0.30, K0=100;
+function mplOf(L, K=K0, A=A0, al=ALPHA){return (1-al)*A*pow(K,al)*pow(L,-al);}
+function mpkOf(L, K=K0, A=A0, al=ALPHA){return al*A*pow(K,al-1)*pow(L,1-al);}
+function YOf(K, L, A=A0, al=ALPHA){return A*pow(K,al)*pow(L,1-al);}
+
+function updHire(){
+  const w = +wage.value; vwage.textContent=w.toFixed(2);
+  // L* solves MPL = w  =>  (1-alpha)*K^alpha*L^(-alpha) = w
+  // L = ((1-alpha)*K^alpha / w)^(1/alpha)
+  const L = pow((1-ALPHA)*pow(K0,ALPHA)/w, 1/ALPHA);
+  const Lc = Math.max(10, Math.min(500, L));
+  hL.textContent=Lc.toFixed(0);
+  hMPL.textContent=mplOf(Lc).toFixed(3);
+  const Y = YOf(K0, Lc);
+  hY.textContent=Y.toFixed(1);
+  hProf.textContent=(Y - w*Lc).toFixed(1);
+  drawHire(w, Lc);
+}
+function drawHire(w, Lstar){
+  const c = document.getElementById('hireChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:20,t:30,b:40};
+  const xMin=20, xMax=500, yMin=0, yMax=1.5;
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  // labels
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMin+(xMax-xMin)*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText(Math.round(xv).toString(), xx-10, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText(yv.toFixed(2), 12, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Labor (L)', W/2-30, H-8);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Real wage / MPL', 0, 0); ctx.restore();
+  // MPL curve
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const lv = xMin+(xMax-xMin)*i/100;
+    const yv = mplOf(lv);
+    if(yv>yMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*(lv-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(1-yv/yMax);
+    if(i===0||(i>0)) ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  // wage line
+  ctx.strokeStyle='#B91C1C'; ctx.lineWidth=2; ctx.setLineDash([5,5]); ctx.beginPath();
+  const wy = margin.t+(H-margin.t-margin.b)*(1-w/yMax);
+  ctx.moveTo(margin.l, wy); ctx.lineTo(W-margin.r, wy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#B91C1C'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('W/P = '+w.toFixed(2), W-margin.r-90, wy-5);
+  // intersection
+  const px = margin.l+(W-margin.l-margin.r)*(Lstar-xMin)/(xMax-xMin);
+  ctx.fillStyle='#1E3A5F'; ctx.beginPath(); ctx.arc(px, wy, 7, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 12px sans-serif';
+  ctx.fillText('L* = '+Lstar.toFixed(0), px+10, wy+5);
+}
+
+function updEul(){
+  const al = +ealpha.value; vealpha.textContent=al.toFixed(2);
+  const k = +eK.value; veK.textContent=k;
+  const l = +eL.value; veL.textContent=l;
+  const Y = YOf(k, l, A0, al);
+  const cap = al*Y;
+  const lab = (1-al)*Y;
+  eY.textContent=Y.toFixed(2);
+  eCap.textContent=cap.toFixed(2);
+  eLab.textContent=lab.toFixed(2);
+  eSum.textContent=(cap+lab).toFixed(2);
+}
+
+const scenarios = [
+  {name:"Baseline",       desc:"A=1.0, K=100, L=200, α=0.30 — starting point.", A:1.0, K:100, L:200, al:0.30},
+  {name:"Tech boom (A ↑ 20%)", desc:"Productivity rises by 20%. Both factors gain proportionally.", A:1.20, K:100, L:200, al:0.30},
+  {name:"Capital deepening (K ↑ 50%)", desc:"Capital infusion (e.g., post-war reconstruction). Wages rise; rental falls.", A:1.0, K:150, L:200, al:0.30},
+  {name:"Immigration (L ↑ 25%)", desc:"Labor force grows. Wages fall; rental rises.", A:1.0, K:100, L:250, al:0.30},
+  {name:"Falling labor share (α 0.30 → 0.40)", desc:"Capital share rises. Some interpret as automation/IT.", A:1.0, K:100, L:200, al:0.40}
+];
+let curScen=0;
+function buildScenarios(){
+  const c = document.getElementById('scenarios'); c.innerHTML='';
+  scenarios.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'scenario-card'+(i===0?' on':'');
+    d.innerHTML = `<div style="font-weight:600;color:#1E3A5F;font-size:14px">${s.name}</div><div style="font-size:12px;color:#6B7280;margin-top:4px">${s.desc}</div>`;
+    d.onclick = ()=>{
+      curScen=i;
+      document.querySelectorAll('.scenario-card').forEach(el=>el.classList.remove('on'));
+      d.classList.add('on');
+      updScen();
+    };
+    c.appendChild(d);
+  });
+  updScen();
+}
+function updScen(){
+  const s = scenarios[curScen];
+  const Y = YOf(s.K, s.L, s.A, s.al);
+  const W = (1-s.al)*s.A*pow(s.K,s.al)*pow(s.L,-s.al);
+  const R = s.al*s.A*pow(s.K,s.al-1)*pow(s.L,1-s.al);
+  sY.textContent = Y.toFixed(1);
+  sW.textContent = W.toFixed(3);
+  sR.textContent = R.toFixed(3);
+  sLS.textContent = ((1-s.al)*100).toFixed(0)+'%';
+}
+
+function sw(id,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='hire') drawHire(+wage.value, +hL.textContent);
+}
+
+updHire(); updEul(); buildScenarios();
+</script>
+</body>
+</html>

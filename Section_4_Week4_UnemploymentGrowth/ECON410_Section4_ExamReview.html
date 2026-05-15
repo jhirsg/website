@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 4 · Exam Review</title>
+<style>
+:root{--navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1000px;margin:0 auto;padding:24px 32px;}
+.mode-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.mode-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;}
+.mode-btn:hover{background:var(--white);color:var(--navy);border-color:var(--navy);}
+.mode-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.mode-content{display:none;} .mode-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);} .card.amber{border-left-color:var(--amber);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+button.action{background:var(--navy);color:white;border:none;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.red{background:var(--red);color:white;}
+button.action.large{padding:14px 26px;font-size:15px;}
+.timer-bar{position:sticky;top:0;background:var(--navy);color:white;padding:14px 22px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;z-index:10;}
+.timer-bar .time{font-family:'Cambria',Georgia,serif;font-size:24px;font-weight:bold;color:var(--gold);}
+.timer-bar .progress{font-size:13px;color:#CBD5E1;}
+.timer-bar.warning{background:var(--amber);} .timer-bar.warning .time{color:white;}
+.exam-q{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:12px 0;}
+.exam-q .qnum{font-weight:bold;color:var(--gold);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.exam-q .stem{font-weight:600;color:var(--navy);margin-bottom:10px;font-size:14px;}
+.exam-q label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;font-size:13px;color:var(--dark);border-radius:4px;}
+.exam-q label:hover{background:#F1F5F9;}
+.exam-q label.selected{background:#DBEAFE;font-weight:600;}
+.exam-q input[type=radio]{margin-right:8px;}
+.exam-q .feedback{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:13px;display:none;}
+.exam-q .feedback.show{display:block;}
+.exam-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.exam-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.exam-q .topic-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;}
+.tag-unemp{background:#DBEAFE;color:#1E3A5F;}
+.tag-solow{background:#D1FAE5;color:#065F46;}
+.tag-gold{background:#FEF3C7;color:#92400E;}
+.tag-acct{background:#FEE2E2;color:#991B1B;}
+.results{background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:24px;margin:20px 0;}
+.results .score{font-family:'Cambria',Georgia,serif;font-size:48px;color:var(--navy);font-weight:bold;text-align:center;margin:16px 0;}
+.results .grade{text-align:center;font-size:18px;color:var(--teal);margin-bottom:16px;}
+.results table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.results th{background:var(--navy);color:white;padding:8px;text-align:left;}
+.results td{padding:8px;border-bottom:1px solid var(--rule);}
+.start-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:32px;margin:20px 0;text-align:center;}
+.start-card h2{font-size:26px;margin-bottom:12px;}
+.start-card .stats{display:flex;justify-content:center;gap:30px;margin:20px 0;flex-wrap:wrap;}
+.start-card .stats .num{font-family:'Cambria',Georgia,serif;font-size:32px;color:var(--gold);font-weight:bold;}
+.start-card .stats .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.topic-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:10px 0;cursor:pointer;border-left:4px solid var(--navy);}
+.topic-card:hover{border-left-color:var(--gold);}
+.topic-card h3{margin:0 0 4px 0;color:var(--navy);}
+.topic-card .meta{font-size:12px;color:var(--muted);}
+.flash-card{background:var(--white);border:2px solid var(--rule);border-radius:12px;padding:30px;margin:16px 0;min-height:200px;text-align:center;cursor:pointer;}
+.flash-card .side{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.flash-card .text{font-size:18px;color:var(--navy);font-family:'Cambria',Georgia,serif;}
+.flash-card.flipped{background:#FEFCE8;border-color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 4 — Exam Review</h1>
+  <div class="sub">Unemployment · Solow Growth · Golden Rule · Growth Accounting — Mankiw Ch.7–9</div>
+</header>
+
+<div class="container">
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="home">Overview</button>
+    <button class="mode-btn" data-mode="timed">Timed Practice Exam</button>
+    <button class="mode-btn" data-mode="topics">By-Topic Practice</button>
+    <button class="mode-btn" data-mode="flash">Flashcards</button>
+  </div>
+
+  <div id="mode-home" class="mode-content active">
+    <h2>Section 4 Exam Review</h2>
+    <div class="subtitle">Three study modes — pick what fits your goal today.</div>
+    <div class="card"><h3>Mode 1 — Timed Practice Exam</h3>
+      <p style="font-size:13px;">25 questions, 45-min timer, mixed topics.</p>
+      <button class="action large" onclick="setMode('timed')">Start timed exam →</button></div>
+    <div class="card teal"><h3>Mode 2 — By-Topic Practice</h3>
+      <p style="font-size:13px;">Drill weak areas. No timer.</p>
+      <button class="action large" onclick="setMode('topics')">Pick a topic →</button></div>
+    <div class="card amber"><h3>Mode 3 — Flashcards</h3>
+      <p style="font-size:13px;">Quick review. Click to flip.</p>
+      <button class="action large" onclick="setMode('flash')">Open flashcards →</button></div>
+    <div class="card gold"><h3>What's on the exam?</h3>
+      <ul style="font-size:13px;line-height:1.7;">
+        <li><strong>Unemployment</strong> (~5 Q): bathtub model, u* = s/(s+f), recession shocks</li>
+        <li><strong>Solow Model</strong> (~10 Q): steady-state algebra, three versions, transition</li>
+        <li><strong>Golden Rule</strong> (~5 Q): MPK = δ+n+g, σ_gold = α under CD</li>
+        <li><strong>Growth & development accounting</strong> (~5 Q): TFP decomposition, cross-country</li>
+      </ul></div>
+  </div>
+
+  <div id="mode-timed" class="mode-content">
+    <div id="timed-start"><div class="start-card">
+      <h2>Timed Practice Exam — Section 4</h2>
+      <p>25 questions, randomly ordered. 45-minute timer.</p>
+      <div class="stats">
+        <div><div class="num">25</div><div class="label">Questions</div></div>
+        <div><div class="num">45</div><div class="label">Minutes</div></div>
+        <div><div class="num">4</div><div class="label">Topics</div></div>
+      </div>
+      <button class="action large gold" onclick="startTimedExam()">Begin exam</button>
+    </div></div>
+    <div id="timed-running" style="display:none;">
+      <div class="timer-bar" id="timer-bar">
+        <div><span class="time" id="timer-display">45:00</span></div>
+        <div class="progress"><span id="answered-count">0</span> of 25 answered</div>
+        <button class="action red" onclick="submitTimedExam()">Submit exam</button>
+      </div>
+      <div id="timed-questions"></div>
+      <button class="action large" onclick="submitTimedExam()" style="display:block;margin:24px auto;background:var(--green);color:white;">Submit exam</button>
+    </div>
+    <div id="timed-results" style="display:none;"></div>
+  </div>
+
+  <div id="mode-topics" class="mode-content">
+    <div id="topics-list">
+      <h2>Pick a topic to drill</h2>
+      <div class="subtitle">Instant feedback. No timer.</div>
+      <div class="topic-card" onclick="loadTopic('unemp')"><h3>📊 Unemployment</h3>
+        <div class="meta">Bathtub model, u* formula, recession shocks · 6 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('solow')"><h3>📈 Solow Model</h3>
+        <div class="meta">Steady state, three versions, transition · 11 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('gold')"><h3>🏆 Golden Rule</h3>
+        <div class="meta">MPK = δ+n+g, σ_gold derivation · 6 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('acct')"><h3>🧮 Growth & Development Accounting</h3>
+        <div class="meta">TFP decomposition, cross-country · 7 questions</div></div>
+    </div>
+    <div id="topic-questions" style="display:none;">
+      <button class="action" onclick="backToTopics()" style="margin-bottom:16px;">← Back to topics</button>
+      <h2 id="topic-title"></h2>
+      <div class="subtitle" id="topic-subtitle"></div>
+      <div id="topic-q-list"></div>
+    </div>
+  </div>
+
+  <div id="mode-flash" class="mode-content">
+    <h2>Flashcards — Section 4 concepts</h2>
+    <div class="subtitle">Click any card to flip.</div>
+    <div style="margin-bottom:20px;">
+      <button class="action" onclick="flashPrev()">← Previous</button>
+      <span style="margin:0 16px;font-size:14px;color:var(--muted);">Card <span id="flash-idx">1</span> of <span id="flash-total">20</span></span>
+      <button class="action" onclick="flashNext()">Next →</button>
+      <button class="action gold" onclick="flashShuffle()" style="float:right;">Shuffle</button>
+    </div>
+    <div class="flash-card" id="flash-card" onclick="flashFlip()">
+      <div class="side" id="flash-side">Term</div>
+      <div class="text" id="flash-text">Click to start</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questionBank = [
+  // UNEMPLOYMENT (6)
+  {topic:'unemp',stem:'In the bathtub model, steady-state unemployment u* equals:',
+    opts:['s + f','s × f','s/(s+f)','f/(s+f)'],a:2,
+    exp:'In steady state: s·E = f·U. With L = E + U: u* = U/L = s/(s+f).'},
+  {topic:'unemp',stem:'s = 2%/month, f = 30%/month. Steady-state u* ≈:',
+    opts:['2%','6.25%','15%','30%'],a:1,exp:'u* = 0.02/(0.02+0.30) = 0.02/0.32 = 6.25%.'},
+  {topic:'unemp',stem:'In a recession, typically:',
+    opts:['s rises, f falls (u rises)','s falls, f rises','only s changes','only f changes'],a:0,
+    exp:'Recessions feature both higher job-loss (s up) AND harder finding (f down). u rises sharply.'},
+  {topic:'unemp',stem:'A discouraged worker is:',
+    opts:['part of the bathtub model','employed','unemployed','out of the labor force entirely'],a:3,
+    exp:'Discouraged workers stop searching → leave the labor force. Bathtub model only treats LF participants.'},
+  {topic:'unemp',stem:'If f falls from 30% to 15%/month (s = 2% unchanged), new u*:',
+    opts:['6.25%','8.5%','11.8%','15%'],a:2,exp:'u* = 0.02/(0.02+0.15) = 0.02/0.17 = 11.8%. Doubling job-finding difficulty nearly doubles u*.'},
+  {topic:'unemp',stem:'Frictional unemployment is:',
+    opts:['caused by recessions','caused by people changing jobs / between jobs',
+          'always cyclical','always structural'],a:1,
+    exp:'Frictional U = workers between jobs (job-search frictions). Different from cyclical (recession-driven).'},
+
+  // SOLOW MODEL (11)
+  {topic:'solow',stem:'In Solow v1 steady state (no population or tech growth):',
+    opts:['σ·k* = δ·f(k*)','σ·f(k*) = δ·k*','δ·k* = σ','f(k*) = k*'],a:1,
+    exp:'Steady state: investment = depreciation. σ·f(k*) = δ·k*.'},
+  {topic:'solow',stem:'y = √k, σ = 0.3, δ = 0.1. Steady-state k*:',
+    opts:['3','6','9','12'],a:2,exp:'σ·√k = δ·k → 0.3 = 0.1·√k → √k = 3 → k* = 9.'},
+  {topic:'solow',stem:'Solow v2 adds population growth n. Steady-state condition:',
+    opts:['σ·f(k*) = δ·k*','σ·f(k*) = (δ+n)·k*',
+          'σ·f(k*) = n·k*','σ·f(k*) = (δ+n+g)·k*'],a:1,
+    exp:'v2: σ·f(k*) = (δ+n)·k*. Break-even covers depreciation + new workers.'},
+  {topic:'solow',stem:'Solow v3 adds technology growth g. Per-capita y grows at rate:',
+    opts:['0','n','g','n + g'],a:2,exp:'Only technology produces sustained per-capita growth. y grows at g.'},
+  {topic:'solow',stem:'Solow v3 — total output Y grows at rate:',
+    opts:['0','n','g','n + g'],a:3,
+    exp:'Y grows at n+g (workers grow at n, plus per-worker growth at g).'},
+  {topic:'solow',stem:'In Solow with higher σ, in the NEW steady state, growth rate of y is:',
+    opts:['higher','lower','the same','depends on δ'],a:2,
+    exp:'Higher σ → higher LEVEL of y* but same growth rate (0 or g, depending on version). Saving raises levels, not growth.'},
+  {topic:'solow',stem:'Higher n in Solow v2:',
+    opts:['raises k* and y*','lowers k* and y* per worker',
+          'no effect on k*','raises Y growth rate to n'],a:1,
+    exp:'Higher n → (δ+n) line steeper → smaller k* and y* per worker. Workers \'spread thin\' over capital.'},
+  {topic:'solow',stem:'In Solow with capital deepening (∆K > 0):',
+    opts:['Y↑, MPL↑, MPK↓','Y↑, MPL↓, MPK↑','Y↓, MPL↑, MPK↓','Y↓, MPL↓, MPK↑'],a:0,
+    exp:'More K → higher Y, higher MPL (each worker has more tools), lower MPK (diminishing returns).'},
+  {topic:'solow',stem:'In the long run with technological progress g = 2%/yr and n = 1%/yr, per-capita consumption growth is:',
+    opts:['0','1%','2%','3%'],a:2,exp:'Per-capita growth in steady state = g = 2%. (Population growth n adds to total Y growth only.)'},
+  {topic:'solow',stem:'The fundamental difference between Solow v1 and v3 (with growth):',
+    opts:['v3 includes investment','v3 includes saving',
+          'v3 produces sustained per-capita growth (via g)','v3 ignores depreciation'],a:2,
+    exp:'v3 is the ONLY version with sustained long-run per-capita growth (driven by g).'},
+  {topic:'solow',stem:'Doubling time at growth rate g (rule of 70):',
+    opts:['T = g/70','T = 70·g','T ≈ 70/g','T = e^g'],a:2,
+    exp:'Rule of 70: T ≈ 70/g (g in %). 7% → 10 yrs, 2% → 35 yrs, 1.7% → 41 yrs.'},
+
+  // GOLDEN RULE (6)
+  {topic:'gold',stem:'Golden Rule condition:',
+    opts:['MPK = δ','MPK = δ + n + g','MPK = 0','σ = δ'],a:1,
+    exp:'Maximize c* = f(k*) − (δ+n+g)·k* → FOC: f\'(k*) = MPK = δ + n + g.'},
+  {topic:'gold',stem:'Under Cobb-Douglas y = k^α, the Golden-Rule saving rate σ_gold equals:',
+    opts:['1/α','α','1 − α','δ'],a:1,
+    exp:'σ_gold = α (the capital share). With α = 0.3, save 30%. With α = 0.4, save 40%.'},
+  {topic:'gold',stem:'If an economy is BELOW the Golden Rule:',
+    opts:['MPK > δ+n+g','MPK < δ+n+g','MPK = 0','σ > σ_gold'],a:0,
+    exp:'When k < k_gold, MPK exceeds δ+n+g. Saving more would raise long-run c. (U.S. is in this regime.)'},
+  {topic:'gold',stem:'If an economy is ABOVE the Golden Rule:',
+    opts:['MPK > δ+n+g','MPK < δ+n+g','more saving raises c','σ = σ_gold'],a:1,
+    exp:'When k > k_gold, MPK < δ+n+g. Saving more LOWERS c. Some argue Singapore/China have been in this regime.'},
+  {topic:'gold',stem:'y = √k, δ = 0.1, n = 0, g = 0. Find k_gold.',
+    opts:['9','16','25','100'],a:2,
+    exp:'f\'(k) = 0.5·k^(−0.5) = 0.1 → √k = 5 → k_gold = 25.'},
+  {topic:'gold',stem:'More saving is ALWAYS better for long-run consumption.',
+    opts:['True','False — only up to σ_gold','only if MPC > 0.5','depends on δ'],a:1,
+    exp:'FALSE. Past σ_gold, raising σ raises k* and y* but LOWERS c*. There is an optimal saving rate.'},
+
+  // GROWTH & DEVELOPMENT ACCOUNTING (7)
+  {topic:'acct',stem:'Growth accounting equation:',
+    opts:['g_Y = g_K + g_L + g_A','g_Y = α·g_K + (1−α)·g_L + g_A',
+          'g_Y = α·g_A','g_A = α·g_K'],a:1,
+    exp:'g_Y = α·g_K + (1−α)·g_L + g_A. Each factor weighted by its share.'},
+  {topic:'acct',stem:'g_Y = 3.4%, g_K = 3.3%, g_L = 1.4%, α = 0.3. TFP growth:',
+    opts:['0.7%','1.43%','2.4%','3.0%'],a:1,
+    exp:'g_A = g_Y − α·g_K − (1−α)·g_L = 3.4 − 0.99 − 0.98 = 1.43%.'},
+  {topic:'acct',stem:'Per Jones (2016), cross-country GDP-per-worker differences are explained by TFP at:',
+    opts:['~10%','~25%','50–80%','99%'],a:2,
+    exp:'~50–80% of cross-country income gaps are TFP differences, not K or L. Poor countries are mostly inefficient.'},
+  {topic:'acct',stem:'The U.S. productivity slowdown (post-1973):',
+    opts:['TFP fell from 1.9% to 0.7%','TFP rose from 1.0% to 1.9%',
+          'TFP stayed at 1.1%','TFP turned negative'],a:0,
+    exp:'1948–73: TFP grew 1.9%/yr. 1973–2016: only 0.7%/yr. Slowdown still debated (oil shocks, tech maturity, etc.).'},
+  {topic:'acct',stem:'In Solow, raising σ in the new steady state, MPK is ___ and y growth rate is ___.',
+    opts:['the same; lower','the same; higher','lower; the same','higher; the same'],a:2,
+    exp:'Higher σ → higher k* → LOWER MPK (diminishing returns). y growth rate UNCHANGED (still g in v3).'},
+  {topic:'acct',stem:'Two economies identical except σ. In steady state, higher-σ economy has ___ y* and ___ growth.',
+    opts:['same; same','same; higher','higher; same','higher; higher'],a:2,
+    exp:'Higher σ raises the LEVEL y* but the growth rate (0 or g) is unchanged. Saving raises levels.'},
+  {topic:'acct',stem:'TFP is BEST described as:',
+    opts:['only technology','only education','everything except K and L (technology, institutions, governance, etc.)',
+          'only capital depreciation'],a:2,
+    exp:'TFP = the Solow residual. Captures all sources of output growth NOT measured by K and L. The "measure of our ignorance."'},
+];
+
+const topicLabels = {unemp:'Unemployment', solow:'Solow Model', gold:'Golden Rule', acct:'Growth & Dev Accounting'};
+
+document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+function setMode(m){
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('.mode-content').forEach(c => c.classList.toggle('active', c.id === 'mode-' + m));
+  if (m === 'flash') initFlash();
+}
+
+let timedQs=[], timedAnswers=[], timerInterval=null, timeLeft=0;
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+function startTimedExam(){
+  timedQs = shuffle(questionBank).slice(0, 25);
+  timedAnswers = new Array(timedQs.length).fill(null);
+  timeLeft = 45*60;
+  document.getElementById('timed-start').style.display='none';
+  document.getElementById('timed-results').style.display='none';
+  document.getElementById('timed-running').style.display='block';
+  renderTimed(); startTimer();
+}
+function renderTimed(){
+  document.getElementById('timed-questions').innerHTML = timedQs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="selectTimed(${i},${j},this)"><input type="radio" name="t${i}" ${timedAnswers[i]===j?'checked':''}> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+    </div>`).join('');
+}
+function selectTimed(i,j,el){
+  timedAnswers[i]=j;
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('answered-count').textContent = timedAnswers.filter(x=>x!==null).length;
+}
+function startTimer(){
+  updateTimer();
+  timerInterval = setInterval(()=>{timeLeft--; updateTimer(); if(timeLeft<=0) submitTimedExam();},1000);
+}
+function updateTimer(){
+  const m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('timer-bar').classList.toggle('warning', timeLeft<=5*60);
+}
+function submitTimedExam(){
+  clearInterval(timerInterval);
+  let correct=0, byTopic={};
+  timedQs.forEach((q,i)=>{
+    if (!byTopic[q.topic]) byTopic[q.topic]={c:0,t:0};
+    byTopic[q.topic].t++;
+    if (timedAnswers[i]===q.a) {correct++; byTopic[q.topic].c++;}
+  });
+  const pct=(correct/timedQs.length*100).toFixed(0);
+  let grade='F';
+  if (pct>=90) grade='A — excellent'; else if (pct>=80) grade='B — good';
+  else if (pct>=70) grade='C — pass'; else if (pct>=60) grade='D — needs work';
+  else grade='F — review carefully';
+  document.getElementById('timed-running').style.display='none';
+  const r=document.getElementById('timed-results'); r.style.display='block';
+  r.innerHTML = `<div class="results">
+    <h2>Exam Results</h2>
+    <div class="score">${correct} / ${timedQs.length}</div>
+    <div class="grade"><strong>${pct}%</strong> — ${grade}</div>
+    <h3>By topic</h3>
+    <table><tr><th>Topic</th><th>Correct</th><th>Total</th><th>%</th></tr>
+      ${Object.keys(byTopic).map(t=>`<tr><td>${topicLabels[t]}</td><td>${byTopic[t].c}</td><td>${byTopic[t].t}</td><td>${(byTopic[t].c/byTopic[t].t*100).toFixed(0)}%</td></tr>`).join('')}
+    </table>
+    <h3 style="margin-top:24px;">Review each question</h3>
+    ${timedQs.map((q,i)=>{
+      const c=timedAnswers[i]===q.a;
+      return `<div class="exam-q">
+        <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+        <div class="stem">${q.stem}</div>
+        ${q.opts.map((o,j)=>{let s='';if(j===q.a) s='background:#ECFDF5;color:#065F46;font-weight:600;'; else if(timedAnswers[i]===j) s='background:#FEF2F2;color:#991B1B;'; return `<div style="padding:6px 10px;${s};border-radius:4px;margin:2px 0;font-size:13px;">${String.fromCharCode(97+j)}) ${o}${j===q.a?' ✓':(timedAnswers[i]===j&&!c?' (your answer)':'')}</div>`;}).join('')}
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">Explanation: ${q.exp}</div>
+      </div>`;
+    }).join('')}
+    <button class="action large gold" onclick="setMode('home');document.getElementById('timed-start').style.display='block';document.getElementById('timed-results').style.display='none';" style="display:block;margin:24px auto;">Back to start</button>
+  </div>`;
+  window.scrollTo(0,0);
+}
+function loadTopic(t){
+  const qs=questionBank.filter(q=>q.topic===t);
+  document.getElementById('topics-list').style.display='none';
+  document.getElementById('topic-questions').style.display='block';
+  document.getElementById('topic-title').textContent = topicLabels[t] + ' — practice';
+  document.getElementById('topic-subtitle').textContent = qs.length + ' questions with instant feedback.';
+  document.getElementById('topic-q-list').innerHTML = qs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1}</div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="checkTopic(${i},${j},'${t}',this)"><input type="radio" name="topic-${t}-${i}"> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+      <div class="feedback" id="topic-fb-${t}-${i}"></div>
+    </div>`).join('');
+  window.scrollTo(0,0);
+}
+function checkTopic(i,chosen,t,el){
+  const q=questionBank.filter(x=>x.topic===t)[i];
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.style.pointerEvents='none');
+  const c=(chosen===q.a); el.classList.add('selected');
+  if (c) el.style.background='#ECFDF5'; else {el.style.background='#FEF2F2'; card.querySelectorAll('label')[q.a].style.background='#ECFDF5'; card.querySelectorAll('label')[q.a].style.fontWeight='600';}
+  const fb=document.getElementById(`topic-fb-${t}-${i}`);
+  fb.className='feedback show ' + (c?'correct':'wrong');
+  fb.innerHTML = (c?'✓ Correct. ':`✗ Correct: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+}
+function backToTopics(){
+  document.getElementById('topic-questions').style.display='none';
+  document.getElementById('topics-list').style.display='block';
+}
+
+const flashCards = [
+  {term:'Bathtub model u*', def:'u* = s / (s + f). Steady-state unemployment rate. Higher separation s or lower finding f → higher u*.'},
+  {term:'Frictional unemployment', def:'Workers between jobs (search frictions). Always exists even at full employment.'},
+  {term:'Structural unemployment', def:'Mismatch between skills/locations of workers and jobs. Long-term.'},
+  {term:'Cyclical unemployment', def:'Recession-driven. Rises and falls with the business cycle. The Fed targets this.'},
+  {term:'Discouraged worker', def:'Wants a job but stopped searching. Out of the labor force. NOT in unemployment rate.'},
+  {term:'Solow steady state (v1)', def:'σ·f(k*) = δ·k*. Investment equals depreciation; k stops moving.'},
+  {term:'Solow steady state (v2)', def:'σ·f(k*) = (δ+n)·k*. Adds break-even for new workers (population growth).'},
+  {term:'Solow steady state (v3)', def:'σ·f(k*) = (δ+n+g)·k*. Capital per effective worker stops moving.'},
+  {term:'Sustained per-capita growth', def:'Only comes from TECHNOLOGY (g). Capital accumulation alone cannot sustain it (diminishing returns).'},
+  {term:'Cobb-Douglas steady state', def:'For y = k^α: k* = (σ/(δ+n+g))^(1/(1−α)). y* = k*^α.'},
+  {term:'Golden Rule condition', def:'MPK = δ + n + g. Maximizes c* = f(k*) − (δ+n+g)·k*. Sweet spot for long-run consumption.'},
+  {term:'Cobb-Douglas σ_gold', def:'Under y = k^α: σ_gold = α (capital share). With α = 0.3, save 30%.'},
+  {term:'Below Golden Rule', def:'MPK > δ+n+g. Saving more would raise long-run c. U.S. is in this regime.'},
+  {term:'Above Golden Rule', def:'MPK < δ+n+g. Saving LESS would raise long-run c. Singapore, China sometimes argued in this regime.'},
+  {term:'Doubling time', def:'T = ln(2)/ln(1+g). Rule of 70: T ≈ 70/g. 7% → 10 yrs; 2% → 35 yrs; 1.7% → 41 yrs.'},
+  {term:'Growth accounting', def:'g_Y = α·g_K + (1−α)·g_L + g_A. Back out TFP: g_A = g_Y − α·g_K − (1−α)·g_L.'},
+  {term:'Solow residual', def:'g_A — the part of growth NOT explained by capital and labor. Called "the measure of our ignorance."'},
+  {term:'U.S. productivity slowdown', def:'TFP growth fell from 1.9%/yr (1948–73) to 0.7%/yr (1973–2016). Still debated.'},
+  {term:'Development accounting', def:'Cross-country GDP-per-worker differences are mostly TFP (50–80%), not K or L. Poor = inefficient, not undercapitalized.'},
+  {term:'Saving and growth (level vs rate)', def:'More σ raises the LEVEL of y* in steady state. Does NOT raise the per-capita GROWTH rate (which stays at g).'},
+];
+
+let flashIdx=0, flashFlipped=false, flashOrder=flashCards.map((_,i)=>i);
+function initFlash(){document.getElementById('flash-total').textContent=flashCards.length; showFlash();}
+function showFlash(){
+  const c=flashCards[flashOrder[flashIdx]];
+  document.getElementById('flash-idx').textContent=flashIdx+1;
+  document.getElementById('flash-card').classList.toggle('flipped',flashFlipped);
+  document.getElementById('flash-side').textContent = flashFlipped?'Definition':'Term';
+  document.getElementById('flash-text').textContent = flashFlipped?c.def:c.term;
+}
+function flashFlip(){flashFlipped=!flashFlipped; showFlash();}
+function flashNext(){if(flashIdx<flashCards.length-1) flashIdx++; flashFlipped=false; showFlash();}
+function flashPrev(){if(flashIdx>0) flashIdx--; flashFlipped=false; showFlash();}
+function flashShuffle(){flashOrder=shuffle(flashCards.map((_,i)=>i)); flashIdx=0; flashFlipped=false; showFlash();}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module A: Keynesian Cross</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#0F766E;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#0F766E;color:#fff;border-color:#0F766E}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:20px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .scen-btn{padding:8px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#0F766E;color:#fff;border-color:#0F766E}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module A</h1>
+    <div class="sub">Keynesian Cross & Multipliers · Mankiw Ch. 11</div>
+  </div>
+  <div class="badge">Section 5 · Module A</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('cross',this)">1. The 45° diagram</button>
+    <button class="tab" onclick="sw('mult',this)">2. Multipliers</button>
+    <button class="tab" onclick="sw('shocks',this)">3. Fiscal shocks</button>
+  </div>
+
+  <!-- TAB 1: KEYNESIAN CROSS -->
+  <div class="panel on" id="p-cross">
+    <p class="desc">Set the consumption parameters, investment, government, and taxes. Watch the equilibrium Y where Y = E.</p>
+    <div class="formula">Y = E = <span class="accent">a</span> + <span class="accent">MPC</span>·(Y − T) + I + G</div>
+
+    <div class="card">
+      <div class="slider-row"><label>Autonomous C (a, $T)</label><input type="range" id="a" min="0" max="5" step="0.1" value="2" oninput="upd1()"><div class="val" id="va">$2.0T</div></div>
+      <div class="slider-row"><label>MPC</label><input type="range" id="mpc" min="0.3" max="0.95" step="0.01" value="0.70" oninput="upd1()"><div class="val" id="vmpc">0.70</div></div>
+      <div class="slider-row"><label>Investment I ($T)</label><input type="range" id="I" min="1" max="8" step="0.1" value="3" oninput="upd1()"><div class="val" id="vI">$3.0T</div></div>
+      <div class="slider-row"><label>Government G ($T)</label><input type="range" id="G" min="1" max="8" step="0.1" value="3" oninput="upd1()"><div class="val" id="vG">$3.0T</div></div>
+      <div class="slider-row"><label>Taxes T ($T)</label><input type="range" id="T" min="0" max="6" step="0.1" value="3" oninput="upd1()"><div class="val" id="vT">$3.0T</div></div>
+      <canvas id="crossChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Equilibrium Y*</div><div class="val" id="m_Y">25.7</div></div>
+      <div class="metric"><div class="lbl">Consumption C</div><div class="val" id="m_C">17.9</div></div>
+      <div class="metric amber"><div class="lbl">Spending multiplier</div><div class="val" id="m_mult">3.33</div></div>
+      <div class="metric"><div class="lbl">Saving (Y−T−C)</div><div class="val" id="m_S">4.8</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">How to read the chart</div>
+      <div class="body">The 45° line is where Y = E. The blue line is planned expenditure E(Y). They intersect at Y* — the equilibrium output. Above Y*, planned E < Y → firms cut output. Below Y*, planned E > Y → firms expand. Y* is the only stable point.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: MULTIPLIERS -->
+  <div class="panel" id="p-mult">
+    <p class="desc">See how the spending and tax multipliers respond to different MPC values.</p>
+    <div class="formula">ΔY/ΔG = 1/(1−MPC) &nbsp;&nbsp;|&nbsp;&nbsp; ΔY/ΔT = −MPC/(1−MPC)</div>
+
+    <div class="card">
+      <div class="slider-row"><label>MPC</label><input type="range" id="mpc2" min="0.30" max="0.95" step="0.01" value="0.70" oninput="upd2()"><div class="val" id="vmpc2">0.70</div></div>
+      <canvas id="multChart" width="900" height="380"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Spending multiplier</div><div class="val" id="m2_g">3.33</div></div>
+      <div class="metric amber"><div class="lbl">Tax multiplier</div><div class="val" id="m2_t">−2.33</div></div>
+      <div class="metric"><div class="lbl">Balanced-budget mult.</div><div class="val" id="m2_bb">1.00</div></div>
+      <div class="metric"><div class="lbl">If ΔG = $1T, ΔY =</div><div class="val" id="m2_dy">$3.33T</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Why the difference?</div>
+      <div class="body">A $1 spending increase enters the economy IMMEDIATELY (counts as ΔY in round 1). A $1 tax cut only adds MPC·$1 to round-1 consumption — the rest is saved. So the tax multiplier is smaller in absolute value. The balanced-budget multiplier is exactly 1.</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: FISCAL SHOCKS -->
+  <div class="panel" id="p-shocks">
+    <p class="desc">Apply a fiscal policy and trace the round-by-round effect on Y.</p>
+    <div class="card">
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setShock(0,this)">No shock</button>
+        <button class="scen-btn" onclick="setShock(1,this)">ΔG = +$1T</button>
+        <button class="scen-btn" onclick="setShock(2,this)">ΔG = +$2T</button>
+        <button class="scen-btn" onclick="setShock(3,this)">ΔT = −$1T (tax cut)</button>
+        <button class="scen-btn" onclick="setShock(4,this)">Balanced budget +$1T</button>
+      </div>
+      <canvas id="shockChart" width="900" height="380"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Initial fiscal change</div><div class="val" id="s_init">$0T</div></div>
+      <div class="metric green"><div class="lbl">Effective multiplier</div><div class="val" id="s_mult">0.00</div></div>
+      <div class="metric"><div class="lbl">Total ΔY</div><div class="val" id="s_dy">$0T</div></div>
+      <div class="metric amber"><div class="lbl">Convergence (rounds)</div><div class="val" id="s_conv">5</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">The geometric series in action</div>
+      <div class="body">Each round: ΔY adds MPC·(prev round). Sum of geometric series = ΔG/(1−MPC). After ~10 rounds, the economy is mostly at the new Y. Real-world: rounds happen continuously — the "multiplier" effect plays out over months/quarters.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function upd1(){
+  const a = +document.getElementById('a').value;
+  const mpc = +document.getElementById('mpc').value;
+  const I = +document.getElementById('I').value;
+  const G = +document.getElementById('G').value;
+  const T = +document.getElementById('T').value;
+  document.getElementById('va').textContent = '$'+a.toFixed(1)+'T';
+  document.getElementById('vmpc').textContent = mpc.toFixed(2);
+  document.getElementById('vI').textContent = '$'+I.toFixed(1)+'T';
+  document.getElementById('vG').textContent = '$'+G.toFixed(1)+'T';
+  document.getElementById('vT').textContent = '$'+T.toFixed(1)+'T';
+  // Y = a + mpc*(Y-T) + I + G  →  Y(1-mpc) = a - mpc*T + I + G
+  const Y = (a - mpc*T + I + G) / (1 - mpc);
+  const C = a + mpc*(Y - T);
+  const S = (Y - T) - C;
+  const mult = 1/(1-mpc);
+  document.getElementById('m_Y').textContent = Y.toFixed(2);
+  document.getElementById('m_C').textContent = C.toFixed(2);
+  document.getElementById('m_mult').textContent = mult.toFixed(2);
+  document.getElementById('m_S').textContent = S.toFixed(2);
+  drawCross(a, mpc, I, G, T, Y);
+}
+function drawCross(a, mpc, I, G, T, Yeq){
+  const c = document.getElementById('crossChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const yMax = Yeq * 1.6;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+    const xx = margin.l+(W-margin.l-margin.r)*g/5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const v = yMax*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    const yy = margin.t+(H-margin.t-margin.b)*(5-i)/5;
+    ctx.fillText('$'+v.toFixed(0), xx-15, H-margin.b+15);
+    ctx.fillText('$'+v.toFixed(0), 14, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Income Y', W/2-25, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Expenditure E', 0, 0); ctx.restore();
+  // 45° line
+  ctx.strokeStyle='#6B7280'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  ctx.moveTo(margin.l, margin.t+(H-margin.t-margin.b));
+  ctx.lineTo(margin.l+(W-margin.l-margin.r), margin.t);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#6B7280'; ctx.font='italic 12px sans-serif';
+  ctx.fillText('Y = E (45°)', W-margin.r-80, margin.t+15);
+  // E(Y) line: E = a + mpc(Y-T) + I + G  =  (a - mpc*T + I + G) + mpc*Y
+  const eIntercept = a - mpc*T + I + G;
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3;
+  const x0 = margin.l;
+  const y0 = margin.t+(H-margin.t-margin.b)*(1-eIntercept/yMax);
+  const x1 = margin.l+(W-margin.l-margin.r);
+  const y1 = margin.t+(H-margin.t-margin.b)*(1-(eIntercept+mpc*yMax)/yMax);
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+  ctx.fillStyle='#0F766E'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('E(Y) = '+eIntercept.toFixed(1)+' + '+mpc.toFixed(2)+'·Y', W-margin.r-200, margin.t+50);
+  // Equilibrium dot
+  const px = margin.l+(W-margin.l-margin.r)*Yeq/yMax;
+  const py = margin.t+(H-margin.t-margin.b)*(1-Yeq/yMax);
+  ctx.fillStyle='#B91C1C'; ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, H-margin.b); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Y* = '+Yeq.toFixed(1), px+10, py-8);
+}
+
+function upd2(){
+  const mpc = +document.getElementById('mpc2').value;
+  document.getElementById('vmpc2').textContent = mpc.toFixed(2);
+  const gMult = 1/(1-mpc);
+  const tMult = -mpc/(1-mpc);
+  const bb = gMult + tMult;
+  document.getElementById('m2_g').textContent = gMult.toFixed(2);
+  document.getElementById('m2_t').textContent = tMult.toFixed(2);
+  document.getElementById('m2_bb').textContent = bb.toFixed(2);
+  document.getElementById('m2_dy').textContent = '$'+gMult.toFixed(2)+'T';
+  drawMult();
+}
+function drawMult(){
+  const c = document.getElementById('multChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:60};
+  const xMin = 0.30, xMax = 0.95;
+  const yMin = -10, yMax = 25;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=7;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/7;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  // x=0 line for negative
+  const xZero = margin.t+(H-margin.t-margin.b)*(yMax/(yMax-yMin));
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, xZero); ctx.lineTo(W-margin.r, xZero); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=6;i++){
+    const xv = xMin+(xMax-xMin)*i/6;
+    const xx = margin.l+(W-margin.l-margin.r)*i/6;
+    ctx.fillText(xv.toFixed(2), xx-10, H-margin.b+15);
+  }
+  for(let i=0;i<=7;i++){
+    const yv = yMax - (yMax-yMin)*i/7;
+    const yy = margin.t+(H-margin.t-margin.b)*i/7;
+    ctx.fillText(yv.toFixed(0), 12, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('MPC', W/2-15, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Multiplier', 0, 0); ctx.restore();
+  // Spending mult curve
+  ctx.strokeStyle='#047857'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const m = xMin+(xMax-xMin)*i/100;
+    const v = 1/(1-m);
+    if(v > yMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*(m-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(yMax-v)/(yMax-yMin);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#047857'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Spending mult = 1/(1−MPC)', margin.l+15, margin.t+30);
+  // Tax mult curve
+  ctx.strokeStyle='#B45309'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const m = xMin+(xMax-xMin)*i/100;
+    const v = -m/(1-m);
+    if(v < yMin) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*(m-xMin)/(xMax-xMin);
+    const yy = margin.t+(H-margin.t-margin.b)*(yMax-v)/(yMax-yMin);
+    if(i===0) ctx.moveTo(xx,yy); else ctx.lineTo(xx,yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#B45309'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Tax mult = −MPC/(1−MPC)', margin.l+15, margin.t+50);
+  // Current point
+  const mpc = +document.getElementById('mpc2').value;
+  const gM = 1/(1-mpc);
+  const tM = -mpc/(1-mpc);
+  const px = margin.l+(W-margin.l-margin.r)*(mpc-xMin)/(xMax-xMin);
+  if(gM <= yMax){
+    const py = margin.t+(H-margin.t-margin.b)*(yMax-gM)/(yMax-yMin);
+    ctx.fillStyle='#1E3A5F'; ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI*2); ctx.fill();
+  }
+  if(tM >= yMin){
+    const py = margin.t+(H-margin.t-margin.b)*(yMax-tM)/(yMax-yMin);
+    ctx.fillStyle='#1E3A5F'; ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+const shocks = [
+  { name: "No shock", dG: 0, dT: 0 },
+  { name: "ΔG = +$1T", dG: 1, dT: 0 },
+  { name: "ΔG = +$2T", dG: 2, dT: 0 },
+  { name: "ΔT = −$1T", dG: 0, dT: -1 },
+  { name: "Balanced ΔG=ΔT=+$1T", dG: 1, dT: 1 }
+];
+function setShock(idx, btn){
+  document.querySelectorAll('#p-shocks .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const sc = shocks[idx];
+  const mpc = 0.70;
+  // Trace round by round
+  const N = 20;
+  // For ΔG: Round 1 ΔY = ΔG. Round 2 = MPC·ΔY round1, etc.
+  // For ΔT (decrease): Round 1 ΔY = MPC·(−ΔT) (= MPC·ΔT_negative impact gives consumer income). Round 2 = MPC·ΔY round 1.
+  let total = 0;
+  const rounds = [];
+  for(let r = 1; r <= N; r++){
+    let inc = 0;
+    if(r === 1){
+      inc = sc.dG + (-sc.dT)*mpc;
+    } else {
+      inc = mpc * rounds[r-2];
+    }
+    rounds.push(inc);
+    total += inc;
+  }
+  const initial = sc.dG + (sc.dT === 0 ? 0 : -sc.dT);
+  const effMult = (sc.dG !== 0 || sc.dT !== 0) ? total / (sc.dG !== 0 ? sc.dG : Math.abs(sc.dT)) : 0;
+  document.getElementById('s_init').textContent = '$'+(sc.dG !== 0 ? sc.dG : sc.dT).toFixed(2)+'T';
+  document.getElementById('s_mult').textContent = effMult.toFixed(2);
+  document.getElementById('s_dy').textContent = '$'+total.toFixed(2)+'T';
+  // convergence rounds: where round value < 1% of initial
+  let conv = N;
+  for(let r=0;r<rounds.length;r++) if(Math.abs(rounds[r]) < 0.01*Math.max(0.01, Math.abs(rounds[0]))){conv = r+1; break;}
+  document.getElementById('s_conv').textContent = conv;
+  drawShockChart(rounds, total, sc.name);
+}
+function drawShockChart(rounds, total, name){
+  const c = document.getElementById('shockChart'); if(!c.getContext) return;
+  const ctx = c.getContext('2d'); const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const xMax = rounds.length;
+  const yMax = Math.max(0.5, ...rounds.map(Math.abs)) * 1.2;
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMax*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText('R'+xv.toFixed(0), xx-10, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText('$'+yv.toFixed(2)+'T', 8, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Round', W/2-15, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('ΔY in this round', 0, 0); ctx.restore();
+  // Bars
+  const barW = (W-margin.l-margin.r) / rounds.length;
+  rounds.forEach((v, i) => {
+    const xx = margin.l + i*barW;
+    const h = (Math.abs(v)/yMax) * (H-margin.t-margin.b);
+    const yy = margin.t + (H-margin.t-margin.b) - h;
+    ctx.fillStyle = v >= 0 ? '#0F766E' : '#B91C1C';
+    ctx.fillRect(xx+1, yy, barW-2, h);
+  });
+  // Total label
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 14px sans-serif';
+  ctx.fillText(name+'  ·  Total ΔY = $'+total.toFixed(2)+'T', margin.l+10, margin.t+15);
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='cross') upd1();
+  if(id==='mult') upd2();
+  if(id==='shocks') setShock(0, document.querySelector('#p-shocks .scen-btn.on'));
+}
+
+upd1(); upd2(); setShock(0, document.querySelector('#p-shocks .scen-btn.on'));
+</script>
+</body>
+</html>

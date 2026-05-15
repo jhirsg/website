@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module B: IS-LM Model</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#B45309;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#B45309;color:#fff;border-color:#B45309}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:180px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .metric.red .val{color:#B91C1C}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#FEF3C7;border:1px solid #B45309;border-left:4px solid #B45309;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#B45309;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  canvas{max-width:100%}
+  .scen-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .scen-btn{padding:8px 14px;font-size:12px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+  .scen-btn:hover{background:#FCFAF6}
+  .scen-btn.on{background:#B45309;color:#fff;border-color:#B45309}
+  .delta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .delta{background:#fff;border:1px solid #E5E7EB;border-radius:6px;padding:10px 14px;border-left:4px solid #6B7280}
+  .delta.up{border-left-color:#047857}
+  .delta.down{border-left-color:#B91C1C}
+  .delta .lbl{font-size:11px;color:#6B7280;letter-spacing:.5px;font-weight:600;text-transform:uppercase}
+  .delta .val{font-size:16px;font-weight:700;color:#1F2937;font-family:Consolas,monospace;margin-top:2px}
+  .delta .change{font-size:11px;font-weight:600;margin-top:2px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module B</h1>
+    <div class="sub">IS-LM Model · Mankiw Ch. 11–12</div>
+  </div>
+  <div class="badge">Section 5 · Module B</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('eq',this)">1. IS-LM equilibrium</button>
+    <button class="tab" onclick="sw('fiscal',this)">2. Fiscal policy</button>
+    <button class="tab" onclick="sw('monetary',this)">3. Monetary policy</button>
+  </div>
+
+  <!-- TAB 1: EQUILIBRIUM -->
+  <div class="panel on" id="p-eq">
+    <p class="desc">Adjust the economy's parameters and watch IS and LM intersect at the short-run equilibrium (Y*, r*).</p>
+    <div class="formula">IS:  Y = C(Y−T) + I(r) + G  &nbsp;|&nbsp;  LM:  M/P = L(r, Y)</div>
+
+    <div class="card">
+      <div class="slider-row"><label>G ($T)</label><input type="range" id="G" min="1" max="6" step="0.1" value="3" oninput="upd1()"><div class="val" id="vG">$3.0T</div></div>
+      <div class="slider-row"><label>T ($T)</label><input type="range" id="T" min="0" max="6" step="0.1" value="3" oninput="upd1()"><div class="val" id="vT">$3.0T</div></div>
+      <div class="slider-row"><label>M ($T)</label><input type="range" id="M" min="3" max="15" step="0.5" value="8" oninput="upd1()"><div class="val" id="vM">$8.0T</div></div>
+      <div class="slider-row"><label>P (price level)</label><input type="range" id="P" min="0.5" max="2.5" step="0.05" value="1.0" oninput="upd1()"><div class="val" id="vP">1.00</div></div>
+      <canvas id="islmChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Equilibrium Y*</div><div class="val" id="m_Y">22.5</div></div>
+      <div class="metric green"><div class="lbl">Equilibrium r*</div><div class="val" id="m_r">5.00%</div></div>
+      <div class="metric"><div class="lbl">Investment I(r*)</div><div class="val" id="m_I">$3.5T</div></div>
+      <div class="metric"><div class="lbl">Real money M/P</div><div class="val" id="m_realM">$8.0T</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">How to read the chart</div>
+      <div class="body">IS slopes DOWN: higher r → lower I → lower Y. LM slopes UP: higher Y → more money demand → higher r. They cross at the short-run equilibrium. Move the sliders and watch both curves shift.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: FISCAL POLICY -->
+  <div class="panel" id="p-fiscal">
+    <p class="desc">Trace fiscal-policy shocks through IS-LM. Watch IS shift and the new (Y*, r*) emerge.</p>
+    <div class="card">
+      <div style="font-size:13px;color:#1F2937;margin-bottom:10px">Baseline: G=$3T, T=$3T, M=$8T, P=1.0</div>
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setFiscal(0,this)">Baseline</button>
+        <button class="scen-btn" onclick="setFiscal(1,this)">ΔG = +$1T</button>
+        <button class="scen-btn" onclick="setFiscal(2,this)">ΔG = +$2T</button>
+        <button class="scen-btn" onclick="setFiscal(3,this)">ΔT = −$1T (tax cut)</button>
+        <button class="scen-btn" onclick="setFiscal(4,this)">ΔG = −$1T (austerity)</button>
+      </div>
+    </div>
+
+    <div class="delta-grid" id="fiscalDeltas"></div>
+
+    <div class="card">
+      <canvas id="fiscalChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Crowding out — partial in IS-LM</div>
+      <div class="body">ΔG > 0 shifts IS RIGHT. Y rises, but so does r → I falls. The fall in I PARTLY offsets the spending — but not fully. Net Y still rises. This is the SR result; in the LR (flexible prices), crowding out becomes complete (Section 2).</div>
+    </div>
+  </div>
+
+  <!-- TAB 3: MONETARY POLICY -->
+  <div class="panel" id="p-monetary">
+    <p class="desc">Trace monetary-policy shocks. The Fed changes M, LM shifts, r and Y respond.</p>
+    <div class="card">
+      <div class="scen-row">
+        <button class="scen-btn on" onclick="setMonetary(0,this)">Baseline (M = $8T)</button>
+        <button class="scen-btn" onclick="setMonetary(1,this)">ΔM = +$1T (easing)</button>
+        <button class="scen-btn" onclick="setMonetary(2,this)">ΔM = +$2T (QE)</button>
+        <button class="scen-btn" onclick="setMonetary(3,this)">ΔM = −$1T (tightening)</button>
+        <button class="scen-btn" onclick="setMonetary(4,this)">ΔP = +0.2 (inflation)</button>
+      </div>
+    </div>
+
+    <div class="delta-grid" id="monDeltas"></div>
+
+    <div class="card">
+      <canvas id="monChart" width="900" height="450"></canvas>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">Real vs nominal effects</div>
+      <div class="body">In IS-LM, what matters is REAL money M/P. ΔM with P fixed shifts LM. ΔP with M fixed ALSO shifts LM (in the OPPOSITE direction). This is how IS-LM connects to the AD curve — as P changes, LM shifts, tracing the AD curve.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// IS:  Y = a + mpc*(Y - T) + (b - h*r) + G  =>  Y(1-mpc) = a - mpc*T + b - h*r + G
+//      Y(r) = (a - mpc*T + b + G)/(1-mpc) - h/(1-mpc) * r
+// LM:  M/P = e*Y - f*r  =>  r = (e*Y - M/P)/f
+
+const a_ = 2, mpc_ = 0.7, b_ = 5, h_ = 30; // I(r) = b - h*r (r in decimal)
+const e_ = 0.5, f_ = 50;                    // L(r,Y) = e*Y - f*r
+
+function isCurve(r, G, T){
+  // returns Y for a given r
+  const I = b_ - h_*r;
+  return (a_ - mpc_*T + I + G)/(1-mpc_);
+}
+function lmCurve(Y, M, P){
+  // returns r for a given Y
+  return (e_*Y - M/P)/f_;
+}
+function findEq(G, T, M, P){
+  // Solve simultaneously
+  // Y = (a - mpc*T + b - h*r + G)/(1-mpc)
+  // r = (e*Y - M/P)/f
+  // Substitute: Y = const - h/(1-mpc) * r
+  //             r = (e*Y - M/P)/f
+  // Y = K - C*r, r = (eY - M/P)/f
+  // Y = K - C * (eY - M/P)/f
+  // Y(1 + C*e/f) = K + C*(M/P)/f
+  const K = (a_ - mpc_*T + b_ + G)/(1-mpc_);
+  const C = h_/(1-mpc_);
+  const Y = (K + C*(M/P)/f_) / (1 + C*e_/f_);
+  const r = (e_*Y - M/P)/f_;
+  return {Y, r};
+}
+
+function upd1(){
+  const G = +document.getElementById('G').value;
+  const T = +document.getElementById('T').value;
+  const M = +document.getElementById('M').value;
+  const P = +document.getElementById('P').value;
+  document.getElementById('vG').textContent = '$'+G.toFixed(1)+'T';
+  document.getElementById('vT').textContent = '$'+T.toFixed(1)+'T';
+  document.getElementById('vM').textContent = '$'+M.toFixed(1)+'T';
+  document.getElementById('vP').textContent = P.toFixed(2);
+  const eq = findEq(G, T, M, P);
+  const I = b_ - h_*eq.r;
+  document.getElementById('m_Y').textContent = eq.Y.toFixed(2);
+  document.getElementById('m_r').textContent = (eq.r*100).toFixed(2)+'%';
+  document.getElementById('m_I').textContent = '$'+I.toFixed(2)+'T';
+  document.getElementById('m_realM').textContent = '$'+(M/P).toFixed(2)+'T';
+  drawISLM('islmChart', G, T, M, P, eq);
+}
+
+function drawISLM(canvasId, G, T, M, P, eq, opts={}){
+  const c = document.getElementById(canvasId);
+  if(!c.getContext) return;
+  const ctx = c.getContext('2d');
+  const W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+  const margin={l:60,r:30,t:30,b:50};
+  const xMax = 35, yMin = 0, yMax = 0.15;
+  // grid
+  ctx.strokeStyle='#E5E7EB'; ctx.lineWidth=1;
+  for(let g=0;g<=5;g++){
+    const yy = margin.t+(H-margin.t-margin.b)*g/5;
+    ctx.beginPath(); ctx.moveTo(margin.l, yy); ctx.lineTo(W-margin.r, yy); ctx.stroke();
+    const xx = margin.l+(W-margin.l-margin.r)*g/5;
+    ctx.beginPath(); ctx.moveTo(xx, margin.t); ctx.lineTo(xx, H-margin.b); ctx.stroke();
+  }
+  ctx.strokeStyle='#374151'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(margin.l, margin.t); ctx.lineTo(margin.l, H-margin.b); ctx.lineTo(W-margin.r, H-margin.b); ctx.stroke();
+  ctx.fillStyle='#6B7280'; ctx.font='11px sans-serif';
+  for(let i=0;i<=5;i++){
+    const xv = xMax*i/5;
+    const xx = margin.l+(W-margin.l-margin.r)*i/5;
+    ctx.fillText('$'+xv.toFixed(0)+'T', xx-15, H-margin.b+15);
+    const yv = yMax*(5-i)/5;
+    const yy = margin.t+(H-margin.t-margin.b)*i/5;
+    ctx.fillText((yv*100).toFixed(1)+'%', 10, yy+4);
+  }
+  ctx.fillStyle='#1F2937'; ctx.font='13px sans-serif';
+  ctx.fillText('Output Y', W/2-25, H-15);
+  ctx.save(); ctx.translate(15, H/2+30); ctx.rotate(-Math.PI/2); ctx.fillText('Real interest rate r', 0, 0); ctx.restore();
+  // OLD curves (if shifting)
+  if(opts.G0 !== undefined){
+    // OLD IS
+    ctx.strokeStyle='#0F766E'; ctx.lineWidth=2; ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    for(let i=0;i<=100;i++){
+      const r = yMin + (yMax-yMin)*i/100;
+      const Y = isCurve(r, opts.G0, opts.T0);
+      if(Y < 0 || Y > xMax) continue;
+      const xx = margin.l+(W-margin.l-margin.r)*Y/xMax;
+      const yy = margin.t+(H-margin.t-margin.b)*(1-r/yMax);
+      if(i===0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    // OLD LM
+    ctx.strokeStyle='#B45309'; ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let i=0;i<=100;i++){
+      const Y = (xMax)*i/100;
+      const r = lmCurve(Y, opts.M0, opts.P0);
+      if(r < yMin || r > yMax) continue;
+      const xx = margin.l+(W-margin.l-margin.r)*Y/xMax;
+      const yy = margin.t+(H-margin.t-margin.b)*(1-r/yMax);
+      if(i===0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Old equilibrium dot
+    if(opts.eq0){
+      const px = margin.l+(W-margin.l-margin.r)*opts.eq0.Y/xMax;
+      const py = margin.t+(H-margin.t-margin.b)*(1-opts.eq0.r/yMax);
+      ctx.fillStyle='#9CA3AF'; ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI*2); ctx.fill();
+    }
+  }
+  // Current IS
+  ctx.strokeStyle='#0F766E'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const r = yMin + (yMax-yMin)*i/100;
+    const Y = isCurve(r, G, T);
+    if(Y < 0 || Y > xMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*Y/xMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-r/yMax);
+    if(i===0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#0F766E'; ctx.font='bold 14px sans-serif';
+  ctx.fillText('IS', W-margin.r-50, margin.t+25);
+  // Current LM
+  ctx.strokeStyle='#B45309'; ctx.lineWidth=3; ctx.beginPath();
+  for(let i=0;i<=100;i++){
+    const Y = xMax*i/100;
+    const r = lmCurve(Y, M, P);
+    if(r < yMin || r > yMax) continue;
+    const xx = margin.l+(W-margin.l-margin.r)*Y/xMax;
+    const yy = margin.t+(H-margin.t-margin.b)*(1-r/yMax);
+    if(i===0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+  }
+  ctx.stroke();
+  ctx.fillStyle='#B45309'; ctx.font='bold 14px sans-serif';
+  ctx.fillText('LM', W-margin.r-50, margin.t+50);
+  // Equilibrium dot
+  const px = margin.l+(W-margin.l-margin.r)*eq.Y/xMax;
+  const py = margin.t+(H-margin.t-margin.b)*(1-eq.r/yMax);
+  ctx.fillStyle='#1E3A5F'; ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#9CA3AF'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, H-margin.b); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(margin.l, py); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#1E3A5F'; ctx.font='bold 13px sans-serif';
+  ctx.fillText('Y*='+eq.Y.toFixed(1)+', r*='+(eq.r*100).toFixed(1)+'%', px+10, py-8);
+}
+
+// Fiscal scenarios
+const fiscals = [
+  { name: "Baseline", G:3, T:3, M:8, P:1 },
+  { name: "ΔG=+1", G:4, T:3, M:8, P:1 },
+  { name: "ΔG=+2", G:5, T:3, M:8, P:1 },
+  { name: "ΔT=-1", G:3, T:2, M:8, P:1 },
+  { name: "ΔG=-1 austerity", G:2, T:3, M:8, P:1 }
+];
+const baselineFiscal = findEq(3, 3, 8, 1);
+function setFiscal(idx, btn){
+  document.querySelectorAll('#p-fiscal .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const sc = fiscals[idx];
+  const eq = findEq(sc.G, sc.T, sc.M, sc.P);
+  const I = b_ - h_*eq.r;
+  const I_base = b_ - h_*baselineFiscal.r;
+  const dG = sc.G - 3, dT = sc.T - 3;
+  const dY = eq.Y - baselineFiscal.Y;
+  const dR = (eq.r - baselineFiscal.r)*100;
+  const dI = I - I_base;
+  function fmt(v, u){ return (v>=0?'+':'')+v.toFixed(2)+u; }
+  function dCard(lbl, val, change){
+    const cls = change.startsWith('+')&&change!=='+0.00pp'?'up':(change.startsWith('-')||change.startsWith('−')?'down':'');
+    return `<div class="delta ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="change">${change}</div></div>`;
+  }
+  document.getElementById('fiscalDeltas').innerHTML =
+    dCard('G', '$'+sc.G.toFixed(1)+'T', fmt(dG,'T')) +
+    dCard('T', '$'+sc.T.toFixed(1)+'T', fmt(dT,'T')) +
+    dCard('Y*', '$'+eq.Y.toFixed(2)+'T', fmt(dY,'T')) +
+    dCard('r*', (eq.r*100).toFixed(2)+'%', fmt(dR,'pp')) +
+    dCard('I*', '$'+I.toFixed(2)+'T', fmt(dI,'T'));
+  drawISLM('fiscalChart', sc.G, sc.T, sc.M, sc.P, eq, {G0: 3, T0: 3, M0: 8, P0: 1, eq0: baselineFiscal});
+}
+
+// Monetary scenarios
+const monetaries = [
+  { name: "Baseline (M=8)", G:3, T:3, M:8, P:1 },
+  { name: "ΔM=+1", G:3, T:3, M:9, P:1 },
+  { name: "ΔM=+2 QE", G:3, T:3, M:10, P:1 },
+  { name: "ΔM=-1 tighten", G:3, T:3, M:7, P:1 },
+  { name: "ΔP=+0.2 inflation", G:3, T:3, M:8, P:1.2 }
+];
+function setMonetary(idx, btn){
+  document.querySelectorAll('#p-monetary .scen-btn').forEach(b => b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  const sc = monetaries[idx];
+  const eq = findEq(sc.G, sc.T, sc.M, sc.P);
+  const I = b_ - h_*eq.r;
+  const I_base = b_ - h_*baselineFiscal.r;
+  const dM = sc.M - 8, dP = sc.P - 1;
+  const dY = eq.Y - baselineFiscal.Y;
+  const dR = (eq.r - baselineFiscal.r)*100;
+  const dI = I - I_base;
+  function fmt(v, u){ return (v>=0?'+':'')+v.toFixed(2)+u; }
+  function dCard(lbl, val, change){
+    const cls = change.startsWith('+')&&change!=='+0.00pp'&&change!=='+0.00T'?'up':(change.startsWith('-')||change.startsWith('−')?'down':'');
+    return `<div class="delta ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="change">${change}</div></div>`;
+  }
+  document.getElementById('monDeltas').innerHTML =
+    dCard('M', '$'+sc.M.toFixed(1)+'T', fmt(dM,'T')) +
+    dCard('P', sc.P.toFixed(2), fmt(dP,'')) +
+    dCard('Y*', '$'+eq.Y.toFixed(2)+'T', fmt(dY,'T')) +
+    dCard('r*', (eq.r*100).toFixed(2)+'%', fmt(dR,'pp')) +
+    dCard('I*', '$'+I.toFixed(2)+'T', fmt(dI,'T'));
+  drawISLM('monChart', sc.G, sc.T, sc.M, sc.P, eq, {G0: 3, T0: 3, M0: 8, P0: 1, eq0: baselineFiscal});
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='eq') upd1();
+  if(id==='fiscal') setFiscal(0, document.querySelector('#p-fiscal .scen-btn.on'));
+  if(id==='monetary') setMonetary(0, document.querySelector('#p-monetary .scen-btn.on'));
+}
+
+upd1(); setFiscal(0, document.querySelector('#p-fiscal .scen-btn.on')); setMonetary(0, document.querySelector('#p-monetary .scen-btn.on'));
+</script>
+</body>
+</html>

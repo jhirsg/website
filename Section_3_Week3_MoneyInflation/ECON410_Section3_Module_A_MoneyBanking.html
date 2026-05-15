@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 — Module A: Money & Banking</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#FAF8F3;color:#1F2937;padding:0}
+  .header{background:#1E3A5F;color:#fff;padding:14px 24px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .header h1{font-size:17px;font-weight:600}
+  .header .sub{font-size:12px;color:#C8A961;margin-top:2px}
+  .badge{background:#1E3A5F;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;border:1px solid #C8A961}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+  button.tab{padding:8px 16px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;color:#555;cursor:pointer;font-family:inherit}
+  button.tab:hover{background:#f0f0f0}
+  button.tab.on{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:18px 20px;margin:12px 0}
+  .desc{font-size:13px;color:#555;margin:0 0 16px;line-height:1.6}
+  .slider-row{display:grid;grid-template-columns:200px 1fr 100px;gap:14px;align-items:center;margin:12px 0}
+  .slider-row label{font-size:13px;color:#1F2937;font-weight:600}
+  .slider-row input[type=range]{width:100%}
+  .slider-row .val{font-size:14px;color:#1E3A5F;font-weight:700;text-align:right;font-family:Consolas,monospace}
+  .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+  .metric{background:#FCFAF6;border:1px solid #E5E7EB;border-radius:8px;padding:12px 14px}
+  .metric .lbl{font-size:11px;color:#6B7280;margin-bottom:4px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+  .metric .val{font-size:22px;font-weight:700;color:#1E3A5F;font-family:Cambria,Georgia,serif}
+  .metric.green .val{color:#047857}
+  .metric.amber .val{color:#B45309}
+  .formula{background:#0F2540;color:#fff;padding:14px 18px;border-radius:8px;font-family:Consolas,monospace;font-size:18px;text-align:center;margin:12px 0;font-weight:bold}
+  .formula .accent{color:#C8A961}
+  .check-card{background:#ECFDF5;border:1px solid #047857;border-left:4px solid #047857;padding:12px 16px;margin:12px 0;border-radius:6px}
+  .check-card .lbl{font-size:11px;color:#047857;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+  .check-card .body{font-size:13px;color:#1F2937;line-height:1.5}
+  .drag-item{padding:10px 14px;border:1px solid #ddd;border-radius:7px;margin:6px 0;cursor:grab;font-size:13px;background:#fff;color:#1F2937;user-select:none;line-height:1.4}
+  .drag-item:hover{background:#f5f5f5}
+  .drag-item.dragging{opacity:.35}
+  .drop-zone{min-height:80px;border:2px dashed #ccc;border-radius:8px;padding:8px;margin:6px 0;background:#FCFAF6}
+  .drop-zone.over{background:#ECFDF5;border-color:#047857}
+  .col-head{font-size:12px;font-weight:600;margin-bottom:6px;padding:6px 10px;border-radius:6px}
+  .col-head.m1{background:#0F766E;color:#fff}
+  .col-head.m2{background:#2563EB;color:#fff}
+  .col-head.ex{background:#B91C1C;color:#fff}
+  .two-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .btn{padding:8px 18px;font-size:13px;border:1px solid #ccc;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+  .btn.primary{background:#1E3A5F;color:#fff;border-color:#1E3A5F}
+  .result-row{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:12.5px;line-height:1.4}
+  .pill{display:inline-block;padding:2px 9px;border-radius:6px;font-size:10px;font-weight:600;flex-shrink:0}
+  .pill.ok{background:#ECFDF5;color:#047857}
+  .pill.no{background:#FEF2F2;color:#B91C1C}
+  .round-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:12px}
+  .round-table th{background:#1E3A5F;color:#C8A961;padding:8px 10px;text-align:left;font-size:11px;letter-spacing:1px}
+  .round-table td{padding:7px 10px;border-bottom:1px solid #E5E7EB;font-family:Consolas,monospace}
+  .round-table tr.final{background:#FEF3C7;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>ECON 410 — Interactive Module A</h1>
+    <div class="sub">Money & Banking · Mankiw Ch. 4</div>
+  </div>
+  <div class="badge">Section 3 · Module A</div>
+</div>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab on" onclick="sw('sort',this)">1. M1 / M2 sorter</button>
+    <button class="tab" onclick="sw('mult',this)">2. Money multiplier</button>
+    <button class="tab" onclick="sw('rounds',this)">3. Trace through rounds</button>
+  </div>
+
+  <!-- TAB 1: SORTER -->
+  <div class="panel on" id="p-sort">
+    <p class="desc">Drag each asset into the correct money aggregate. M1 is the most liquid (currency + checking). M2 includes M1 plus near-money like CDs and money market funds.</p>
+    <div class="card">
+      <div class="three-col">
+        <div>
+          <div class="col-head" style="background:#374151;color:#fff">Items to sort</div>
+          <div id="source-pool"></div>
+        </div>
+        <div>
+          <div class="col-head m1">M1 (only)</div>
+          <div class="drop-zone" id="dz-m1" ondrop="drop(event,'m1')" ondragover="over(event)" ondragleave="leave(event)"></div>
+          <div class="col-head m2" style="margin-top:14px">M2 (only)</div>
+          <div class="drop-zone" id="dz-m2" ondrop="drop(event,'m2')" ondragover="over(event)" ondragleave="leave(event)"></div>
+        </div>
+        <div>
+          <div class="col-head ex">Excluded</div>
+          <div class="drop-zone" id="dz-ex" ondrop="drop(event,'ex')" ondragover="over(event)" ondragleave="leave(event)"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button class="btn primary" onclick="checkSort()">Check answers</button>
+        <button class="btn" onclick="resetSort()">Reset</button>
+      </div>
+      <div id="sort-feedback" style="margin-top:12px"></div>
+    </div>
+    <div class="check-card">
+      <div class="lbl">Liquidity rule of thumb</div>
+      <div class="body">M1 includes assets you can spend INSTANTLY (currency, checking, savings). M2 adds CDs and money market funds — quickly convertible but with mild restrictions. Stocks, bonds, and real estate are NOT money — they're financial assets.</div>
+    </div>
+  </div>
+
+  <!-- TAB 2: MONEY MULTIPLIER -->
+  <div class="panel" id="p-mult">
+    <p class="desc">Adjust the reserve ratio (rr) and currency-deposit ratio (cr) to see how the money multiplier responds.</p>
+    <div class="formula">multiplier = (1 + cr) / (rr + cr)</div>
+
+    <div class="card">
+      <div class="slider-row">
+        <label>rr (reserve ratio)</label>
+        <input type="range" id="rr" min="0.01" max="0.50" step="0.01" value="0.10" oninput="updMult()">
+        <div class="val" id="vrr">10%</div>
+      </div>
+      <div class="slider-row">
+        <label>cr (currency / deposit)</label>
+        <input type="range" id="cr" min="0" max="0.50" step="0.01" value="0.00" oninput="updMult()">
+        <div class="val" id="vcr">0%</div>
+      </div>
+      <div class="slider-row">
+        <label>Monetary base MB ($B)</label>
+        <input type="range" id="mb" min="100" max="5000" step="100" value="1000" oninput="updMult()">
+        <div class="val" id="vmb">$1,000</div>
+      </div>
+    </div>
+
+    <div class="metric-grid">
+      <div class="metric"><div class="lbl">Money multiplier</div><div class="val" id="mMult">10.00</div></div>
+      <div class="metric green"><div class="lbl">Money supply M</div><div class="val" id="mM">$10,000B</div></div>
+      <div class="metric"><div class="lbl">Currency in circulation</div><div class="val" id="mCurr">$0B</div></div>
+      <div class="metric"><div class="lbl">Total deposits</div><div class="val" id="mDep">$10,000B</div></div>
+      <div class="metric amber"><div class="lbl">Total reserves</div><div class="val" id="mRes">$1,000B</div></div>
+    </div>
+
+    <div class="check-card">
+      <div class="lbl">What changes the multiplier</div>
+      <div class="body">
+        <strong>rr ↑</strong> (banks must hold more reserves) → multiplier ↓<br>
+        <strong>cr ↑</strong> (people hold more cash) → multiplier ↓ (less stays in banks to lend)<br>
+        Banking panics raise both — the 1930s collapse cut the multiplier dramatically.
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: ROUNDS -->
+  <div class="panel" id="p-rounds">
+    <p class="desc">Trace a fresh deposit through 8 rounds of fractional-reserve banking. Adjust rr and watch how money compounds.</p>
+    <div class="card">
+      <div class="slider-row">
+        <label>rr (reserve ratio)</label>
+        <input type="range" id="rr2" min="0.05" max="0.50" step="0.05" value="0.10" oninput="updRounds()">
+        <div class="val" id="vrr2">10%</div>
+      </div>
+      <div class="slider-row">
+        <label>Initial deposit</label>
+        <input type="range" id="dep0" min="100" max="10000" step="100" value="1000" oninput="updRounds()">
+        <div class="val" id="vdep0">$1,000</div>
+      </div>
+      <table class="round-table" id="roundTable"></table>
+    </div>
+    <div class="metric-grid">
+      <div class="metric green"><div class="lbl">Final M (geometric sum)</div><div class="val" id="mFinal">$10,000</div></div>
+      <div class="metric"><div class="lbl">Theoretical multiplier</div><div class="val" id="mTheoretical">10.00</div></div>
+      <div class="metric amber"><div class="lbl">Money created (M − initial)</div><div class="val" id="mCreated">$9,000</div></div>
+    </div>
+    <div class="check-card">
+      <div class="lbl">Concept check</div>
+      <div class="body">After many rounds, total deposits = initial / rr (geometric series with ratio (1 - rr)). Setting rr = 0.10 gives exactly 10× the initial deposit. Higher rr → less money creation → smaller multiplier.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const sortItems = [
+  {id:'s1', text:'$100 bill in your wallet',                       cat:'m1'},
+  {id:'s2', text:'Funds in your checking account',                  cat:'m1'},
+  {id:'s3', text:'Funds in your savings account',                   cat:'m1'},
+  {id:'s4', text:'A 6-month Certificate of Deposit (CD)',           cat:'m2'},
+  {id:'s5', text:'Money market mutual fund (retail)',                cat:'m2'},
+  {id:'s6', text:'100 shares of Apple stock',                       cat:'ex'},
+  {id:'s7', text:'A U.S. Treasury bond you own',                    cat:'ex'},
+  {id:'s8', text:'Your house',                                       cat:'ex'},
+  {id:'s9', text:'Cash in a bank vault (in transit)',               cat:'ex'},
+  {id:'s10',text:'Your unused credit-card limit',                   cat:'ex'},
+];
+let sortState = {};
+function buildSort(){
+  const pool = document.getElementById('source-pool'); pool.innerHTML='';
+  sortItems.forEach(it => {
+    const d = document.createElement('div'); d.className='drag-item'; d.draggable=true;
+    d.id='di-'+it.id; d.textContent=it.text;
+    d.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', it.id); d.classList.add('dragging'); });
+    d.addEventListener('dragend', ()=>d.classList.remove('dragging'));
+    pool.appendChild(d);
+  });
+  sortState = {};
+  ['m1','m2','ex'].forEach(z => document.getElementById('dz-'+z).innerHTML='');
+  document.getElementById('sort-feedback').innerHTML='';
+}
+function over(e){ e.preventDefault(); e.currentTarget.classList.add('over'); }
+function leave(e){ e.currentTarget.classList.remove('over'); }
+function drop(e, col){
+  e.preventDefault(); e.currentTarget.classList.remove('over');
+  const id = e.dataTransfer.getData('text/plain');
+  const el = document.getElementById('di-'+id); if(!el) return;
+  e.currentTarget.appendChild(el); sortState[id] = col;
+}
+function checkSort(){
+  let correct = 0, fb = '';
+  sortItems.forEach(it => {
+    const ans = sortState[it.id];
+    if(!ans){ fb += `<div class="result-row"><span class="pill" style="background:#FEF3C7;color:#B45309">Not placed</span><span>${it.text}</span></div>`; return; }
+    const ok = ans === it.cat; if(ok) correct++;
+    const cat_pretty = {'m1':'M1','m2':'M2 (only)','ex':'Excluded from M'}[it.cat];
+    fb += `<div class="result-row"><span class="pill ${ok?'ok':'no'}">${ok?'Correct':'Wrong'}</span><span>${it.text} — <strong>${cat_pretty}</strong></span></div>`;
+  });
+  const placed = Object.keys(sortState).length;
+  document.getElementById('sort-feedback').innerHTML = `<div class="card"><p style="font-size:14px;font-weight:600;margin-bottom:10px;color:#1E3A5F">${correct} / ${placed} correct</p>${fb}</div>`;
+}
+function resetSort(){ buildSort(); }
+
+function updMult(){
+  const rr = +document.getElementById('rr').value;
+  const cr = +document.getElementById('cr').value;
+  const mb = +document.getElementById('mb').value;
+  document.getElementById('vrr').textContent = (rr*100).toFixed(0)+'%';
+  document.getElementById('vcr').textContent = (cr*100).toFixed(0)+'%';
+  document.getElementById('vmb').textContent = '$'+mb.toLocaleString();
+  const mult = (1+cr)/(rr+cr);
+  const M = mult * mb;
+  // Decompose: cash held = (cr/(1+cr))*M, deposits = (1/(1+cr))*M
+  const dep = M / (1+cr);
+  const curr = M - dep;
+  const res = rr * dep;
+  document.getElementById('mMult').textContent = mult.toFixed(2);
+  document.getElementById('mM').textContent = '$'+M.toLocaleString(undefined, {maximumFractionDigits:0})+'B';
+  document.getElementById('mCurr').textContent = '$'+curr.toLocaleString(undefined, {maximumFractionDigits:0})+'B';
+  document.getElementById('mDep').textContent = '$'+dep.toLocaleString(undefined, {maximumFractionDigits:0})+'B';
+  document.getElementById('mRes').textContent = '$'+res.toLocaleString(undefined, {maximumFractionDigits:0})+'B';
+}
+
+function updRounds(){
+  const rr = +document.getElementById('rr2').value;
+  const dep0 = +document.getElementById('dep0').value;
+  document.getElementById('vrr2').textContent = (rr*100).toFixed(0)+'%';
+  document.getElementById('vdep0').textContent = '$'+dep0.toLocaleString();
+  const t = document.getElementById('roundTable');
+  let html = '<thead><tr><th>Round</th><th>New deposit</th><th>Reserves held</th><th>New loan</th><th>Cumulative M</th></tr></thead><tbody>';
+  let cum = 0, dep = dep0;
+  for(let r = 1; r <= 8; r++){
+    const reserves = dep * rr;
+    const loan = dep - reserves;
+    cum += dep;
+    html += `<tr><td>${r}</td><td>$${dep.toLocaleString(undefined,{maximumFractionDigits:0})}</td><td>$${reserves.toLocaleString(undefined,{maximumFractionDigits:0})}</td><td>$${loan.toLocaleString(undefined,{maximumFractionDigits:0})}</td><td>$${cum.toLocaleString(undefined,{maximumFractionDigits:0})}</td></tr>`;
+    dep = loan;
+  }
+  // theoretical limit
+  const finalM = dep0 / rr;
+  html += `<tr class="final"><td>...→ ∞</td><td>geom. series</td><td>tot reserves: $${dep0.toLocaleString()}</td><td>tot loans: $${(dep0/rr - dep0).toLocaleString(undefined,{maximumFractionDigits:0})}</td><td>$${finalM.toLocaleString(undefined,{maximumFractionDigits:0})}</td></tr>`;
+  html += '</tbody>';
+  t.innerHTML = html;
+  document.getElementById('mFinal').textContent = '$'+finalM.toLocaleString(undefined,{maximumFractionDigits:0});
+  document.getElementById('mTheoretical').textContent = (1/rr).toFixed(2);
+  document.getElementById('mCreated').textContent = '$'+(finalM - dep0).toLocaleString(undefined,{maximumFractionDigits:0});
+}
+
+function sw(id, btn){
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+buildSort(); updMult(); updRounds();
+</script>
+</body>
+</html>

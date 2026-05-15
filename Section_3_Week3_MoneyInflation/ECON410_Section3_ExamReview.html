@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 3 · Exam Review</title>
+<style>
+:root{--navy:#1E3A5F;--navy-dk:#0F2540;--gold:#C8A961;--teal:#0F766E;--slate:#374151;--cream:#FAF8F3;--paper:#FCFAF6;--dark:#1F2937;--muted:#6B7280;--rule:#E5E7EB;--green:#047857;--red:#B91C1C;--amber:#B45309;--white:#FFFFFF;}
+*{box-sizing:border-box;}
+body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--cream);color:var(--dark);margin:0;padding:0;}
+header{background:var(--navy-dk);color:white;padding:18px 32px;border-bottom:4px solid var(--gold);}
+header h1{margin:0;font-family:'Cambria',Georgia,serif;font-size:22px;}
+header .sub{color:var(--gold);font-size:13px;margin-top:4px;font-style:italic;}
+.container{max-width:1000px;margin:0 auto;padding:24px 32px;}
+.mode-bar{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.mode-btn{background:var(--paper);color:var(--slate);border:1px solid var(--rule);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:8px;}
+.mode-btn:hover{background:var(--white);color:var(--navy);border-color:var(--navy);}
+.mode-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
+.mode-content{display:none;} .mode-content.active{display:block;}
+h2{color:var(--navy);font-family:'Cambria',Georgia,serif;margin:0 0 6px 0;}
+h3{color:var(--teal);font-family:'Cambria',Georgia,serif;margin:16px 0 8px 0;font-size:16px;}
+.subtitle{color:var(--muted);font-style:italic;margin-bottom:20px;}
+.card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:12px 0;border-left:4px solid var(--navy);}
+.card.teal{border-left-color:var(--teal);} .card.amber{border-left-color:var(--amber);}
+.card.gold{border-left-color:var(--gold);background:#FEFCE8;}
+button.action{background:var(--navy);color:white;border:none;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;border-radius:5px;}
+button.action:hover{background:var(--navy-dk);}
+button.action.gold{background:var(--gold);color:var(--navy-dk);}
+button.action.red{background:var(--red);color:white;}
+button.action.large{padding:14px 26px;font-size:15px;}
+.timer-bar{position:sticky;top:0;background:var(--navy);color:white;padding:14px 22px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;z-index:10;}
+.timer-bar .time{font-family:'Cambria',Georgia,serif;font-size:24px;font-weight:bold;color:var(--gold);}
+.timer-bar .progress{font-size:13px;color:#CBD5E1;}
+.timer-bar.warning{background:var(--amber);} .timer-bar.warning .time{color:white;}
+.exam-q{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:16px 20px;margin:12px 0;}
+.exam-q .qnum{font-weight:bold;color:var(--gold);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.exam-q .stem{font-weight:600;color:var(--navy);margin-bottom:10px;font-size:14px;}
+.exam-q label{display:block;padding:6px 10px;cursor:pointer;margin:3px 0;font-size:13px;color:var(--dark);border-radius:4px;}
+.exam-q label:hover{background:#F1F5F9;}
+.exam-q label.selected{background:#DBEAFE;font-weight:600;}
+.exam-q input[type=radio]{margin-right:8px;}
+.exam-q .feedback{margin-top:10px;padding:10px 12px;border-radius:6px;font-size:13px;display:none;}
+.exam-q .feedback.show{display:block;}
+.exam-q .feedback.correct{background:#ECFDF5;color:var(--green);border-left:3px solid var(--green);}
+.exam-q .feedback.wrong{background:#FEF2F2;color:var(--red);border-left:3px solid var(--red);}
+.exam-q .topic-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-left:6px;}
+.tag-bank{background:#DBEAFE;color:#1E3A5F;}
+.tag-qtm{background:#D1FAE5;color:#065F46;}
+.tag-fisher{background:#FEF3C7;color:#92400E;}
+.tag-hyper{background:#FEE2E2;color:#991B1B;}
+.results{background:var(--white);border:2px solid var(--gold);border-radius:8px;padding:24px;margin:20px 0;}
+.results .score{font-family:'Cambria',Georgia,serif;font-size:48px;color:var(--navy);font-weight:bold;text-align:center;margin:16px 0;}
+.results .grade{text-align:center;font-size:18px;color:var(--teal);margin-bottom:16px;}
+.results table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.results th{background:var(--navy);color:white;padding:8px;text-align:left;}
+.results td{padding:8px;border-bottom:1px solid var(--rule);}
+.start-card{background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:32px;margin:20px 0;text-align:center;}
+.start-card h2{font-size:26px;margin-bottom:12px;}
+.start-card .stats{display:flex;justify-content:center;gap:30px;margin:20px 0;flex-wrap:wrap;}
+.start-card .stats .num{font-family:'Cambria',Georgia,serif;font-size:32px;color:var(--gold);font-weight:bold;}
+.start-card .stats .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.topic-card{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:18px 22px;margin:10px 0;cursor:pointer;border-left:4px solid var(--navy);}
+.topic-card:hover{border-left-color:var(--gold);}
+.topic-card h3{margin:0 0 4px 0;color:var(--navy);}
+.topic-card .meta{font-size:12px;color:var(--muted);}
+.flash-card{background:var(--white);border:2px solid var(--rule);border-radius:12px;padding:30px;margin:16px 0;min-height:200px;text-align:center;cursor:pointer;}
+.flash-card .side{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.flash-card .text{font-size:18px;color:var(--navy);font-family:'Cambria',Georgia,serif;}
+.flash-card.flipped{background:#FEFCE8;border-color:var(--gold);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 3 — Exam Review</h1>
+  <div class="sub">Money & Banking · QTM · Fisher · Costs of Inflation · Hyperinflation — Mankiw Ch.4–5</div>
+</header>
+
+<div class="container">
+  <div class="mode-bar">
+    <button class="mode-btn active" data-mode="home">Overview</button>
+    <button class="mode-btn" data-mode="timed">Timed Practice Exam</button>
+    <button class="mode-btn" data-mode="topics">By-Topic Practice</button>
+    <button class="mode-btn" data-mode="flash">Flashcards</button>
+  </div>
+
+  <div id="mode-home" class="mode-content active">
+    <h2>Section 3 Exam Review</h2>
+    <div class="subtitle">Three study modes — pick what fits your goal today.</div>
+    <div class="card"><h3>Mode 1 — Timed Practice Exam</h3>
+      <p style="font-size:13px;">25 questions, 45-minute timer, mixed topics.</p>
+      <button class="action large" onclick="setMode('timed')">Start timed exam →</button></div>
+    <div class="card teal"><h3>Mode 2 — By-Topic Practice</h3>
+      <p style="font-size:13px;">Drill specific weak areas. No timer.</p>
+      <button class="action large" onclick="setMode('topics')">Pick a topic →</button></div>
+    <div class="card amber"><h3>Mode 3 — Flashcards</h3>
+      <p style="font-size:13px;">Quick concept review. Click to flip.</p>
+      <button class="action large" onclick="setMode('flash')">Open flashcards →</button></div>
+    <div class="card gold"><h3>What's on the exam?</h3>
+      <ul style="font-size:13px;line-height:1.7;">
+        <li><strong>Money & Banking</strong> (~6 Q): functions, M1/M2, multiplier, Fed tools</li>
+        <li><strong>Quantity Theory</strong> (~7 Q): MV=PY, money growth → inflation, classical dichotomy</li>
+        <li><strong>Fisher Effect</strong> (~6 Q): i=r+π^e, real vs nominal, ex ante vs ex post</li>
+        <li><strong>Costs + Hyperinflation</strong> (~6 Q): seigniorage, hyperinflation causes/endings</li>
+      </ul></div>
+  </div>
+
+  <div id="mode-timed" class="mode-content">
+    <div id="timed-start"><div class="start-card">
+      <h2>Timed Practice Exam — Section 3</h2>
+      <p>25 questions, randomly ordered. 45-minute timer.</p>
+      <div class="stats">
+        <div><div class="num">25</div><div class="label">Questions</div></div>
+        <div><div class="num">45</div><div class="label">Minutes</div></div>
+        <div><div class="num">4</div><div class="label">Topics</div></div>
+      </div>
+      <button class="action large gold" onclick="startTimedExam()">Begin exam</button>
+    </div></div>
+    <div id="timed-running" style="display:none;">
+      <div class="timer-bar" id="timer-bar">
+        <div><span class="time" id="timer-display">45:00</span></div>
+        <div class="progress"><span id="answered-count">0</span> of 25 answered</div>
+        <button class="action red" onclick="submitTimedExam()">Submit exam</button>
+      </div>
+      <div id="timed-questions"></div>
+      <button class="action large" onclick="submitTimedExam()" style="display:block;margin:24px auto;background:var(--green);color:white;">Submit exam</button>
+    </div>
+    <div id="timed-results" style="display:none;"></div>
+  </div>
+
+  <div id="mode-topics" class="mode-content">
+    <div id="topics-list">
+      <h2>Pick a topic to drill</h2>
+      <div class="subtitle">Instant feedback. No timer.</div>
+      <div class="topic-card" onclick="loadTopic('bank')"><h3>🏦 Money & Banking</h3>
+        <div class="meta">M1/M2, money multiplier, Fed tools · 8 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('qtm')"><h3>📊 Quantity Theory</h3>
+        <div class="meta">MV=PY, inflation = ΔM% − ΔY%, money neutrality · 9 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('fisher')"><h3>📈 Fisher Effect</h3>
+        <div class="meta">i = r + π^e, ex ante/post real rate · 8 questions</div></div>
+      <div class="topic-card" onclick="loadTopic('hyper')"><h3>💥 Costs + Hyperinflation</h3>
+        <div class="meta">Seigniorage, hyperinflation causes and endings · 8 questions</div></div>
+    </div>
+    <div id="topic-questions" style="display:none;">
+      <button class="action" onclick="backToTopics()" style="margin-bottom:16px;">← Back to topics</button>
+      <h2 id="topic-title"></h2>
+      <div class="subtitle" id="topic-subtitle"></div>
+      <div id="topic-q-list"></div>
+    </div>
+  </div>
+
+  <div id="mode-flash" class="mode-content">
+    <h2>Flashcards — Section 3 concepts</h2>
+    <div class="subtitle">Click any card to flip.</div>
+    <div style="margin-bottom:20px;">
+      <button class="action" onclick="flashPrev()">← Previous</button>
+      <span style="margin:0 16px;font-size:14px;color:var(--muted);">Card <span id="flash-idx">1</span> of <span id="flash-total">20</span></span>
+      <button class="action" onclick="flashNext()">Next →</button>
+      <button class="action gold" onclick="flashShuffle()" style="float:right;">Shuffle</button>
+    </div>
+    <div class="flash-card" id="flash-card" onclick="flashFlip()">
+      <div class="side" id="flash-side">Term</div>
+      <div class="text" id="flash-text">Click to start</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questionBank = [
+  // MONEY & BANKING (8)
+  {topic:'bank',stem:'An economy produces 50 widgets at $4 each with M = $100. Velocity equals:',
+    opts:['1/8','1/2','2','8'],a:2,exp:'V = PY/M = (50·4)/100 = 2.'},
+  {topic:'bank',stem:'Credit card transactions are:',
+    opts:['part of M1','part of M2','not part of any monetary aggregate','part of M0'],a:2,
+    exp:'Credit cards create a liability, not money. The deposit used to pay the bill later IS in M1.'},
+  {topic:'bank',stem:'Money multiplier formula:',
+    opts:['m = cr·rr','m = (cr+1)/(cr+rr)','m = 1 + rr','m = B/M'],a:1,
+    exp:'m = (cr+1)/(cr+rr). When cr=0: m = 1/rr.'},
+  {topic:'bank',stem:'cr = 0.4, rr = 0.1. Money multiplier m equals:',
+    opts:['1.4','2.0','2.8','4.0'],a:2,exp:'m = (0.4+1)/(0.4+0.1) = 1.4/0.5 = 2.8.'},
+  {topic:'bank',stem:'B = $500B, m = 2.8. Money supply M:',
+    opts:['$500B','$1,000B','$1,400B','$2,800B'],a:2,exp:'M = m·B = 2.8 · 500 = $1,400B.'},
+  {topic:'bank',stem:'The Fed buys $50B of bonds. Monetary base B:',
+    opts:['rises by $50B','falls by $50B','unchanged','rises by m·50 = $140B'],a:0,
+    exp:'Open market purchase. The $50B in payment becomes new bank reserves → B↑$50B.'},
+  {topic:'bank',stem:'After the $50B OMO, with m=2.8, M rises by:',
+    opts:['$50B','$140B','$500B','depends on banks'],a:1,
+    exp:'ΔM = m·ΔB = 2.8 · 50 = $140B (assuming banks lend up to the limit).'},
+  {topic:'bank',stem:'Higher currency-deposit ratio cr (more cash hoarding):',
+    opts:['raises m','lowers m','no effect on m','depends on rr'],a:1,
+    exp:'∂m/∂cr < 0 when rr<1. Less of public\'s wealth gets re-lent through banks.'},
+
+  // QUANTITY THEORY (9)
+  {topic:'qtm',stem:'Constant velocity, real GDP grows 3%, money grows 7%, real rate 2%. Nominal rate:',
+    opts:['2%','6%','8%','12%'],a:1,exp:'π = ΔM% − ΔY% = 4%. i = r + π = 6%.'},
+  {topic:'qtm',stem:'Doubling the money supply in the long run:',
+    opts:['doubles real GDP','doubles the price level','halves the price level','no effect on prices'],a:1,
+    exp:'Money is NEUTRAL long-run: ↑M raises P proportionally, not Y.'},
+  {topic:'qtm',stem:'If money demand depends on i, higher inflation can:',
+    opts:['raise real money balances','reduce the nominal rate',
+          'be caused by faster real GDP growth','arise from expected future money growth'],a:3,
+    exp:'Cagan: P_t depends on E_t M_{t+k}. Expected future M growth raises current inflation.'},
+  {topic:'qtm',stem:'If the Fed announces it will raise M in the future but not today:',
+    opts:['i and P both fall today','i rises, P falls today',
+          'i falls, P rises today','both i and P rise today'],a:3,
+    exp:'Announcement raises π^e → i ↑ (Fisher) → money demand ↓ → P ↑ today (Cagan).'},
+  {topic:'qtm',stem:'M/P = k·Y. Money grows 12%, real income grows 4%. Inflation is approximately:',
+    opts:['4%','8%','12%','16%'],a:1,
+    exp:'π ≈ ΔM% − ΔY% = 12 − 4 = 8%.'},
+  {topic:'qtm',stem:'If velocity is growing (financial innovation), inflation will be:',
+    opts:['lower than ΔM%−ΔY%','equal to ΔM%−ΔY%','higher than ΔM%−ΔY%','negative'],a:2,
+    exp:'π = ΔM% − ΔY% + Δv%. Growing v → higher inflation for given money growth.'},
+  {topic:'qtm',stem:'If money demand depends on i, via QTM + Fisher, P depends on:',
+    opts:['only current M','only expected future M','both current and expected future M','neither'],a:2,
+    exp:'Forward-looking Cagan: P_t = f(M_t, E_t M_{t+1}, ...).'},
+  {topic:'qtm',stem:'M0 = $5T, V = 8, Y = $25T. Implied P (with QTM identity):',
+    opts:['0.625','1.6','5','25'],a:1,
+    exp:'P = MV/Y = 5·8/25 = 1.6. But M0 is the wrong measure — use M2 in practice.'},
+  {topic:'qtm',stem:'Long-run classical assumption: monetary policy affects:',
+    opts:['real output','employment','nominal variables only','interest rates only'],a:2,
+    exp:'Money is neutral: affects nominal (P, W, i) but not real (Y, r, K, L). Section 5 challenges this short-run.'},
+
+  // FISHER (8)
+  {topic:'fisher',stem:'Per the Fisher effect, an increase in ___ inflation causes an equal increase in the ___ rate.',
+    opts:['expected, nominal','expected, real','unexpected, nominal','unexpected, real'],a:0,
+    exp:'i = r + π^e. Expected inflation passes through to i one-for-one; r unchanged.'},
+  {topic:'fisher',stem:'Because most loans are nominal, high ___ inflation hurts ___.',
+    opts:['expected, debtors','expected, creditors','unexpected, debtors','unexpected, creditors'],a:3,
+    exp:'Unexpected π transfers from creditors (eroded $) to debtors. Expected π is priced in.'},
+  {topic:'fisher',stem:'Real interest rate equals:',
+    opts:['i + π','i − π','π − i','i·π'],a:1,
+    exp:'r = i − π (ex post). Or r = i − π^e (ex ante, before-the-fact).'},
+  {topic:'fisher',stem:'If i = 4%, π = 5%, the real rate is:',
+    opts:['−1%','1%','5%','9%'],a:0,exp:'r = 4 − 5 = −1%. Borrowers gain, lenders lose.'},
+  {topic:'fisher',stem:'Ex ante vs ex post real rate: the difference is:',
+    opts:['ex ante uses π^e, ex post uses actual π','ex ante is higher',
+          'ex post is in real, ex ante in nominal','no difference'],a:0,
+    exp:'Ex ante = i − π^e (before). Ex post = i − π (after). They differ if π surprises.'},
+  {topic:'fisher',stem:'If r = 2% and π^e rises from 2% to 5%:',
+    opts:['i rises from 4% to 7%','i unchanged at 4%','r rises to 5%','i falls to 2%'],a:0,
+    exp:'Fisher: Δi = Δπ^e = +3pp. r unchanged (set by real factors).'},
+  {topic:'fisher',stem:'If your nominal i = 4% and π = 5%, you are:',
+    opts:['gaining purchasing power','losing purchasing power',
+          'breaking even','depends on r'],a:1,exp:'Real rate = −1%. Lose 1% of purchasing power per year.'},
+  {topic:'fisher',stem:'The Mundell-Tobin effect modifies Fisher by:',
+    opts:['making r rise with π^e','making r fall slightly with π^e',
+          'eliminating π^e from i','only applies to long bonds'],a:1,
+    exp:'Mundell-Tobin: higher π^e → people hold less cash, more capital → r falls slightly. Usually small effect.'},
+
+  // COSTS + HYPERINFLATION (8)
+  {topic:'hyper',stem:'Hyperinflations occur when:',
+    opts:['monopolies raise prices','menu costs are small',
+          'central banks finance large fiscal deficits','monetary policy is independent'],a:2,
+    exp:'Fiscal dominance: government can\'t fund itself except by printing money.'},
+  {topic:'hyper',stem:'Most hyperinflations end with ___ reforms that eliminate the need for ___.',
+    opts:['monetary; taxes','monetary; currency','fiscal; seigniorage','fiscal; currency'],a:2,
+    exp:'Sargent (1982): fiscal reform closes the deficit, removing the need for seigniorage.'},
+  {topic:'hyper',stem:'A 300%/year inflation rate would likely be classified as:',
+    opts:['mild inflation','high inflation','hyperinflation','deflation'],a:2,
+    exp:'Hyperinflation: typically >50%/month or several hundred %/year.'},
+  {topic:'hyper',stem:'Seigniorage equals:',
+    opts:['π · M','π · (M/P)','ΔM','M/P'],a:1,
+    exp:'Inflation tax = real revenue from printing money = π · (M/P).'},
+  {topic:'hyper',stem:'At very high π, the inflation tax base:',
+    opts:['grows proportionally','stays constant','shrinks as people hold less cash','depends on r'],a:2,
+    exp:'High π → people minimize cash holdings → real M/P falls → tax base shrinks.'},
+  {topic:'hyper',stem:'Five costs of EXPECTED inflation include:',
+    opts:['shoeleather, menu, tax distortion, relative price variability, confusion',
+          'only menu costs','only redistribution','only seigniorage'],a:0,
+    exp:'Mankiw lists 5: shoeleather, menu, relative price variability, tax distortion, confusion.'},
+  {topic:'hyper',stem:'The Volcker disinflation (1979–82) brought U.S. inflation down by:',
+    opts:['expanding M aggressively','holding M targets and letting r rise to 19%',
+          'cutting taxes','raising tariffs'],a:1,
+    exp:'Volcker shifted to money-supply targeting. Fed funds hit 19%. Recession, but credibility was won.'},
+  {topic:'hyper',stem:'Friedman\'s "Island of Stone Money" argues that money is:',
+    opts:['only physical currency','whatever the community accepts as exchange',
+          'always backed by gold','always issued by government'],a:1,
+    exp:'Yap stone money — physical form doesn\'t matter, social consensus does. Bitcoin makes the same point.'},
+];
+
+const topicLabels = {bank:'Money & Banking', qtm:'Quantity Theory', fisher:'Fisher Effect', hyper:'Costs + Hyperinflation'};
+
+document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+function setMode(m){
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  document.querySelectorAll('.mode-content').forEach(c => c.classList.toggle('active', c.id === 'mode-' + m));
+  if (m === 'flash') initFlash();
+}
+
+let timedQs=[], timedAnswers=[], timerInterval=null, timeLeft=0;
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+
+function startTimedExam(){
+  timedQs = shuffle(questionBank).slice(0, 25);
+  timedAnswers = new Array(timedQs.length).fill(null);
+  timeLeft = 45 * 60;
+  document.getElementById('timed-start').style.display='none';
+  document.getElementById('timed-results').style.display='none';
+  document.getElementById('timed-running').style.display='block';
+  renderTimed(); startTimer();
+}
+
+function renderTimed(){
+  document.getElementById('timed-questions').innerHTML = timedQs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="selectTimed(${i},${j},this)"><input type="radio" name="t${i}" ${timedAnswers[i]===j?'checked':''}> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+    </div>`).join('');
+}
+
+function selectTimed(i,j,el){
+  timedAnswers[i]=j;
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('answered-count').textContent = timedAnswers.filter(x=>x!==null).length;
+}
+
+function startTimer(){
+  updateTimer();
+  timerInterval = setInterval(()=>{timeLeft--; updateTimer(); if(timeLeft<=0) submitTimedExam();},1000);
+}
+
+function updateTimer(){
+  const m=Math.floor(timeLeft/60), s=timeLeft%60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  document.getElementById('timer-bar').classList.toggle('warning', timeLeft<=5*60);
+}
+
+function submitTimedExam(){
+  clearInterval(timerInterval);
+  let correct=0, byTopic={};
+  timedQs.forEach((q,i)=>{
+    if (!byTopic[q.topic]) byTopic[q.topic]={c:0,t:0};
+    byTopic[q.topic].t++;
+    if (timedAnswers[i]===q.a) {correct++; byTopic[q.topic].c++;}
+  });
+  const pct=(correct/timedQs.length*100).toFixed(0);
+  let grade='F';
+  if (pct>=90) grade='A — excellent'; else if (pct>=80) grade='B — good';
+  else if (pct>=70) grade='C — pass'; else if (pct>=60) grade='D — needs work';
+  else grade='F — review carefully';
+  document.getElementById('timed-running').style.display='none';
+  const r=document.getElementById('timed-results'); r.style.display='block';
+  r.innerHTML = `<div class="results">
+    <h2>Exam Results</h2>
+    <div class="score">${correct} / ${timedQs.length}</div>
+    <div class="grade"><strong>${pct}%</strong> — ${grade}</div>
+    <h3>By topic</h3>
+    <table><tr><th>Topic</th><th>Correct</th><th>Total</th><th>%</th></tr>
+      ${Object.keys(byTopic).map(t=>`<tr><td>${topicLabels[t]}</td><td>${byTopic[t].c}</td><td>${byTopic[t].t}</td><td>${(byTopic[t].c/byTopic[t].t*100).toFixed(0)}%</td></tr>`).join('')}
+    </table>
+    <h3 style="margin-top:24px;">Review each question</h3>
+    ${timedQs.map((q,i)=>{
+      const c=timedAnswers[i]===q.a;
+      return `<div class="exam-q">
+        <div class="qnum">Question ${i+1} <span class="topic-tag tag-${q.topic}">${topicLabels[q.topic]}</span></div>
+        <div class="stem">${q.stem}</div>
+        ${q.opts.map((o,j)=>{let s='';if(j===q.a) s='background:#ECFDF5;color:#065F46;font-weight:600;'; else if(timedAnswers[i]===j) s='background:#FEF2F2;color:#991B1B;'; return `<div style="padding:6px 10px;${s};border-radius:4px;margin:2px 0;font-size:13px;">${String.fromCharCode(97+j)}) ${o}${j===q.a?' ✓':(timedAnswers[i]===j&&!c?' (your answer)':'')}</div>`;}).join('')}
+        <div style="margin-top:8px;font-size:12px;color:var(--muted);font-style:italic;">Explanation: ${q.exp}</div>
+      </div>`;
+    }).join('')}
+    <button class="action large gold" onclick="setMode('home');document.getElementById('timed-start').style.display='block';document.getElementById('timed-results').style.display='none';" style="display:block;margin:24px auto;">Back to start</button>
+  </div>`;
+  window.scrollTo(0,0);
+}
+
+function loadTopic(t){
+  const qs=questionBank.filter(q=>q.topic===t);
+  document.getElementById('topics-list').style.display='none';
+  document.getElementById('topic-questions').style.display='block';
+  document.getElementById('topic-title').textContent = topicLabels[t] + ' — practice';
+  document.getElementById('topic-subtitle').textContent = qs.length + ' questions with instant feedback.';
+  document.getElementById('topic-q-list').innerHTML = qs.map((q,i)=>`
+    <div class="exam-q" data-i="${i}">
+      <div class="qnum">Question ${i+1}</div>
+      <div class="stem">${q.stem}</div>
+      ${q.opts.map((o,j)=>`<label onclick="checkTopic(${i},${j},'${t}',this)"><input type="radio" name="topic-${t}-${i}"> ${String.fromCharCode(97+j)}) ${o}</label>`).join('')}
+      <div class="feedback" id="topic-fb-${t}-${i}"></div>
+    </div>`).join('');
+  window.scrollTo(0,0);
+}
+
+function checkTopic(i,chosen,t,el){
+  const q=questionBank.filter(x=>x.topic===t)[i];
+  const card=el.closest('.exam-q');
+  card.querySelectorAll('label').forEach(l=>l.style.pointerEvents='none');
+  const c=(chosen===q.a); el.classList.add('selected');
+  if (c) el.style.background='#ECFDF5'; else {el.style.background='#FEF2F2'; card.querySelectorAll('label')[q.a].style.background='#ECFDF5'; card.querySelectorAll('label')[q.a].style.fontWeight='600';}
+  const fb=document.getElementById(`topic-fb-${t}-${i}`);
+  fb.className='feedback show ' + (c?'correct':'wrong');
+  fb.innerHTML = (c?'✓ Correct. ':`✗ Correct: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+}
+
+function backToTopics(){
+  document.getElementById('topic-questions').style.display='none';
+  document.getElementById('topics-list').style.display='block';
+}
+
+const flashCards = [
+  {term:'Money', def:'Any asset widely accepted in exchange. Three functions: medium of exchange, store of value, unit of account.'},
+  {term:'Monetary base B', def:'Currency + bank reserves. What the Fed controls directly.'},
+  {term:'M1', def:'Currency + checkable deposits + traveler\'s checks. \'Spendable today.\''},
+  {term:'M2', def:'M1 + savings deposits + small time deposits + retail money market funds.'},
+  {term:'Money multiplier m', def:'m = (cr + 1) / (cr + rr). Connects monetary base to money supply: M = m·B.'},
+  {term:'Reserve ratio rr', def:'Fraction of deposits held as reserves. Includes required + excess.'},
+  {term:'Currency-deposit ratio cr', def:'C/D. Currency held by public divided by deposits. Higher cr → smaller m.'},
+  {term:'Quantity equation', def:'M·V = P·Y. Identity if V is defined as PY/M.'},
+  {term:'Velocity V', def:'Average number of times a dollar changes hands per year. V = nominal GDP / M.'},
+  {term:'QTM inflation rate', def:'π = ΔM% − ΔY% (when V stable). Long-run benchmark.'},
+  {term:'Classical dichotomy', def:'Real variables determined independently of nominal variables. Money is neutral long-run.'},
+  {term:'Money neutrality', def:'Changes in M affect only nominal variables (P, i, W) not real ones (Y, r, K, L) in the long run.'},
+  {term:'Seigniorage / inflation tax', def:'π · (M/P). Real revenue from printing money. Falls on cash holders.'},
+  {term:'Fisher equation', def:'i = r + π^e. Nominal rate = real rate + expected inflation.'},
+  {term:'Real interest rate r', def:'r = i − π. Actual purchasing-power return. Ex ante uses π^e; ex post uses π.'},
+  {term:'Expected vs unexpected inflation', def:'Expected π: priced into i, no redistribution. Unexpected π: arbitrary transfers from creditors to debtors.'},
+  {term:'Cagan model', def:'When money demand depends on i and i depends on π^e, P becomes forward-looking. P_t depends on E_t M_{t+k}.'},
+  {term:'Hyperinflation (Cagan)', def:'Inflation > 50% per month. Ends when monthly rate stays below 50% for at least a year.'},
+  {term:'Sargent stabilization (1982)', def:'Hyperinflations end with: (1) credible fiscal reform that closes the deficit, AND (2) central bank independence.'},
+  {term:'Friedman\'s stone money', def:'Yap rai stones — money is whatever a community accepts. Physical form irrelevant; social consensus essential.'},
+];
+
+let flashIdx=0, flashFlipped=false, flashOrder=flashCards.map((_,i)=>i);
+function initFlash(){document.getElementById('flash-total').textContent=flashCards.length; showFlash();}
+function showFlash(){
+  const c=flashCards[flashOrder[flashIdx]];
+  document.getElementById('flash-idx').textContent=flashIdx+1;
+  document.getElementById('flash-card').classList.toggle('flipped',flashFlipped);
+  document.getElementById('flash-side').textContent = flashFlipped?'Definition':'Term';
+  document.getElementById('flash-text').textContent = flashFlipped?c.def:c.term;
+}
+function flashFlip(){flashFlipped=!flashFlipped; showFlash();}
+function flashNext(){if(flashIdx<flashCards.length-1) flashIdx++; flashFlipped=false; showFlash();}
+function flashPrev(){if(flashIdx>0) flashIdx--; flashFlipped=false; showFlash();}
+function flashShuffle(){flashOrder=shuffle(flashCards.map((_,i)=>i)); flashIdx=0; flashFlipped=false; showFlash();}
+</script>
+
+</body>
+</html>

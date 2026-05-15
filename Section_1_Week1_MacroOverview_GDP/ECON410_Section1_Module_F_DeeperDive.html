@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECON 410 · Section 1 · Module F — Deeper Dive Lab</title>
+<style>
+:root {
+  --navy: #1E3A5F; --navy-dk: #0F2540; --gold: #C8A961; --teal: #0F766E;
+  --slate: #374151; --cream: #FAF8F3; --paper: #FCFAF6; --dark: #1F2937;
+  --muted: #6B7280; --rule: #E5E7EB; --green: #047857; --red: #B91C1C;
+  --amber: #B45309; --blue: #2563EB; --purple: #6B21A8; --white: #FFFFFF;
+}
+* { box-sizing: border-box; }
+body { font-family: 'Calibri', 'Segoe UI', system-ui, sans-serif;
+  background: var(--cream); color: var(--dark); margin: 0; padding: 0; min-height: 100vh; }
+header { background: var(--navy-dk); color: white; padding: 18px 32px; border-bottom: 4px solid var(--gold); }
+header h1 { margin: 0; font-family: 'Cambria', Georgia, serif; font-size: 22px; }
+header .sub { color: var(--gold); font-size: 13px; margin-top: 4px; font-style: italic; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px 32px; }
+.tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 2px solid var(--rule); flex-wrap: wrap; }
+.tab-btn { background: var(--paper); color: var(--slate); border: 1px solid var(--rule); border-bottom: none;
+  padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px 6px 0 0; transition: all 0.15s; }
+.tab-btn:hover { background: var(--white); color: var(--navy); }
+.tab-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+.tab-content { display: none; padding: 4px; }
+.tab-content.active { display: block; }
+h2 { color: var(--navy); font-family: 'Cambria', Georgia, serif; margin: 0 0 6px 0; }
+h3 { color: var(--teal); font-family: 'Cambria', Georgia, serif; margin: 16px 0 8px 0; font-size: 16px; }
+.subtitle { color: var(--muted); font-style: italic; margin-bottom: 20px; }
+.card { background: var(--white); border: 1px solid var(--rule); border-radius: 8px;
+  padding: 18px 22px; margin: 12px 0; border-left: 4px solid var(--navy); }
+.card.teal { border-left-color: var(--teal); }
+.card.amber { border-left-color: var(--amber); }
+.card.green { border-left-color: var(--green); background: #ECFDF5; border-color: var(--green); }
+.card.red { border-left-color: var(--red); background: #FEF2F2; border-color: var(--red); }
+.card.gold { border-left-color: var(--gold); background: #FEFCE8; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 16px 0; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 16px 0; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+@media (max-width: 720px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+label { display: block; font-size: 12px; font-weight: 600; color: var(--slate); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.slider-row { margin: 10px 0; }
+.slider-row .val { display: inline-block; font-family: 'Cambria', Georgia, serif;
+  font-size: 16px; color: var(--navy); font-weight: bold; margin-left: 8px; }
+input[type=range] { width: 70%; vertical-align: middle; accent-color: var(--navy); }
+input[type=number], input[type=text], select {
+  padding: 6px 10px; font-size: 13px; border: 1px solid var(--rule); border-radius: 4px; font-family: inherit;
+  width: 100%; }
+button.action { background: var(--navy); color: white; border: none; padding: 9px 18px; font-size: 13px;
+  font-weight: 600; cursor: pointer; border-radius: 4px; transition: background 0.15s; }
+button.action:hover { background: var(--navy-dk); }
+button.action.gold { background: var(--gold); color: var(--navy-dk); }
+button.action.gold:hover { background: #b8923a; }
+button.action.small { padding: 4px 10px; font-size: 11px; }
+table.calc { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--white);
+  border-radius: 6px; overflow: hidden; font-size: 13px; }
+table.calc th { background: var(--navy); color: white; padding: 10px; text-align: left; font-weight: 600; }
+table.calc td { padding: 8px 10px; border-top: 1px solid var(--rule); }
+table.calc input { padding: 4px 6px; font-size: 13px; width: 80px; }
+.result-box { background: var(--navy-dk); color: white; padding: 16px 20px; border-radius: 6px;
+  margin: 14px 0; font-family: 'Cambria', Georgia, serif; font-size: 16px; text-align: center; }
+.result-box .num { color: var(--gold); font-weight: bold; font-size: 22px; }
+.tag { display: inline-block; padding: 3px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.tag.green { background: var(--green); color: white; }
+.tag.red { background: var(--red); color: white; }
+.tag.amber { background: var(--amber); color: white; }
+.tag.teal { background: var(--teal); color: white; }
+.tag.navy { background: var(--navy); color: white; }
+.tag.gold { background: var(--gold); color: var(--navy-dk); }
+.formula { font-family: 'Cambria', Georgia, serif; font-size: 16px;
+  background: var(--paper); padding: 10px 14px; border-radius: 4px;
+  border-left: 3px solid var(--gold); margin: 8px 0; font-style: italic; }
+.help-text { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 4px; }
+
+/* Transaction categorizer */
+.tx-item { background: var(--white); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 12px 14px; margin: 8px 0; cursor: grab; display: flex; align-items: center;
+  justify-content: space-between; }
+.tx-item.placed { opacity: 0.5; cursor: default; }
+.tx-item .badge { background: var(--gold); color: var(--navy-dk); padding: 2px 8px;
+  border-radius: 10px; font-size: 10px; font-weight: 600; margin-right: 10px; }
+.tx-item .stem { flex: 1; font-size: 13px; }
+.tx-item .options { display: flex; gap: 6px; flex-wrap: wrap; }
+.tx-item button { padding: 5px 12px; font-size: 11px; font-weight: 600;
+  background: var(--paper); border: 1px solid var(--rule); color: var(--slate);
+  border-radius: 3px; cursor: pointer; }
+.tx-item button:hover { background: var(--navy); color: white; }
+.tx-item button.chosen-correct { background: var(--green); color: white; border-color: var(--green); }
+.tx-item button.chosen-wrong { background: var(--red); color: white; border-color: var(--red); }
+.tx-item .verdict { margin-top: 8px; font-size: 12px; padding: 8px;
+  border-radius: 4px; display: none; width: 100%; }
+.tx-item .verdict.show { display: block; }
+.tx-item .verdict.correct { background: #ECFDF5; color: var(--green); border-left: 3px solid var(--green); }
+.tx-item .verdict.wrong { background: #FEF2F2; color: var(--red); border-left: 3px solid var(--red); }
+
+/* Quiz */
+.quiz-q { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 14px 18px; margin: 10px 0; }
+.quiz-q .stem { font-weight: 600; color: var(--navy); margin-bottom: 8px; }
+.quiz-q label { display: block; font-weight: normal; text-transform: none;
+  padding: 4px 8px; cursor: pointer; margin: 2px 0; font-size: 13px; letter-spacing: 0; color: var(--dark); }
+.quiz-q label:hover { background: #F1F5F9; border-radius: 3px; }
+.quiz-q .feedback { margin-top: 8px; padding: 8px 10px; border-radius: 4px; font-size: 12px; display: none; }
+.quiz-q .feedback.show { display: block; }
+.quiz-q .feedback.correct { background: #ECFDF5; color: var(--green); border-left: 3px solid var(--green); }
+.quiz-q .feedback.wrong { background: #FEF2F2; color: var(--red); border-left: 3px solid var(--red); }
+.quiz-score { position: sticky; top: 0; background: var(--white);
+  padding: 12px 18px; border: 1px solid var(--rule); border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+.quiz-score .pct { font-family: 'Cambria', Georgia, serif; font-size: 22px; color: var(--navy); font-weight: bold; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ECON 410 · Section 1 · Module F — Deeper Dive Interactive Lab</h1>
+  <div class="sub">Three-approach GDP · Value added · Real/Nominal · CPI vs Deflator · Practice — Mankiw Ch.1–2</div>
+</header>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="categorize">1. GDP Categorizer</button>
+    <button class="tab-btn" data-tab="va">2. Value-Added Chain</button>
+    <button class="tab-btn" data-tab="rn">3. Real/Nominal Calculator</button>
+    <button class="tab-btn" data-tab="cpi">4. CPI vs Deflator Lab</button>
+    <button class="tab-btn" data-tab="quiz">5. Practice Quiz</button>
+  </div>
+
+  <!-- ============ TAB 1: GDP CATEGORIZER ============ -->
+  <div id="tab-categorize" class="tab-content active">
+    <h2>GDP component categorizer</h2>
+    <div class="subtitle">For each transaction, click the correct GDP component. Modeled on Mankiw 10e Ch.2 Q4 — the most-tested topic on Exam 1.</div>
+
+    <div class="card gold">
+      <strong>Rule of thumb:</strong> Who is buying the good or service?
+      <ul style="font-size: 13px; margin: 6px 0; line-height: 1.7;">
+        <li><strong>Household</strong> → C (Consumption)</li>
+        <li><strong>Firm</strong> (capital good or inventory) → I (Investment)</li>
+        <li><strong>Government</strong> → G (Government purchases)</li>
+        <li><strong>Foreign buyer</strong> → X (Export), so NX rises</li>
+        <li><strong>Imported good purchased in U.S.</strong> → C or I rises AND M rises (so NX falls) — they offset for the foreign portion</li>
+      </ul>
+    </div>
+
+    <h3>Click your answer for each transaction</h3>
+    <div id="tx-list"></div>
+
+    <div class="card teal" id="tx-summary" style="display: none;">
+      <h3 style="margin-top: 0;">Your score</h3>
+      <div class="result-box">
+        <span class="num"><span id="tx-correct">0</span>/<span id="tx-total">10</span></span>
+        <div style="font-size: 13px; margin-top: 8px;">Categorization accuracy</div>
+      </div>
+      <button class="action gold" onclick="resetTx()">Reset and try again</button>
+    </div>
+  </div>
+
+  <!-- ============ TAB 2: VALUE-ADDED CHAIN ============ -->
+  <div id="tab-va" class="tab-content">
+    <h2>Value-added supply chain builder</h2>
+    <div class="subtitle">Build a multi-stage supply chain. The tool computes value added at each stage and verifies the sum equals the final good's price.</div>
+
+    <div class="card">
+      <h3>Default scenario — bread chain</h3>
+      <table class="calc" id="va-table">
+        <thead>
+          <tr><th>Stage</th><th>What they do</th><th>Sells for ($)</th><th>Input cost ($)</th><th>Value added ($)</th></tr>
+        </thead>
+        <tbody id="va-tbody"></tbody>
+      </table>
+      <div style="margin-top: 12px;">
+        <button class="action small" onclick="addVaRow()">+ Add stage</button>
+        <button class="action small gold" onclick="resetVa()">Reset to bread chain</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="result-box">
+        Sum of value added<br>
+        $<span class="num" id="va-sum">6.00</span>
+      </div>
+      <div class="result-box">
+        Final-good GDP<br>
+        $<span class="num" id="va-final">6.00</span>
+      </div>
+    </div>
+
+    <div class="card" id="va-check">
+      <strong>✓ The sum of value added equals the final good's price — no double counting.</strong>
+    </div>
+
+    <div class="card gold">
+      <strong>Try these:</strong>
+      <ul style="font-size: 13px; margin: 6px 0; line-height: 1.7;">
+        <li>Reset to bread. Note $1 + $2 + $3 = $6 (the engineer's bread).</li>
+        <li>Change the baker's sale price to $10 (and keep input cost $3). Watch value-added and GDP both rise to $10.</li>
+        <li>Add a 4th stage: "Sandwich shop" buys bread for $6, sells sandwich for $12. New GDP = $12.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TAB 3: REAL vs NOMINAL ============ -->
+  <div id="tab-rn" class="tab-content">
+    <h2>Real GDP, Nominal GDP, GDP deflator, and CPI — calculator</h2>
+    <div class="subtitle">A two-good economy. Change quantities and prices; see all four measures recomputed instantly.</div>
+
+    <div class="card">
+      <h3>Data — set base year = 2024</h3>
+      <table class="calc" id="rn-table">
+        <thead>
+          <tr><th>Good</th>
+              <th colspan="2">2024 (base year)</th>
+              <th colspan="2">2026</th></tr>
+          <tr><th></th><th>Qty</th><th>Price ($)</th><th>Qty</th><th>Price ($)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hot dogs</td>
+              <td><input type="number" id="rn-q24-1" value="200"></td>
+              <td><input type="number" id="rn-p24-1" value="2"></td>
+              <td><input type="number" id="rn-q26-1" value="250"></td>
+              <td><input type="number" id="rn-p26-1" value="4"></td></tr>
+          <tr><td>Hamburgers</td>
+              <td><input type="number" id="rn-q24-2" value="200"></td>
+              <td><input type="number" id="rn-p24-2" value="3"></td>
+              <td><input type="number" id="rn-q26-2" value="500"></td>
+              <td><input type="number" id="rn-p26-2" value="4"></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2">
+      <div class="card teal">
+        <h3>Output measures</h3>
+        <table class="calc">
+          <tr><td>Nominal GDP 2024</td><td id="rn-nom24">$1,000</td></tr>
+          <tr><td>Nominal GDP 2026</td><td id="rn-nom26">$3,000</td></tr>
+          <tr><td>Real GDP 2024 (base)</td><td id="rn-real24">$1,000</td></tr>
+          <tr><td>Real GDP 2026 (2024 prices)</td><td id="rn-real26">$2,000</td></tr>
+          <tr><td>Real growth 2024 → 2026</td><td id="rn-realg" style="font-weight: bold; color: var(--green);">+100.0%</td></tr>
+        </table>
+      </div>
+      <div class="card amber">
+        <h3>Price measures</h3>
+        <table class="calc">
+          <tr><td>GDP deflator 2024</td><td>100</td></tr>
+          <tr><td>GDP deflator 2026</td><td id="rn-def26">150.0</td></tr>
+          <tr><td>CPI 2024</td><td>100</td></tr>
+          <tr><td>CPI 2026 (fixed 2024 basket)</td><td id="rn-cpi26">160.0</td></tr>
+          <tr><td>Deflator inflation</td><td id="rn-definfl">+50.0%</td></tr>
+          <tr><td>CPI inflation</td><td id="rn-cpiinfl">+60.0%</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card gold">
+      <h3>Why are they different?</h3>
+      <div id="rn-explain" style="font-size: 13px; line-height: 1.6;">
+        CPI uses the FIXED 2024 basket, so it weights hot dogs and burgers as 200 each. GDP deflator uses the CURRENT 2026 basket
+        (250 hot dogs, 500 burgers). When relative prices change and consumers substitute, CPI misses the substitution and overstates
+        the cost-of-living increase.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TAB 4: CPI VS DEFLATOR ============ -->
+  <div id="tab-cpi" class="tab-content">
+    <h2>CPI vs. GDP deflator — substitution experiment</h2>
+    <div class="subtitle">Move the slider to control how much consumers substitute when relative prices shift. Watch CPI overstate the cost-of-living change.</div>
+
+    <div class="card">
+      <h3>The experiment</h3>
+      <p style="font-size: 13px;">Base year 2024: two goods at $10 and $10, quantities 100 and 100 each.<br>
+      In 2026, good A doubles to $20; good B stays at $10. Consumers shift toward the cheaper good.</p>
+      <label>Substitution intensity (how much consumers shift toward good B)</label>
+      <div class="slider-row">
+        <input type="range" id="cpi-sub" min="0" max="100" step="5" value="50">
+        <span class="val" id="cpi-sub-val">50</span><span style="font-size: 12px; color: var(--muted);">%</span>
+      </div>
+      <p class="help-text">0% = no substitution (consumers buy the same basket). 100% = full substitution (consumers buy only good B).</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card teal">
+        <h3>Quantities in 2026</h3>
+        <table class="calc">
+          <tr><td>Good A (now $20)</td><td id="cpi-qA26">50</td></tr>
+          <tr><td>Good B (still $10)</td><td id="cpi-qB26">150</td></tr>
+        </table>
+      </div>
+      <div class="card amber">
+        <h3>Price indices</h3>
+        <table class="calc">
+          <tr><td>CPI 2026 (fixed 2024 basket)</td><td id="cpi-cpi26">150.0</td></tr>
+          <tr><td>GDP deflator 2026 (current basket)</td><td id="cpi-def26">125.0</td></tr>
+          <tr><td>CPI inflation</td><td id="cpi-cpiinfl">+50.0%</td></tr>
+          <tr><td>Deflator inflation</td><td id="cpi-definfl">+25.0%</td></tr>
+          <tr><td>CPI overstatement</td><td id="cpi-bias" style="color: var(--red); font-weight: bold;">+25.0 pp</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card gold">
+      <strong>Key finding:</strong> The MORE consumers substitute toward the cheaper good, the BIGGER the gap between CPI and GDP deflator.
+      CPI (Laspeyres) overstates inflation by this gap. The Boskin Commission (1996) estimated that the U.S. CPI overstates true inflation by about 1.1 percentage points per year because of this substitution bias.
+    </div>
+  </div>
+
+  <!-- ============ TAB 5: QUIZ ============ -->
+  <div id="tab-quiz" class="tab-content">
+    <h2>Practice quiz — Section 1 v3</h2>
+    <div class="subtitle">10 questions in Practice Exam 1 style. Instant feedback on each answer.</div>
+
+    <div class="quiz-score">
+      Score: <span class="pct"><span id="quiz-correct">0</span>/<span id="quiz-total">10</span></span>
+      <button class="action gold" style="float: right;" onclick="resetQuiz()">Reset</button>
+    </div>
+
+    <div id="quiz-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ============ TABS ============
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('tab-' + b.dataset.tab).classList.add('active');
+  });
+});
+
+// ============ TAB 1: TX CATEGORIZER ============
+const txs = [
+  { stem: "Apple sells a laptop to a public school district in College Station.", ans: 'G',
+    exp: "Public school = government. → G (government purchases)." },
+  { stem: "Apple sells a laptop to an accounting firm in Houston.", ans: 'I',
+    exp: "Firm buying capital equipment → I (investment)." },
+  { stem: "Apple sells a laptop to a bakery in Paris, France.", ans: 'X',
+    exp: "Foreign buyer → Export (X rises, NX rises)." },
+  { stem: "Apple sells a laptop to a college student in Austin.", ans: 'C',
+    exp: "Household / individual purchase → C (consumption)." },
+  { stem: "Apple manufactures a laptop in December 2025 but it doesn't sell until 2026.", ans: 'I',
+    exp: "Unsold output = inventory investment in the year produced (2025)." },
+  { stem: "U.S. government sends a $1,400 stimulus check to a household.", ans: 'NONE',
+    exp: "Transfer payment — no production involved. Not in GDP. When the household spends it, THAT spending goes into C." },
+  { stem: "A landlord rents an apartment to a tenant for $2,000/month.", ans: 'C',
+    exp: "Tenant pays for housing services → C (consumer service)." },
+  { stem: "A consumer buys a used car for $8,000 from a private seller (no dealer).", ans: 'NONE',
+    exp: "Used goods are NOT in current GDP (already counted when first produced). Only a dealer margin would count." },
+  { stem: "A Texas-based firm buys $5M of new factory equipment.", ans: 'I',
+    exp: "New capital good purchased by a firm → I (business fixed investment)." },
+  { stem: "Kara buys an iPhone in Texas for $1,200. It was manufactured in China for $700.", ans: 'BOTH',
+    exp: "C rises by $1,200 AND M rises by $700 (so NX falls by $700). Net contribution to U.S. GDP = $500 (the U.S. value-added margin)." }
+];
+
+const txState = new Array(txs.length).fill(null);
+function renderTx() {
+  document.getElementById('tx-total').textContent = txs.length;
+  const root = document.getElementById('tx-list');
+  root.innerHTML = txs.map((t, i) => {
+    const options = ['C', 'I', 'G', 'X', 'NONE', 'BOTH'];
+    const labels = { 'C': 'C', 'I': 'I', 'G': 'G', 'X': 'X (export)', 'NONE': 'Not in GDP', 'BOTH': 'Multiple components' };
+    return `<div class="tx-item" data-i="${i}">
+      <span class="badge">${i+1}</span>
+      <div class="stem">${t.stem}</div>
+      <div class="options">
+        ${options.map(o => `<button onclick="checkTx(${i}, '${o}')" id="tx-${i}-${o}">${labels[o]}</button>`).join('')}
+      </div>
+      <div class="verdict" id="tx-verdict-${i}"></div>
+    </div>`;
+  }).join('');
+}
+
+function checkTx(i, chosen) {
+  const t = txs[i];
+  const correct = (chosen === t.ans);
+  // Mark button
+  document.querySelectorAll(`#tx-list .tx-item[data-i="${i}"] button`).forEach(b => b.disabled = true);
+  const btn = document.getElementById(`tx-${i}-${chosen}`);
+  btn.classList.add(correct ? 'chosen-correct' : 'chosen-wrong');
+  if (!correct) {
+    document.getElementById(`tx-${i}-${t.ans}`).classList.add('chosen-correct');
+  }
+  const v = document.getElementById(`tx-verdict-${i}`);
+  v.className = 'verdict show ' + (correct ? 'correct' : 'wrong');
+  v.innerHTML = (correct ? '✓ ' : '✗ Correct: ') + t.exp;
+  if (txState[i] === null) {
+    txState[i] = correct;
+    updateTxScore();
+  }
+}
+
+function updateTxScore() {
+  const answered = txState.filter(x => x !== null).length;
+  const correct = txState.filter(x => x === true).length;
+  document.getElementById('tx-correct').textContent = correct;
+  if (answered === txs.length) {
+    document.getElementById('tx-summary').style.display = 'block';
+  }
+}
+
+function resetTx() {
+  txState.fill(null);
+  renderTx();
+  document.getElementById('tx-summary').style.display = 'none';
+  document.getElementById('tx-correct').textContent = '0';
+}
+
+renderTx();
+
+// ============ TAB 2: VALUE-ADDED CHAIN ============
+const breadChain = [
+  { stage: "Farmer", action: "Grows wheat", sells: 1, inputs: 0 },
+  { stage: "Miller", action: "Mills flour", sells: 3, inputs: 1 },
+  { stage: "Baker", action: "Bakes bread", sells: 6, inputs: 3 }
+];
+let vaChain = JSON.parse(JSON.stringify(breadChain));
+
+function renderVa() {
+  const tbody = document.getElementById('va-tbody');
+  tbody.innerHTML = vaChain.map((r, i) => `
+    <tr>
+      <td><input type="text" value="${r.stage}" onchange="vaUpdate(${i}, 'stage', this.value)"></td>
+      <td><input type="text" value="${r.action}" onchange="vaUpdate(${i}, 'action', this.value)"></td>
+      <td><input type="number" value="${r.sells}" onchange="vaUpdate(${i}, 'sells', parseFloat(this.value))"></td>
+      <td><input type="number" value="${r.inputs}" onchange="vaUpdate(${i}, 'inputs', parseFloat(this.value))"></td>
+      <td style="color: var(--green); font-weight: bold;">$${(r.sells - r.inputs).toFixed(2)}</td>
+      <td><button class="action small" onclick="vaRemove(${i})" style="background:var(--red);">✕</button></td>
+    </tr>
+  `).join('');
+
+  const sum = vaChain.reduce((acc, r) => acc + (r.sells - r.inputs), 0);
+  const finalGood = vaChain.length > 0 ? vaChain[vaChain.length - 1].sells : 0;
+  document.getElementById('va-sum').textContent = sum.toFixed(2);
+  document.getElementById('va-final').textContent = finalGood.toFixed(2);
+
+  const check = document.getElementById('va-check');
+  if (Math.abs(sum - finalGood) < 0.01) {
+    check.className = 'card green';
+    check.innerHTML = '<strong>✓ The sum of value added equals the final good\'s price — no double counting.</strong>';
+  } else {
+    check.className = 'card red';
+    check.innerHTML = `<strong>⚠ Sum of value added ($${sum.toFixed(2)}) ≠ final good ($${finalGood.toFixed(2)}). Check that each stage's "input cost" equals the previous stage's "sells for".</strong>`;
+  }
+}
+
+function vaUpdate(i, field, val) { vaChain[i][field] = val; renderVa(); }
+function vaRemove(i) { vaChain.splice(i, 1); renderVa(); }
+function addVaRow() {
+  const last = vaChain[vaChain.length - 1];
+  const newInputs = last ? last.sells : 0;
+  vaChain.push({ stage: "New stage", action: "Describe...", sells: newInputs + 2, inputs: newInputs });
+  renderVa();
+}
+function resetVa() { vaChain = JSON.parse(JSON.stringify(breadChain)); renderVa(); }
+renderVa();
+
+// ============ TAB 3: REAL/NOMINAL ============
+function rnCompute() {
+  const q24_1 = +document.getElementById('rn-q24-1').value;
+  const p24_1 = +document.getElementById('rn-p24-1').value;
+  const q26_1 = +document.getElementById('rn-q26-1').value;
+  const p26_1 = +document.getElementById('rn-p26-1').value;
+  const q24_2 = +document.getElementById('rn-q24-2').value;
+  const p24_2 = +document.getElementById('rn-p24-2').value;
+  const q26_2 = +document.getElementById('rn-q26-2').value;
+  const p26_2 = +document.getElementById('rn-p26-2').value;
+
+  const nom24 = q24_1*p24_1 + q24_2*p24_2;
+  const nom26 = q26_1*p26_1 + q26_2*p26_2;
+  const real24 = nom24; // base year
+  const real26 = q26_1*p24_1 + q26_2*p24_2;
+  const def26 = (nom26 / real26) * 100;
+  // CPI: cost of 2024 basket at 2026 prices, indexed to 2024 cost
+  const cpiBasketCost24 = q24_1*p24_1 + q24_2*p24_2;
+  const cpiBasketCost26 = q24_1*p26_1 + q24_2*p26_2;
+  const cpi26 = (cpiBasketCost26 / cpiBasketCost24) * 100;
+  const realg = (real26 / real24 - 1) * 100;
+  const definfl = def26 - 100;
+  const cpiinfl = cpi26 - 100;
+
+  const fmt = n => '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  document.getElementById('rn-nom24').textContent = fmt(nom24);
+  document.getElementById('rn-nom26').textContent = fmt(nom26);
+  document.getElementById('rn-real24').textContent = fmt(real24);
+  document.getElementById('rn-real26').textContent = fmt(real26);
+  document.getElementById('rn-realg').textContent = (realg >= 0 ? '+' : '') + realg.toFixed(1) + '%';
+  document.getElementById('rn-def26').textContent = def26.toFixed(1);
+  document.getElementById('rn-cpi26').textContent = cpi26.toFixed(1);
+  document.getElementById('rn-definfl').textContent = (definfl >= 0 ? '+' : '') + definfl.toFixed(1) + '%';
+  document.getElementById('rn-cpiinfl').textContent = (cpiinfl >= 0 ? '+' : '') + cpiinfl.toFixed(1) + '%';
+
+  // Explanation
+  let exp;
+  if (Math.abs(cpiinfl - definfl) < 0.5) {
+    exp = "CPI and deflator inflation are roughly equal — relative prices have moved similarly, so substitution isn't biting much.";
+  } else if (cpiinfl > definfl) {
+    exp = "CPI inflation > deflator inflation. CPI uses the FIXED 2024 basket and misses the substitution toward cheaper goods. CPI OVERSTATES the cost-of-living change by " + (cpiinfl - definfl).toFixed(1) + " percentage points.";
+  } else {
+    exp = "Deflator inflation > CPI inflation. This is unusual — means consumers are buying MORE of the relatively expensive goods (COVID 2020 pattern: food at home prices fell, but quantities rose).";
+  }
+  document.getElementById('rn-explain').textContent = exp;
+}
+
+['rn-q24-1','rn-p24-1','rn-q26-1','rn-p26-1','rn-q24-2','rn-p24-2','rn-q26-2','rn-p26-2']
+  .forEach(id => document.getElementById(id).addEventListener('input', rnCompute));
+rnCompute();
+
+// ============ TAB 4: CPI vs DEFLATOR ============
+function updateCpi() {
+  // Sub = how much consumers shift; 0 = no shift, 100 = all to B
+  const sub = parseFloat(document.getElementById('cpi-sub').value);
+  document.getElementById('cpi-sub-val').textContent = sub;
+
+  // 2024: 100 each, both at $10. Total spending = $2000.
+  // 2026: A $20, B $10. Households move (sub/100)*100 units from A to B (relative to baseline).
+  // Quantities 2026:
+  const qA26 = 100 - (sub / 100) * 100;
+  const qB26 = 100 + (sub / 100) * 100;
+  document.getElementById('cpi-qA26').textContent = qA26.toFixed(0);
+  document.getElementById('cpi-qB26').textContent = qB26.toFixed(0);
+
+  // CPI 2026 with fixed 2024 basket (100 A + 100 B)
+  const basket24cost24 = 100*10 + 100*10; // 2000
+  const basket24cost26 = 100*20 + 100*10; // 3000
+  const cpi26 = (basket24cost26 / basket24cost24) * 100;
+
+  // GDP deflator 2026 (current basket Paasche)
+  // Nominal 2026: qA*20 + qB*10
+  // Real 2026 (2024 prices): qA*10 + qB*10
+  const nom26 = qA26 * 20 + qB26 * 10;
+  const real26 = qA26 * 10 + qB26 * 10;
+  const def26 = (nom26 / real26) * 100;
+
+  document.getElementById('cpi-cpi26').textContent = cpi26.toFixed(1);
+  document.getElementById('cpi-def26').textContent = def26.toFixed(1);
+  document.getElementById('cpi-cpiinfl').textContent = '+' + (cpi26 - 100).toFixed(1) + '%';
+  document.getElementById('cpi-definfl').textContent = '+' + (def26 - 100).toFixed(1) + '%';
+  document.getElementById('cpi-bias').textContent = '+' + (cpi26 - def26).toFixed(1) + ' pp';
+}
+document.getElementById('cpi-sub').addEventListener('input', updateCpi);
+updateCpi();
+
+// ============ TAB 5: QUIZ ============
+const quizQs = [
+  { stem: "Recessions are periods of:",
+    opts: ["rising incomes", "falling incomes", "rising prices", "falling prices"], a: 1,
+    exp: "A recession is conventionally defined as a sustained decline in real GDP and incomes." },
+  { stem: "___ GDP measures output at current prices and is a ___ variable.",
+    opts: ["Nominal, stock", "Nominal, flow", "Real, stock", "Real, flow"], a: 1,
+    exp: "Nominal = current prices. All GDP is a flow (per unit of time)." },
+  { stem: "The largest component of U.S. GDP is:",
+    opts: ["consumption", "investment", "government purchases", "net exports"], a: 0,
+    exp: "Consumption ~68% of U.S. GDP." },
+  { stem: "A farmer sells wheat to a miller for $1; miller sells flour to baker for $3; baker sells bread for $6. The miller's value added is:",
+    opts: ["$1", "$2", "$3", "$6"], a: 1,
+    exp: "Output value $3 minus intermediate input cost $1 = $2." },
+  { stem: "Which event affects the CPI but NOT the GDP deflator?",
+    opts: ["Boeing raises U.S. Air Force fighter-jet prices",
+           "Volvo (Sweden) raises U.S. car prices",
+           "Kellogg cuts corn flakes prices",
+           "Barbers raise haircut prices"], a: 1,
+    exp: "CPI includes imported consumer goods; GDP deflator does not. Volvo cars are imports → CPI ↑, deflator unchanged." },
+  { stem: "If a person quits her job to be a stay-at-home parent, the labor-force participation rate ___ and the unemployment rate ___.",
+    opts: ["rises, rises", "rises, stays same", "falls, rises", "falls, stays same"], a: 3,
+    exp: "She leaves the labor force entirely. LFPR falls. She's not in numerator or denominator → U-rate unchanged." },
+  { stem: "If the GDP deflator equals 1.25 and nominal GDP equals $15T, real GDP is:",
+    opts: ["$12T", "$12.5T", "$15T", "$18.75T"], a: 0,
+    exp: "Real = Nominal / Deflator = $15T / 1.25 = $12T." },
+  { stem: "A fixed-weight price index like the CPI ___ the change in cost of living because it ___ allow substitution.",
+    opts: ["underestimates; does not", "overestimates; does", "accurately estimates; does", "overestimates; does not"], a: 3,
+    exp: "CPI cannot reflect substitution toward cheaper goods → systematically overstates true inflation." },
+  { stem: "Bread is baked but stored for later sale. This is:",
+    opts: ["waste", "saving", "fixed investment", "inventory investment"], a: 3,
+    exp: "Unsold output adds to inventory and counts as inventory investment in the year produced." },
+  { stem: "If C = $14T, I = $4T, G = $4T, NX = −$1T, what is GDP?",
+    opts: ["$21T", "$22T", "$23T", "$25T"], a: 0,
+    exp: "Y = C + I + G + NX = 14 + 4 + 4 − 1 = $21T." }
+];
+
+const quizState = new Array(quizQs.length).fill(null);
+function renderQuiz() {
+  document.getElementById('quiz-total').textContent = quizQs.length;
+  const root = document.getElementById('quiz-list');
+  root.innerHTML = quizQs.map((q, i) => `
+    <div class="quiz-q" data-i="${i}">
+      <div class="stem">Q${i+1}. ${q.stem}</div>
+      ${q.opts.map((o, j) => `
+        <label><input type="radio" name="q${i}" value="${j}" onchange="checkQuiz(${i}, ${j})">  ${String.fromCharCode(97+j)}) ${o}</label>
+      `).join('')}
+      <div class="feedback" id="fb-${i}"></div>
+    </div>
+  `).join('');
+}
+
+function checkQuiz(i, chosen) {
+  const q = quizQs[i];
+  const correct = (chosen === q.a);
+  if (quizState[i] === null) quizState[i] = correct;
+  const fb = document.getElementById('fb-' + i);
+  fb.className = 'feedback show ' + (correct ? 'correct' : 'wrong');
+  fb.innerHTML = (correct ? '✓ Correct. ' : `✗ Correct answer: ${String.fromCharCode(97+q.a)}) ${q.opts[q.a]}. `) + q.exp;
+  updateQuizScore();
+}
+
+function updateQuizScore() {
+  const c = quizState.filter(x => x === true).length;
+  document.getElementById('quiz-correct').textContent = c;
+}
+
+function resetQuiz() {
+  quizState.fill(null);
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('.feedback').forEach(f => f.className = 'feedback');
+  updateQuizScore();
+}
+
+renderQuiz();
+</script>
+
+</body>
+</html>
