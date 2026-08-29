@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECON 410 · Building the Model in Five Steps</title>
+<style>
+:root{
+  --navy:#1B3A5C; --gold:#C8912A; --teal:#0E6B5B;
+  --cream:#F2EEE1; --mint:#EAF4F1; --ink:#1F2933; --muted:#5C6B7A; --line:#D9DEE4;
+  --pe:#1F6FB2; --is:#0E6B5B; --lm:#C1553B; --ad:#7A4FA3; --sras:#C8912A; --lras:#37475A;
+  --bg:#FBFAF7;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-size:14.5px; line-height:1.55;
+  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{margin:0; font-weight:700}
+button{font-family:inherit; font-size:inherit; cursor:pointer}
+
+/* ---------- header ---------- */
+.topbar{background:var(--navy); color:#fff; padding:10px 22px; border-bottom:3px solid var(--gold);
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.topbar .brand{font-weight:700; letter-spacing:.10em; font-size:11.5px; text-transform:uppercase}
+.topbar .tag{font-size:11.5px; color:#EBD9AE}
+.titleblock{padding:18px 22px 4px}
+.titleblock h1{color:var(--teal); font-size:24px}
+.titleblock .sub{color:var(--muted); font-style:italic; margin-top:5px}
+.rule{width:60px; height:3px; background:var(--gold); margin-top:10px}
+
+/* ---------- the five steps ---------- */
+.steps{display:flex; padding:16px 22px 0; gap:6px; flex-wrap:wrap}
+.step{flex:1; min-width:168px; background:#fff; border:1px solid var(--line); border-radius:8px;
+  padding:9px 12px; text-align:left; color:var(--muted); position:relative}
+.step .n{display:inline-flex; width:21px; height:21px; align-items:center; justify-content:center;
+  border-radius:50%; background:var(--line); color:#fff; font-size:11.5px; font-weight:700; margin-right:7px}
+.step .t{font-weight:700; font-size:13px; color:var(--ink)}
+.step .d{font-size:11px; margin-top:3px; line-height:1.4}
+.step:hover{border-color:var(--teal)}
+.step.on{background:var(--teal); border-color:var(--teal); color:#D6EBE5}
+.step.on .t{color:#fff} .step.on .n{background:rgba(255,255,255,.32)}
+.stepnav{display:flex; gap:8px; padding:12px 22px 0; align-items:center}
+
+/* ---------- layout ---------- */
+.wrap{display:grid; grid-template-columns:296px minmax(0,1fr); gap:16px; padding:14px 22px 40px; align-items:start}
+@media (max-width:1080px){ .wrap{grid-template-columns:1fr} }
+
+.card{background:#fff; border:1px solid var(--line); border-radius:9px; overflow:hidden; margin-bottom:14px}
+.card .hd{background:var(--navy); color:#fff; padding:8px 13px; font-size:11.5px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase}
+.card .hd.teal{background:var(--teal)} .card .hd.gold{background:var(--gold); color:#2A2000}
+.card .bd{padding:12px 13px}
+.sticky{position:sticky; top:12px}
+
+/* ---------- controls ---------- */
+.ctl{margin-bottom:13px}
+.ctl:last-child{margin-bottom:1px}
+.ctl .lab{display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-bottom:4px}
+.ctl .lab .nm b{font-family:Georgia,serif; font-style:italic; font-size:14.5px; color:var(--navy)}
+.ctl .lab .nm span{font-size:12px; color:var(--muted)}
+.ctl .lab .vl{font-variant-numeric:tabular-nums; font-weight:700; font-size:13px;
+  background:var(--cream); border-radius:4px; padding:1px 7px; min-width:54px; text-align:right}
+.ctl .lab .vl.chg{background:#FFF0CF; color:#7A4B00; box-shadow:inset 0 0 0 1px #E5C27A}
+.ctl.key{background:#F6FBF9; border-left:3px solid var(--teal); border-radius:0 6px 6px 0; padding:8px 10px 9px; margin-left:-3px}
+.ctl .why{font-size:11px; color:var(--muted); font-style:italic; margin-top:3px}
+input[type=range]{width:100%; height:18px; -webkit-appearance:none; background:transparent; margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:5px; background:var(--line); border-radius:3px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+  background:var(--teal); border:2px solid #fff; box-shadow:0 0 0 1px var(--teal); margin-top:-6px}
+input[type=range]::-moz-range-track{height:5px; background:var(--line); border-radius:3px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--teal);border:2px solid #fff}
+input[type=range].hot::-webkit-slider-thumb{background:var(--gold); box-shadow:0 0 0 1px var(--gold)}
+input[type=range].hot::-moz-range-thumb{background:var(--gold)}
+
+.more{border-top:1px solid var(--line); margin-top:6px}
+.more > summary{padding:9px 0 2px; font-size:12px; color:var(--teal); font-weight:600; cursor:pointer; list-style:none}
+.more > summary::-webkit-details-marker{display:none}
+.more > summary::before{content:'▸ '; }
+.more[open] > summary::before{content:'▾ '; }
+
+.btn{background:#fff; border:1px solid var(--line); border-radius:7px; padding:7px 11px; font-size:12.5px}
+.btn:hover{border-color:var(--teal); color:var(--teal)}
+.btn.pri{background:var(--teal); border-color:var(--teal); color:#fff}
+.btn.pri:hover{background:#0B584B}
+.btn.gold{background:var(--gold); border-color:var(--gold); color:#2A2000; font-weight:700}
+.btn.gold:hover{background:#B57F1E}
+.btn.sm{padding:5px 9px; font-size:12px}
+.row{display:flex; gap:7px; flex-wrap:wrap}
+.chk{display:flex; align-items:center; gap:8px; font-size:12.5px; margin-top:9px}
+.chk input{width:15px;height:15px;accent-color:var(--teal)}
+
+/* ---------- banner ---------- */
+.banner{background:var(--cream); border-left:5px solid var(--gold); border-radius:0 9px 9px 0;
+  padding:12px 15px; margin-bottom:14px; font-size:14px; line-height:1.6}
+.banner .vv{font-weight:700; color:#8A5B00}
+.banner.move{background:#F4F9FD; border-left-color:var(--pe)} .banner.move .vv{color:#14507F}
+.banner.calm{background:var(--mint); border-left-color:var(--teal)} .banner.calm .vv{color:#0B584B}
+.banner b{color:var(--navy)}
+
+/* ---------- panels ---------- */
+.panels{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}
+@media (max-width:820px){ .panels{grid-template-columns:1fr} }
+.pan{background:#fff; border:1px solid var(--line); border-radius:9px; overflow:hidden}
+.pan.wide{grid-column:1/-1}
+.pan .ph{padding:7px 13px; background:var(--mint); border-bottom:1px solid var(--line);
+  display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
+.pan .ph .pt{font-size:13.5px; font-weight:700; color:var(--teal)}
+.pan .ph .pn{font-size:11.5px; color:var(--muted); font-style:italic}
+.pan .pv{padding:5px}
+.pan svg{width:100%; height:auto; display:block}
+.pan .pf{padding:8px 13px 10px; font-size:12px; color:var(--muted); border-top:1px dashed var(--line); line-height:1.5}
+.pan .pf b{color:var(--ink)}
+
+text{font-family:"Segoe UI",Helvetica,Arial,sans-serif}
+.axlab{font-size:11px; fill:var(--muted)}
+.axttl{font-size:11.5px; fill:var(--ink); font-weight:600}
+.ann{font-size:10.5px; fill:var(--muted)}
+.annb{font-size:10.5px; font-weight:700}
+.clab{font-size:12.5px; font-weight:700}
+
+/* ---------- side boxes ---------- */
+.notice{background:var(--mint); border-left:4px solid var(--teal); border-radius:0 7px 7px 0; padding:10px 13px}
+.notice h3{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--teal); margin-bottom:5px}
+.notice ul{margin:0; padding-left:17px; font-size:12.5px; line-height:1.6}
+.notice li{margin-bottom:4px}
+.notice li:last-child{margin-bottom:0}
+.expl{font-size:13px; line-height:1.65}
+.expl p{margin:0 0 9px} .expl p:last-child{margin:0}
+.expl em{color:var(--navy); font-style:italic}
+table.kv{width:100%; border-collapse:collapse; font-size:12.5px}
+table.kv td{padding:4px 5px; border-bottom:1px solid #F0F2F5}
+table.kv td:first-child{color:var(--muted)}
+table.kv td:last-child{text-align:right; font-weight:700; font-variant-numeric:tabular-nums}
+table.kv tr.em td{background:var(--mint)}
+.up{color:var(--teal)} .dn{color:#B3261E}
+.eq{font-family:Georgia,serif; font-size:13px; line-height:1.9}
+.eq .r{padding:3px 0; border-bottom:1px dotted #EFF1F4}
+.eq .r:last-child{border:none}
+.eq .k{font-family:"Segoe UI",Helvetica,sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:.03em; color:var(--teal); text-transform:uppercase; display:block}
+.hl{background:#FFF4D6; border-radius:3px; padding:0 4px; font-weight:700}
+footer{background:var(--navy); color:#C9D6E2; padding:13px 22px; font-size:12px; font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">ECON 410 · Intermediate Macroeconomics</span>
+  <span style="opacity:.45">·</span>
+  <span class="tag">Section 5 · Student Lab</span>
+</div>
+
+<div class="titleblock">
+  <h1>Building the model in five steps</h1>
+  <div class="sub">Work through the steps in order. In each one, move a slider or press a button and watch what happens.</div>
+  <div class="rule"></div>
+</div>
+
+<div class="steps" id="steps"></div>
+<div class="stepnav">
+  <button class="btn sm" id="navPrev">◀ Previous step</button>
+  <button class="btn sm pri" id="navNext">Next step ▶</button>
+  <span style="font-size:12px;color:var(--muted)" id="navHint"></span>
+</div>
+
+<div class="wrap">
+
+  <div>
+    <div class="card sticky">
+      <div class="hd teal">Your controls</div>
+      <div class="bd">
+        <div id="controls"></div>
+        <details class="more" id="moreBox">
+          <summary>More parameters (optional)</summary>
+          <div id="controlsMore" style="padding-top:8px"></div>
+        </details>
+      </div>
+      <div class="hd gold" style="border-top:1px solid rgba(0,0,0,.1)">Try a change</div>
+      <div class="bd">
+        <div class="row" id="shocks"></div>
+        <div class="row" style="margin-top:9px">
+          <button class="btn pri" id="btnReset" style="width:100%">↺ Back to the baseline</button>
+        </div>
+        <div id="extraOpt"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="banner" id="banner"></div>
+
+    <div class="card">
+      <div class="hd teal" id="explTitle">What this diagram shows</div>
+      <div class="bd">
+        <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px" id="explGrid">
+          <div class="expl" id="expl"></div>
+          <div class="notice" id="notice"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels" id="panels">
+      <div class="pan wide" id="pan-kc">
+        <div class="ph"><span class="pt">The Keynesian Cross</span><span class="pn">planned expenditure and income</span></div>
+        <div class="pv" id="sv-kc"></div><div class="pf" id="ft-kc"></div>
+      </div>
+      <div class="pan" id="pan-ir">
+        <div class="ph"><span class="pt">Investment and the interest rate</span><span class="pn">I(r)</span></div>
+        <div class="pv" id="sv-ir"></div><div class="pf" id="ft-ir"></div>
+      </div>
+      <div class="pan" id="pan-is">
+        <div class="ph"><span class="pt">The IS curve</span><span class="pn">every (Y, r) pair where the goods market clears</span></div>
+        <div class="pv" id="sv-is"></div><div class="pf" id="ft-is"></div>
+      </div>
+      <div class="pan" id="pan-mm">
+        <div class="ph"><span class="pt">The money market</span><span class="pn">supply and demand for real money balances</span></div>
+        <div class="pv" id="sv-mm"></div><div class="pf" id="ft-mm"></div>
+      </div>
+      <div class="pan" id="pan-lm">
+        <div class="ph"><span class="pt">The LM curve</span><span class="pn">every (Y, r) pair where the money market clears</span></div>
+        <div class="pv" id="sv-lm"></div><div class="pf" id="ft-lm"></div>
+      </div>
+      <div class="pan" id="pan-islm">
+        <div class="ph"><span class="pt">IS and LM together</span><span class="pn">both markets clear at one point</span></div>
+        <div class="pv" id="sv-islm"></div><div class="pf" id="ft-islm"></div>
+      </div>
+      <div class="pan" id="pan-ad">
+        <div class="ph"><span class="pt">Aggregate demand and supply</span><span class="pn">output and the price level</span></div>
+        <div class="pv" id="sv-ad"></div><div class="pf" id="ft-ad"></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 264px;gap:14px;margin-top:14px" id="botGrid">
+      <div class="card" style="margin:0">
+        <div class="hd">The numbers behind the picture</div>
+        <div class="bd eq" id="eqbox"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="hd">Where we end up</div>
+        <div class="bd"><table class="kv" id="readout"></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ECON 410 · Section 5.  <em>C = a + c(Y − T)</em>,  <em>I = 250 − b(r − 5)</em>,  money demand <em>(M/P)<sup>d</sup> = Y − h·r</em>.
+  Baseline: <em>Y</em> = 2000, <em>r</em> = 5%, multiplier = 4.
+</footer>
+
+<script>
+/* =======================================================================
+   MODEL — one baseline, round numbers at every step
+   ======================================================================= */
+const R0 = 5;                                   // reference rate: I = I0 when r = R0
+const BASE = {a:150, c:0.75, T:400, I0:250, b:50, G:400, h:200, M:2000, P:2,
+              Ybar:2000, r:5, Yexo:2000, Yprod:2000};
+let base = {...BASE}, cur = {...BASE};
+let step = 1, showInv = false;
+let traceIS = [], traceLM = [], traceAD = [], sweeping = null;
+
+const mult = p => 1/(1-p.c);
+const eOf  = p => p.I0 + p.b*R0;                // investment intercept
+const A0   = p => p.a - p.c*p.T + eOf(p) + p.G; // autonomous demand
+const realM= p => p.M/p.P;
+const Iof  = (p,r) => p.I0 - p.b*(r-R0);
+const PEof = (p,Y,r) => p.a + p.c*(Y-p.T) + Iof(p,r) + p.G;
+const Y_IS = (p,r) => mult(p)*(A0(p) - p.b*r);
+const r_MM = (p,Y) => (Y - realM(p))/p.h;       // money market: r that clears, given Y
+const Y_LM = (p,r) => realM(p) + p.h*r;
+function eqISLM(p){
+  const m=mult(p), A=A0(p);
+  const Y = p.b>0 ? (m*A*p.h + m*p.b*realM(p))/(p.h + m*p.b) : m*A;
+  return {Y, r:r_MM(p,Y)};
+}
+const Y_AD = (p,Pv) => { const m=mult(p), A=A0(p);
+  return p.b>0 ? (m*A*p.h + m*p.b*(p.M/Pv))/(p.h + m*p.b) : m*A; };
+function P_LR(p){ const m=mult(p), A=A0(p);
+  const den = p.Ybar*(p.h + m*p.b) - m*A*p.h;
+  return (p.b>0 && den>0) ? m*p.b*p.M/den : NaN; }
+
+/* what is exogenous at each step */
+function stateNow(p){
+  if(step<=2) return {Y:Y_IS(p,p.r), r:p.r, mode:'goods'};
+  if(step<=4) return {Y:p.Yexo, r:r_MM(p,p.Yexo), mode:'money'};
+  const e=eqISLM(p); return {Y:e.Y, r:e.r, mode:'both'};
+}
+
+/* =======================================================================
+   STEP DEFINITIONS
+   ======================================================================= */
+const SPEC = {
+  G   :{sym:'G', desc:'government purchases',      min:200,max:800, st:20,  dec:0},
+  T   :{sym:'T', desc:'taxes',                     min:200,max:800, st:20,  dec:0},
+  I0  :{sym:'I', desc:'investment (at r = 5%)',     min:50, max:600, st:10,  dec:0},
+  r   :{sym:'r', desc:'the interest rate',          min:0,  max:12,  st:0.25,dec:2, unit:'%'},
+  Yexo:{sym:'Y', desc:'income',                    min:1000,max:3200,st:50, dec:0},
+  M   :{sym:'M', desc:'money supply',              min:800,max:4000,st:50,  dec:0},
+  P   :{sym:'P', desc:'price level',               min:1,  max:4,   st:0.1, dec:1},
+  a   :{sym:'a', desc:'consumption if income were 0',min:0,max:400, st:10,  dec:0},
+  c   :{sym:'c', desc:'MPC — how much of an extra dollar is spent', min:0.5,max:0.9,st:0.05,dec:2},
+  b   :{sym:'b', desc:'how much investment falls if r rises 1 point', min:0,max:150,st:5,dec:0},
+  h   :{sym:'h', desc:'how much money demand falls if r rises 1 point',min:50,max:500,st:10,dec:0},
+  Ybar:{sym:'Ȳ', desc:'potential output',          min:1400,max:2600,st:50, dec:0},
+  Yprod:{sym:'Y',desc:'what firms actually produce',min:1200,max:2800,st:50,dec:0}
+};
+
+const STEPS = [
+{ n:1, t:'The Keynesian Cross', d:'Where does output settle?',
+  panels:['kc'], keys:['G','T','I0'], more:['a','c'], hint:'Try the buttons on the left.',
+  shocks:[['Government spending ↑ 100',{G:500}],['Taxes ↓ 100',{T:300}],['Taxes ↑ 100',{T:500}]],
+  title:'Step 1 · Output is whatever people plan to spend',
+  expl:`<p>When prices are stuck, firms produce whatever their customers want to buy. So we start
+    by adding up what everyone <em>plans</em> to spend:</p>
+    <p style="text-align:center"><em>PE = C + I + G</em>,&nbsp; with <em>C = a + c(Y − T)</em></p>
+    <p>The blue line is planned expenditure. It slopes upward because higher income means more
+    consumption — but it is <em>flatter than 45°</em>, because people save part of every extra dollar.</p>
+    <p>The grey 45° line marks all the points where <em>PE = Y</em>. Output settles where the two lines cross.
+    For now the interest rate just sits in the background at 5%, and investment is a fixed 250.</p>`,
+  notice:['The PE line crosses the 45° line only once. That crossing is equilibrium output.',
+    'Add 100 to G and output rises by <b>400</b>, not 100. That is the multiplier: 1/(1−c) = 4.',
+    'A tax cut of 100 raises output by only 300, because households save part of it.',
+    'Tick the inventory box below to see <i>why</i> output has to end up at the crossing.'] },
+
+{ n:2, t:'Derive the IS curve', d:'What if the interest rate changes?',
+  panels:['ir','kc','is'], keys:['r','G','T','I0'], more:['a','c','b'], hint:'Slide r, then press Trace.',
+  shocks:[['Interest rate ↑ 2 points',{r:7}],['Government spending ↑ 100',{G:500}],['Taxes ↓ 100',{T:300}]],
+  sweep:'IS',
+  title:'Step 2 · Repeat step 1 for every interest rate — that is the IS curve',
+  expl:`<p>Investment is not really a fixed number. Borrowing costs money, so when the interest rate
+    rises, firms cancel projects: <em>I = 250 − b(r − 5)</em>. That is the left-hand diagram.</p>
+    <p>Now redo step 1 at a <em>different</em> interest rate. A higher <em>r</em> means less investment,
+    which pushes the whole PE line <em>down</em>, which lowers output.</p>
+    <p>So each interest rate gives one level of output. Plot those pairs and you have drawn the
+    <b>IS curve</b>. It slopes down for exactly one reason: <em>r</em> ↑ → <em>I</em> ↓ → <em>Y</em> ↓.</p>`,
+  notice:['Press <b>Trace out the IS curve</b> and watch it get built one dot at a time.',
+    'Moving <i>r</i> slides you <b>along</b> the IS curve. The curve does not move.',
+    'Changing <i>G</i> or <i>T</i> <b>shifts</b> the whole IS curve sideways.',
+    'That difference is the single most important idea in this chapter.'] },
+
+{ n:3, t:'The money market', d:'What sets the interest rate?',
+  panels:['mm'], keys:['Yexo','M','P'], more:['h'], hint:'Move M and watch r.',
+  shocks:[['Money supply ↑ 400',{M:2400}],['Money supply ↓ 400',{M:1600}],['Income ↑ 200',{Yexo:2200}]],
+  title:'Step 3 · The interest rate is set by supply and demand for money',
+  expl:`<p>Step 2 left the interest rate hanging. Here is where it comes from.</p>
+    <p><b>Supply.</b> The central bank picks <em>M</em>, and prices are stuck at <em>P</em>. So the real
+    quantity of money <em>M/P</em> is simply fixed — the vertical red line. It does not respond to
+    anything.</p>
+    <p><b>Demand.</b> How much money do people want to hold? Two things matter. More income means
+    more shopping, so more money is needed. And a higher interest rate makes holding money more
+    costly, because money pays no interest while bonds do. So
+    <em>(M/P)<sup>d</sup> = Y − h·r</em> — downward sloping.</p>
+    <p>The interest rate moves until the two are equal. At <em>Y</em> = 2000 and <em>M/P</em> = 1000,
+    that happens at <em>r</em> = 5%.</p>`,
+  notice:['Raise <i>M</i>: the red supply line moves right and <b>r falls</b>. People hold more money only if it is cheaper to do so.',
+    'Raise <i>P</i>: real money <i>M/P</i> shrinks, so <b>r rises</b>. The same nominal money buys less.',
+    'Raise <i>Y</i>: the demand line moves right and <b>r rises</b>. More income means more money wanted.',
+    'That last one is the key to step 4.'] },
+
+{ n:4, t:'Derive the LM curve', d:'The money market at every income level',
+  panels:['mm','lm'], keys:['Yexo','M','P'], more:['h'], hint:'Press Trace to build LM.',
+  shocks:[['Money supply ↑ 400',{M:2400}],['Money supply ↓ 400',{M:1600}],['Price level ↑ 0.5',{P:2.5}]],
+  sweep:'LM',
+  title:'Step 4 · Repeat step 3 for every income level — that is the LM curve',
+  expl:`<p>We do exactly what we did in step 2, but for the money market instead of the goods market.</p>
+    <p>Pick an income level. The money-demand line sits somewhere, and the market clears at some
+    interest rate. Now pick a <em>higher</em> income: demand shifts right, and since supply cannot
+    budge, the interest rate has to <em>rise</em>.</p>
+    <p>Collect those pairs and you have the <b>LM curve</b>. It slopes <em>up</em> because
+    <em>Y</em> ↑ → money demand ↑ → <em>r</em> ↑.</p>
+    <p>Note the symmetry with step 2: the IS curve came from the goods market and slopes down;
+    the LM curve comes from the money market and slopes up.</p>`,
+  notice:['Press <b>Trace out the LM curve</b> to build it from the money market.',
+    'Moving <i>Y</i> slides you <b>along</b> LM. Moving <i>M</i> or <i>P</i> <b>shifts</b> it.',
+    'More money shifts LM <b>down and right</b> — a lower <i>r</i> at every income level.',
+    'A higher price level shifts LM <b>up and left</b>, because it shrinks real money.'] },
+
+{ n:5, t:'Aggregate demand and supply', d:'Putting it all together',
+  panels:['islm','ad'], keys:['G','T','M','P'], more:['a','c','b','h','Ybar'], hint:'Now both markets clear at once.',
+  shocks:[['Government spending ↑ 100',{G:500}],['Taxes ↓ 100',{T:300}],['Money supply ↑ 400',{M:2400}],['Price level ↑ 0.5',{P:2.5}]],
+  sweep:'AD',
+  title:'Step 5 · Both markets at once, and then the price level',
+  expl:`<p>The IS curve is every point where the goods market clears; the LM curve is every point where
+    the money market clears. Only <em>one</em> point does both — where they cross. That fixes output
+    and the interest rate together.</p>
+    <p>Now let the price level change. A higher <em>P</em> shrinks real money <em>M/P</em>, which pushes
+    LM up, which raises <em>r</em>, which cuts investment, which lowers <em>Y</em>. So higher prices mean
+    lower output demanded — and that traced-out relationship is the <b>AD curve</b>.</p>
+    <p><b>SRAS</b> is flat, because prices are stuck in the short run: firms supply whatever is demanded.
+    <b>LRAS</b> is vertical at potential output <em>Ȳ</em>, where all resources are employed.</p>`,
+  notice:['Raise <i>G</i>: output rises, but by <b>200</b>, not the 400 from step 1. The rise in <i>r</i> crowds out some investment.',
+    'Raise <i>M</i>: output rises and <i>r</i> <b>falls</b>. That is how you tell monetary from fiscal policy.',
+    'Changing <i>P</i> slides you <b>along</b> AD. Changing <i>G</i>, <i>T</i> or <i>M</i> <b>shifts</b> AD.',
+    'If output ends up away from <i>Ȳ</i>, prices will slowly drift until it comes back.'] }
+];
+const S = () => STEPS[step-1];
+
+/* =======================================================================
+   SVG PLOT HELPER
+   ======================================================================= */
+const NS='http://www.w3.org/2000/svg'; let uid=0;
+const E=(t,at,par)=>{const n=document.createElementNS(NS,t);for(const k in at)if(at[k]!=null)n.setAttribute(k,at[k]);if(par)par.appendChild(n);return n;};
+function Plot(host,cfg){
+  host.innerHTML='';
+  const W=cfg.w||460,H=cfg.h||330;
+  const svg=E('svg',{viewBox:`0 0 ${W} ${H}`},host);
+  const pad={l:58,r:cfg.padr||52,t:18,b:46};
+  const [x0,x1]=cfg.xdom,[y0,y1]=cfg.ydom, iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  const X=v=>pad.l+(v-x0)/(x1-x0)*iw, Y=v=>H-pad.b-(v-y0)/(y1-y0)*ih;
+  const id='c'+(++uid), defs=E('defs',{},svg);
+  E('rect',{x:pad.l,y:pad.t,width:iw,height:ih},E('clipPath',{id},defs));
+  const AR={};
+  [['gold','#C8912A'],['grey','#9AA5B1'],['is','#0E6B5B'],['lm','#C1553B'],['ad','#7A4FA3'],['pe','#1F6FB2']]
+    .forEach(([k,c])=>{const m=E('marker',{id:k+uid,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6.5,markerHeight:6.5,orient:'auto-start-reverse'},defs);
+      E('path',{d:'M0,1 L9,5 L0,9 z',fill:c},m); AR[k]=k+uid;});
+  const niceStep=(sp,tg)=>{const raw=sp/Math.max(2,tg),mg=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/mg;
+    return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*mg;};
+  const tv=(lo,hi,tg)=>{const st=niceStep(hi-lo,tg),o=[];for(let v=Math.ceil(lo/st)*st;v<=hi+st*1e-6;v+=st)o.push(Math.abs(v)<st*1e-6?0:v);return o;};
+  const gg=E('g',{},svg);
+  tv(x0,x1,cfg.nx||5).forEach(v=>{E('line',{x1:X(v),y1:pad.t,x2:X(v),y2:H-pad.b,stroke:'#F0F2F5'},gg);
+    E('text',{x:X(v),y:H-pad.b+15,'text-anchor':'middle',class:'axlab'},gg).textContent=cfg.xf?cfg.xf(v):Math.round(v).toLocaleString();});
+  tv(y0,y1,cfg.ny||5).forEach(v=>{E('line',{x1:pad.l,y1:Y(v),x2:W-pad.r,y2:Y(v),stroke:'#F0F2F5'},gg);
+    E('text',{x:pad.l-8,y:Y(v)+4,'text-anchor':'end',class:'axlab'},gg).textContent=cfg.yf?cfg.yf(v):Math.round(v).toLocaleString();});
+  E('line',{x1:pad.l,y1:H-pad.b,x2:W-pad.r+5,y2:H-pad.b,stroke:'#37475A','stroke-width':1.5},svg);
+  E('line',{x1:pad.l,y1:pad.t-5,x2:pad.l,y2:H-pad.b,stroke:'#37475A','stroke-width':1.5},svg);
+  E('text',{x:W-pad.r+5,y:H-pad.b+32,'text-anchor':'end',class:'axttl'},svg).textContent=cfg.xlab||'';
+  E('text',{x:pad.l-7,y:pad.t-8,'text-anchor':'start',class:'axttl'},svg).textContent=cfg.ylab||'';
+  const g=E('g',{'clip-path':`url(#${id})`},svg), gT=E('g',{},svg);
+  const P={X,Y,pad,W,H,x0,x1,y0,y1,AR,
+    poly(pts,s={}){return E('polyline',{points:pts.map(q=>`${X(q[0]).toFixed(1)},${Y(q[1]).toFixed(1)}`).join(' '),
+      fill:'none',stroke:s.c||'#000','stroke-width':s.w||2.4,'stroke-dasharray':s.d||null,
+      'stroke-linejoin':'round',opacity:s.o||1},s.top?gT:g);},
+    line(p1,p2,s={}){return E('line',{x1:X(p1[0]),y1:Y(p1[1]),x2:X(p2[0]),y2:Y(p2[1]),stroke:s.c||'#000',
+      'stroke-width':s.w||2.4,'stroke-dasharray':s.d||null,'stroke-linecap':'round',
+      'marker-end':s.m?`url(#${s.m})`:null,opacity:s.o||1},s.top?gT:g);},
+    fnY(f,s={},n=100){const q=[];for(let i=0;i<=n;i++){const y=y0+(y1-y0)*i/n,x=f(y);if(isFinite(x))q.push([x,y]);}return P.poly(q,s);},
+    dot(x,y,s={}){return E('circle',{cx:X(x),cy:Y(y),r:s.r||5.2,fill:s.f||'#fff',stroke:s.c||'#000','stroke-width':s.w||2.3},s.clip?g:gT);},
+    guide(x,y,c='#9AA5B1'){P.line([x0,y],[x,y],{c,w:1.2,d:'3 3',o:.9});P.line([x,y0],[x,y],{c,w:1.2,d:'3 3',o:.9});},
+    txt(x,y,s,st={}){const t=E('text',{x:X(x)+(st.dx||0),y:Y(y)+(st.dy||0),'text-anchor':st.an||'start',
+      class:st.cls||'clab',fill:st.c||'#000'},gT);t.textContent=s;
+      t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.4');t.setAttribute('paint-order','stroke');return t;},
+    px(x,y,s,st={}){const t=E('text',{x,y,'text-anchor':st.an||'start',class:st.cls||'ann',fill:st.c||'#5C6B7A'},gT);
+      t.textContent=s;t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3');t.setAttribute('paint-order','stroke');return t;},
+    band(xa,xb,s={}){E('rect',{x:X(Math.min(xa,xb)),y:pad.t,width:Math.abs(X(xb)-X(xa)),height:ih,fill:s.f||'#C8912A',opacity:s.o||.11},g);}};
+  return P;
+}
+const n0=v=>Math.round(v).toLocaleString();
+const nd=(v,d)=>v.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}).replace('-','−');
+const sg=(v,d=0)=>(v>0?'+':v<0?'−':'')+nd(Math.abs(v),d);
+
+/* adaptive-but-stable axis ranges */
+let YMAX=3000, RMAX=12, PMAX=4, IMAX=700, MMAX=2000;
+function rescale(st,stB){
+  const rnd=(v,s)=>Math.ceil(v/s)*s;
+  const ys=[st.Y,stB.Y,cur.Ybar,base.Ybar,2000].filter(v=>isFinite(v)&&v>0);
+  YMAX=Math.min(6000,Math.max(2400,rnd(Math.max(...ys)*1.4,500)));
+  RMAX=Math.max(11,rnd(Math.max(st.r,stB.r,cur.r)*1.55,1));
+  IMAX=Math.max(400,rnd(Math.max(cur.I0,base.I0,Iof(cur,0),300)*1.15,100));
+  MMAX=Math.max(1400,rnd(Math.max(realM(cur),realM(base),cur.Yexo*0.75)*1.35,200));
+  const pl=P_LR(cur); PMAX=Math.max(3.5,rnd(Math.max(cur.P,base.P,isFinite(pl)?pl:0)*1.5,0.5));
+}
+
+/* =======================================================================
+   DRAWING
+   ======================================================================= */
+function drawKC(st,stB){
+  const p=Plot(document.getElementById('sv-kc'),{w:900,h:330,xdom:[0,YMAX],ydom:[0,YMAX],
+    xlab:'Income, output  Y',ylab:'Planned expenditure  PE',nx:6,ny:6,padr:128});
+  p.poly([[0,0],[YMAX,YMAX]],{c:'#8A94A6',w:1.7,d:'6 4'});
+  p.txt(YMAX*.95,YMAX*.95,'PE = Y',{c:'#5C6B7A',an:'end',dy:-8});
+  const chg = JSON.stringify([base.a,base.c,base.T,base.I0,base.b,base.G,base.r])!==JSON.stringify([cur.a,cur.c,cur.T,cur.I0,cur.b,cur.G,cur.r]);
+  if(chg){
+    p.poly([[0,PEof(base,0,stB.r)],[YMAX,PEof(base,YMAX,stB.r)]],{c:'#9AA5B1',w:2,d:'6 4'});
+    p.dot(stB.Y,stB.Y,{c:'#9AA5B1',r:4.2});
+    p.px(p.X(YMAX)+6,p.Y(PEof(base,YMAX,stB.r))+4,'PE before',{cls:'clab',c:'#9AA5B1'});
+  }
+  p.poly([[0,PEof(cur,0,st.r)],[YMAX,PEof(cur,YMAX,st.r)]],{c:'var(--pe)',w:3});
+  p.px(p.X(YMAX)+6,p.Y(PEof(cur,YMAX,st.r))+(chg&&Math.abs(PEof(cur,YMAX,st.r)-PEof(base,YMAX,stB.r))<YMAX*0.045?16:4),
+    'PE = C + I + G',{cls:'clab',c:'#1F6FB2'});
+  const i0=PEof(cur,0,st.r);
+  p.line([0,0],[0,i0],{c:'#C8912A',w:4,o:.95});
+  p.px(p.X(0)+9,p.Y(i0)+18,`spending that does not depend on income = ${n0(i0)}`,{cls:'annb',c:'#8A5B00'});
+  p.guide(st.Y,st.Y,'#1F6FB2');
+  p.dot(st.Y,st.Y,{c:'var(--pe)',r:6});
+  p.px(p.X(st.Y),p.Y(0)+32,`Y = ${n0(st.Y)}`,{cls:'annb',c:'#14507F',an:'middle'});
+  if(chg && Math.abs(st.Y-stB.Y)>6){
+    const yy=YMAX*.06;
+    p.line([stB.Y,yy],[st.Y,yy],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true});
+    p.px((p.X(stB.Y)+p.X(st.Y))/2,p.Y(yy)-8,`output changes by ${sg(st.Y-stB.Y)}`,{cls:'annb',c:'#8A5B00',an:'middle'});
+    const xa=YMAX*.20, dv=PEof(cur,xa,st.r)-PEof(base,xa,stB.r);
+    if(Math.abs(dv)>6){ p.line([xa,PEof(base,xa,stB.r)],[xa,PEof(cur,xa,st.r)],{c:'#C8912A',w:2.8,m:p.AR.gold,top:true});
+      p.px(p.X(xa),p.Y(Math.max(PEof(cur,xa,st.r),PEof(base,xa,stB.r)))-10,`PE line moves ${sg(dv)}`,{cls:'annb',c:'#8A5B00',an:'middle'}); }
+  }
+  let inv='';
+  if(showInv && step===1){
+    const Yp=cur.Yprod, pe=PEof(cur,Yp,st.r), un=Yp-pe;
+    p.line([Yp,pe],[Yp,Yp],{c:'#C1553B',w:3.4,top:true,m:p.AR.lm});
+    p.dot(Yp,pe,{c:'#C1553B',r:4.4});
+    p.px(p.X(Yp)+9,(p.Y(pe)+p.Y(Yp))/2,`unsold goods: ${sg(un)}`,{cls:'annb',c:'#963F28'});
+    inv = Math.abs(un)<1 ? `<b>Y = PE.</b> Nothing is left over — this is the resting point.`
+      : un>0 ? `<b>Firms produce ${n0(Yp)} but customers only plan to spend ${n0(pe)}.</b> ${n0(un)} of goods pile up unsold, so firms cut production. Output falls toward ${n0(st.Y)}.`
+             : `<b>Firms produce ${n0(Yp)} but customers plan to spend ${n0(pe)}.</b> Shelves empty by ${n0(-un)}, so firms produce more. Output rises toward ${n0(st.Y)}.`;
+  }
+  document.getElementById('ft-kc').innerHTML =
+    `Equilibrium output <b>Y = ${n0(st.Y)}</b>, where <b>C = ${n0(cur.a+cur.c*(st.Y-cur.T))}</b>,
+     <b>I = ${n0(Iof(cur,st.r))}</b> and <b>G = ${n0(cur.G)}</b>.
+     The PE line has slope c = ${nd(cur.c,2)}, so the multiplier is 1/(1 − ${nd(cur.c,2)}) = <b>${nd(mult(cur),2)}</b>.
+     ${inv?'<br>'+inv:''}`;
+}
+
+function drawIR(st,stB){
+  const p=Plot(document.getElementById('sv-ir'),{w:460,h:320,xdom:[0,IMAX],ydom:[0,RMAX],
+    xlab:'Investment  I',ylab:'r  (%)',nx:4,ny:6,yf:v=>nd(v,0)});
+  if(Math.abs(cur.b-base.b)>1e-9||Math.abs(cur.I0-base.I0)>1e-9) p.fnY(r=>Iof(base,r),{c:'#9AA5B1',w:2,d:'6 4'});
+  p.fnY(r=>Iof(cur,r),{c:'var(--pe)',w:3});
+  const ra=cur.b>0?Math.min(RMAX*.72,Math.max(RMAX*.16,(cur.I0*.5)/cur.b+R0*.4)):RMAX*.72;
+  p.txt(Math.max(0,Iof(cur,ra)),ra,'I(r)',{c:'#1F6FB2',dx:10,dy:-6});
+  if(Math.abs(st.r-stB.r)>.01){ p.guide(Iof(base,stB.r),stB.r); p.dot(Iof(base,stB.r),stB.r,{c:'#9AA5B1',r:4.2});
+    p.line([Iof(base,stB.r),stB.r],[Iof(cur,st.r),st.r],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+  p.guide(Iof(cur,st.r),st.r,'#1F6FB2');
+  p.dot(Iof(cur,st.r),st.r,{c:'var(--pe)',r:5.6});
+  document.getElementById('ft-ir').innerHTML =
+    `<b>I = ${n0(cur.I0)} − ${n0(cur.b)}(r − 5)</b>. At r = ${nd(st.r,2)}%, investment is <b>${n0(Iof(cur,st.r))}</b>.
+     ${cur.b===0?'With b = 0 investment ignores the interest rate entirely.':'Each extra point of interest costs '+n0(cur.b)+' of investment.'}`;
+}
+
+function drawIS(st,stB){
+  const p=Plot(document.getElementById('sv-is'),{w:460,h:320,xdom:[0,YMAX],ydom:[0,RMAX],
+    xlab:'Income, output  Y',ylab:'r  (%)',nx:5,ny:6,yf:v=>nd(v,0)});
+  const isMoved=JSON.stringify([base.a,base.c,base.T,base.I0,base.b,base.G])!==JSON.stringify([cur.a,cur.c,cur.T,cur.I0,cur.b,cur.G]);
+  if(isMoved) p.fnY(r=>Y_IS(base,r),{c:'#9AA5B1',w:2,d:'6 4'});
+  p.fnY(r=>Y_IS(cur,r),{c:'var(--is)',w:3});
+  p.txt(Y_IS(cur,RMAX*.78),RMAX*.78,'IS',{c:'#0E6B5B',dx:8,dy:-5});
+  if(traceIS.length>3){ traceIS.forEach(t=>p.dot(t.Y,t.r,{c:'#0E6B5B',f:'#B9DED4',r:2.9,w:1.2,clip:true}));
+    p.px(p.pad.l+9,p.pad.t+14,`${traceIS.length} points found so far`,{cls:'annb',c:'#0B584B'}); }
+  if(isMoved||Math.abs(st.r-stB.r)>.01){ p.dot(stB.Y,stB.r,{c:'#9AA5B1',r:4.2});
+    p.line([stB.Y,stB.r],[st.Y,st.r],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+  p.guide(st.Y,st.r,'#0E6B5B'); p.dot(st.Y,st.r,{c:'var(--is)',r:5.8});
+  document.getElementById('ft-is').innerHTML =
+    `<b>IS:  Y = ${n0(mult(cur)*A0(cur))} − ${n0(mult(cur)*cur.b)}·r</b>.
+     Right now r = ${nd(st.r,2)}% gives Y = <b>${n0(st.Y)}</b>.
+     ${isMoved?'<b style="color:#8A5B00">The curve itself moved.</b>':(Math.abs(st.r-stB.r)>.01?'<b style="color:#14507F">Same curve — you just moved to a different point on it.</b>':'')}`;
+}
+
+function drawMM(st,stB){
+  const p=Plot(document.getElementById('sv-mm'),{w:step===3?900:460,h:step===3?340:320,xdom:[0,MMAX],ydom:[0,RMAX],
+    xlab:'Real money balances  M/P',ylab:'r  (%)',nx:5,ny:6,yf:v=>nd(v,0),padr:step===3?110:52});
+  const sB=realM(base), sC=realM(cur);
+  const demB=r=>base.Yexo-base.h*r, demC=r=>cur.Yexo-cur.h*r;
+  const moved=Math.abs(sB-sC)>1||Math.abs(base.Yexo-cur.Yexo)>1||Math.abs(base.h-cur.h)>1e-9;
+  if(moved){ p.fnY(demB,{c:'#9AA5B1',w:2,d:'6 4'}); p.poly([[sB,0],[sB,RMAX]],{c:'#9AA5B1',w:2,d:'6 4'});
+    p.dot(sB,stB.r,{c:'#9AA5B1',r:4.2}); }
+  p.fnY(demC,{c:'var(--ad)',w:3});
+  const rl=RMAX*.80; p.txt(Math.max(0,demC(rl)),rl,'money demand',{c:'#7A4FA3',dx:9,dy:-5});
+  p.poly([[sC,0],[sC,RMAX]],{c:'var(--lm)',w:3});
+  p.px(p.X(sC)+7,p.pad.t+14,'money supply M/P',{cls:'clab',c:'#C1553B'});
+  if(moved && Math.abs(sB-sC)>1) p.line([sB,RMAX*.12],[sC,RMAX*.12],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true});
+  p.guide(sC,st.r,'#C1553B'); p.dot(sC,st.r,{c:'var(--lm)',r:5.8});
+  p.px(p.X(0)+6,p.Y(st.r)-8,`r = ${nd(st.r,2)}%`,{cls:'annb',c:'#963F28'});
+  document.getElementById('ft-mm').innerHTML =
+    `Supply <b>M/P = ${n0(cur.M)} ÷ ${nd(cur.P,1)} = ${n0(sC)}</b> — a fixed vertical line.
+     Demand <b>= Y − ${n0(cur.h)}·r = ${n0(cur.Yexo)} − ${n0(cur.h)}·r</b>.
+     Setting them equal: <b>r = ${nd(st.r,2)}%</b>${Math.abs(st.r-stB.r)>.01?` (was ${nd(stB.r,2)}%, a change of ${sg(st.r-stB.r,2)})`:''}.`;
+}
+
+function drawLM(st,stB){
+  const p=Plot(document.getElementById('sv-lm'),{w:460,h:320,xdom:[0,YMAX],ydom:[0,RMAX],
+    xlab:'Income, output  Y',ylab:'r  (%)',nx:5,ny:6,yf:v=>nd(v,0)});
+  const moved=Math.abs(realM(base)-realM(cur))>1||Math.abs(base.h-cur.h)>1e-9;
+  if(moved) p.fnY(r=>Y_LM(base,r),{c:'#9AA5B1',w:2,d:'6 4'});
+  p.fnY(r=>Y_LM(cur,r),{c:'var(--lm)',w:3});
+  p.txt(Y_LM(cur,RMAX*.78),RMAX*.78,'LM',{c:'#C1553B',dx:-8,dy:-5,an:'end'});
+  if(traceLM.length>3){ traceLM.forEach(t=>p.dot(t.Y,t.r,{c:'#C1553B',f:'#F0CFC7',r:2.9,w:1.2,clip:true}));
+    p.px(p.pad.l+9,p.pad.t+14,`${traceLM.length} points found so far`,{cls:'annb',c:'#963F28'}); }
+  if(moved||Math.abs(st.Y-stB.Y)>6){ p.dot(stB.Y,stB.r,{c:'#9AA5B1',r:4.2});
+    p.line([stB.Y,stB.r],[st.Y,st.r],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+  p.guide(st.Y,st.r,'#C1553B'); p.dot(st.Y,st.r,{c:'var(--lm)',r:5.8});
+  document.getElementById('ft-lm').innerHTML =
+    `<b>LM:  r = (Y − ${n0(realM(cur))}) ÷ ${n0(cur.h)}</b>, the same as <b>Y = ${n0(realM(cur))} + ${n0(cur.h)}·r</b>.
+     At Y = ${n0(st.Y)} the money market clears at r = <b>${nd(st.r,2)}%</b>.
+     ${moved?'<b style="color:#8A5B00">The curve itself moved.</b>':(Math.abs(st.Y-stB.Y)>6?'<b style="color:#14507F">Same curve — a different point on it.</b>':'')}`;
+}
+
+function drawISLM(st,stB){
+  const p=Plot(document.getElementById('sv-islm'),{w:460,h:330,xdom:[0,YMAX],ydom:[0,RMAX],
+    xlab:'Income, output  Y',ylab:'r  (%)',nx:5,ny:6,yf:v=>nd(v,0)});
+  const isM=JSON.stringify([base.a,base.c,base.T,base.I0,base.b,base.G])!==JSON.stringify([cur.a,cur.c,cur.T,cur.I0,cur.b,cur.G]);
+  const lmM=Math.abs(realM(base)-realM(cur))>1||Math.abs(base.h-cur.h)>1e-9;
+  if(isM) p.fnY(r=>Y_IS(base,r),{c:'#9AA5B1',w:2,d:'6 4'});
+  if(lmM) p.fnY(r=>Y_LM(base,r),{c:'#9AA5B1',w:2,d:'6 4'});
+  p.fnY(r=>Y_IS(cur,r),{c:'var(--is)',w:3});
+  p.fnY(r=>Y_LM(cur,r),{c:'var(--lm)',w:3});
+  p.txt(Y_IS(cur,RMAX*.80),RMAX*.80,'IS',{c:'#0E6B5B',dx:7,dy:-5});
+  p.txt(Y_LM(cur,RMAX*.80),RMAX*.80,'LM',{c:'#C1553B',dx:-7,dy:-5,an:'end'});
+  p.poly([[cur.Ybar,0],[cur.Ybar,RMAX]],{c:'#37475A',w:1.5,d:'7 4',o:.6});
+  p.px(p.X(cur.Ybar)+5,p.pad.t+14,'Ȳ',{cls:'annb',c:'#37475A'});
+  if(isM||lmM){ p.dot(stB.Y,stB.r,{c:'#9AA5B1',r:4.2});
+    p.line([stB.Y,stB.r],[st.Y,st.r],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+  p.guide(st.Y,st.r,'#0E6B5B'); p.dot(st.Y,st.r,{c:'var(--is)',r:6});
+  document.getElementById('ft-islm').innerHTML =
+    `<b>IS:</b> Y = ${n0(mult(cur)*A0(cur))} − ${n0(mult(cur)*cur.b)}·r &nbsp;·&nbsp;
+     <b>LM:</b> Y = ${n0(realM(cur))} + ${n0(cur.h)}·r &nbsp;→&nbsp; they cross at
+     <b>Y = ${n0(st.Y)}, r = ${nd(st.r,2)}%</b>.`;
+}
+
+function drawAD(st,stB){
+  const p=Plot(document.getElementById('sv-ad'),{w:460,h:330,xdom:[0,YMAX],ydom:[0,PMAX],
+    xlab:'Income, output  Y',ylab:'Price level  P',nx:5,ny:5,yf:v=>nd(v,1)});
+  const adM=JSON.stringify([base.a,base.c,base.T,base.I0,base.b,base.G,base.h,base.M])!==JSON.stringify([cur.a,cur.c,cur.T,cur.I0,cur.b,cur.G,cur.h,cur.M]);
+  if(adM) p.fnY(Pv=>Y_AD(base,Pv),{c:'#9AA5B1',w:2,d:'6 4'},130);
+  p.fnY(Pv=>Y_AD(cur,Pv),{c:'var(--ad)',w:3},130);
+  const al=Y_AD(cur,1e9), be=Y_AD(cur,1)-al, yT=YMAX*.74;
+  let pl=(be>1&&yT>al)?be/(yT-al):PMAX*.45; pl=Math.max(PMAX*.12,Math.min(PMAX*.86,pl));
+  p.txt(Y_AD(cur,pl),pl,'AD',{c:'#7A4FA3',dx:9,dy:-5});
+  if(traceAD.length>3) traceAD.forEach(t=>p.dot(t.Y,t.P,{c:'#7A4FA3',f:'#E4D9EE',r:2.9,w:1.2,clip:true}));
+  if(Math.abs(cur.P-base.P)>1e-9) p.poly([[0,base.P],[YMAX,base.P]],{c:'#9AA5B1',w:2,d:'6 4'});
+  p.poly([[0,cur.P],[YMAX,cur.P]],{c:'var(--sras)',w:3});
+  p.px(p.pad.l+9,p.Y(cur.P)-10,'SRAS  (prices are stuck)',{cls:'clab',c:'#8A5B00',an:'start'});
+  p.poly([[cur.Ybar,0],[cur.Ybar,PMAX]],{c:'var(--lras)',w:2.8});
+  p.px(p.X(cur.Ybar)+6,p.pad.t+14,'LRAS at Ȳ',{cls:'clab',c:'#37475A'});
+  if(Math.abs(st.Y-cur.Ybar)>12) p.band(cur.Ybar,st.Y,{f:st.Y>cur.Ybar?'#C1553B':'#1F6FB2',o:.12});
+  if(adM||Math.abs(cur.P-base.P)>1e-9){ p.dot(stB.Y,base.P,{c:'#9AA5B1',r:4.2});
+    p.line([stB.Y,base.P],[st.Y,cur.P],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+  p.dot(st.Y,cur.P,{c:'var(--ad)',r:6});
+  const gap=st.Y-cur.Ybar;
+  document.getElementById('ft-ad').innerHTML =
+    `<b>AD:  Y = ${n0(al)} + ${n0(be)} ÷ P</b>. At P = ${nd(cur.P,1)} that gives Y = <b>${n0(st.Y)}</b>.
+     ${Math.abs(gap)<12?'Output is right at potential.':
+       `Output is <b class="${gap>0?'dn':'dn'}">${sg(gap)}</b> away from potential, so over time prices will ${gap>0?'rise':'fall'} and pull output back to Ȳ.`}`;
+}
+
+/* =======================================================================
+   BANNER · NUMBERS · READOUT
+   ======================================================================= */
+function changedKeys(list){ return list.filter(k=>Math.abs(cur[k]-base[k])>1e-9); }
+function drawBanner(st,stB){
+  const el=document.getElementById('banner');
+  const goods=changedKeys(['a','c','T','I0','b','G']), money=changedKeys(['h','M','P']);
+  const dr=st.r-stB.r, dY=st.Y-stB.Y;
+  const nm=k=>SPEC[k].sym;
+  let cls='calm', h='';
+  if(!goods.length && !money.length && Math.abs(dr)<1e-6 && Math.abs(dY)<1e-6){
+    h=`<b>This is the baseline.</b> Output is ${n0(st.Y)} and the interest rate is ${nd(st.r,2)}%.
+       Move a slider or press one of the buttons on the left, and this box will tell you what happened.`;
+  } else if(step<=2){
+    if(goods.length){ cls='';
+      h=`You changed <b>${goods.map(nm).join(', ')}</b>. That moves the PE line, so output goes to <b>${n0(st.Y)}</b> (${sg(dY)}).
+         <span class="vv">The whole IS curve SHIFTS ${Y_IS(cur,stB.r)>Y_IS(base,stB.r)?'right':'left'}.</span>`;
+    } else { cls='move';
+      h=`You changed the interest rate to <b>${nd(st.r,2)}%</b>. Investment goes to ${n0(Iof(cur,st.r))}, the PE line moves,
+         and output goes to <b>${n0(st.Y)}</b> (${sg(dY)}).
+         <span class="vv">This is a MOVEMENT ALONG the IS curve — the curve did not move.</span>`;
+    }
+  } else if(step<=4){
+    if(money.length){ cls='';
+      h=`You changed <b>${money.map(nm).join(', ')}</b>. Real money is now ${n0(realM(cur))}, so the interest rate goes to
+         <b>${nd(st.r,2)}%</b> (${sg(dr,2)}).
+         <span class="vv">The whole LM curve SHIFTS ${realM(cur)>realM(base)?'down and right':'up and left'}.</span>`;
+    } else { cls='move';
+      h=`You changed income to <b>${n0(st.Y)}</b>. People want ${st.Y>stB.Y?'more':'less'} money, so the interest rate goes to
+         <b>${nd(st.r,2)}%</b> (${sg(dr,2)}).
+         <span class="vv">This is a MOVEMENT ALONG the LM curve — the curve did not move.</span>`;
+    }
+  } else {
+    const parts=[];
+    if(goods.length) parts.push(`<span class="vv">IS SHIFTS ${Y_IS(cur,stB.r)>Y_IS(base,stB.r)?'right':'left'}</span> (you changed ${goods.map(nm).join(', ')})`);
+    if(changedKeys(['h','M']).length) parts.push(`<span class="vv">LM SHIFTS ${realM(cur)>realM(base)?'right':'left'}</span>`);
+    if(Math.abs(cur.P-base.P)>1e-9) parts.push(`<span class="vv">LM SHIFTS ${realM(cur)>realM(base)?'down':'up'}</span> because a higher P shrinks real money — but on the AD diagram you only <span class="vv">MOVE ALONG AD</span>`);
+    cls = (goods.length||changedKeys(['h','M']).length) ? '' : 'move';
+    h=`${parts.join('; ')}. Output goes to <b>${n0(st.Y)}</b> (${sg(dY)}) and the interest rate to <b>${nd(st.r,2)}%</b> (${sg(dr,2)}).`;
+    if(goods.length && Math.abs(dr)>.01){
+      const naive=mult(cur)*(A0(cur)-A0(base));
+      if(Math.abs(naive)>1) h+=` Step 1 on its own would have predicted ${sg(naive)}; the change in <em>r</em> ${Math.abs(dY)<Math.abs(naive)?'ate part of it':'added to it'}.`;
+    }
+  }
+  el.className='banner '+cls; el.innerHTML=h;
+}
+
+function drawEq(st,stB){
+  const p=cur, R=(k,b)=>`<div class="r"><span class="k">${k}</span>${b}</div>`;
+  let h='';
+  h+=R('Consumption', `<em>C</em> = ${n0(p.a)} + ${nd(p.c,2)}(<em>Y</em> − ${n0(p.T)})`);
+  if(step===1) h+=R('Investment', `<em>I</em> = ${n0(Iof(p,st.r))}  (fixed for now)`);
+  else h+=R('Investment', `<em>I</em> = ${n0(p.I0)} − ${n0(p.b)}(<em>r</em> − 5) = ${n0(Iof(p,st.r))} at <em>r</em> = ${nd(st.r,2)}%`);
+  if(step<=2){
+    h+=R('Add it up', `<em>PE</em> = ${n0(PEof(p,0,st.r))} + ${nd(p.c,2)}<em>Y</em>`);
+    h+=R('Set Y = PE', `<em>Y</em> = ${n0(PEof(p,0,st.r))} ÷ (1 − ${nd(p.c,2)}) = ${n0(PEof(p,0,st.r))} × ${nd(mult(p),2)} = <span class="hl">${n0(st.Y)}</span>`);
+    if(step===2) h+=R('Do that for every r', `<em>Y</em> = ${n0(mult(p)*A0(p))} − ${n0(mult(p)*p.b)}<em>r</em> &nbsp;← the IS curve`);
+  }
+  if(step===3||step===4){
+    h+=R('Money supply', `<em>M/P</em> = ${n0(p.M)} ÷ ${nd(p.P,1)} = ${n0(realM(p))}  (fixed)`);
+    h+=R('Money demand', `(<em>M/P</em>)<sup>d</sup> = <em>Y</em> − ${n0(p.h)}<em>r</em> = ${n0(p.Yexo)} − ${n0(p.h)}<em>r</em>`);
+    h+=R('Set them equal', `${n0(realM(p))} = ${n0(p.Yexo)} − ${n0(p.h)}<em>r</em> &nbsp;⇒&nbsp; <em>r</em> = <span class="hl">${nd(st.r,2)}%</span>`);
+    if(step===4) h+=R('Do that for every Y', `<em>r</em> = (<em>Y</em> − ${n0(realM(p))}) ÷ ${n0(p.h)} &nbsp;← the LM curve`);
+  }
+  if(step===5){
+    h+=R('IS curve', `<em>Y</em> = ${n0(mult(p)*A0(p))} − ${n0(mult(p)*p.b)}<em>r</em>`);
+    h+=R('LM curve', `<em>Y</em> = ${n0(realM(p))} + ${n0(p.h)}<em>r</em>`);
+    h+=R('Solve together', `<em>Y</em> = <span class="hl">${n0(st.Y)}</span>, &nbsp; <em>r</em> = <span class="hl">${nd(st.r,2)}%</span>`);
+    h+=R('AD curve', `<em>Y</em> = ${n0(Y_AD(p,1e9))} + ${n0(Y_AD(p,1)-Y_AD(p,1e9))} ÷ <em>P</em>`);
+  }
+  document.getElementById('eqbox').innerHTML=h;
+}
+
+function drawReadout(st,stB){
+  const d=(a,b,dec=0)=>Math.abs(a-b)<1e-6?'':` <span class="${a>b?'up':'dn'}">(${sg(a-b,dec)})</span>`;
+  const C=cur.a+cur.c*(st.Y-cur.T), Cb=base.a+base.c*(stB.Y-base.T);
+  let rows;
+  if(step<=2){
+    rows=[['Output  Y',n0(st.Y)+d(st.Y,stB.Y),1],
+          ['Interest rate  r',nd(st.r,2)+'%'+d(st.r,stB.r,2),step===2?1:0],
+          ['Consumption  C',n0(C)+d(C,Cb)],
+          ['Investment  I',n0(Iof(cur,st.r))+d(Iof(cur,st.r),Iof(base,stB.r))],
+          ['Government  G',n0(cur.G)+d(cur.G,base.G)],
+          ['Multiplier  1/(1−c)',nd(mult(cur),2)]];
+  } else if(step<=4){
+    rows=[['Income  Y  (you set this)',n0(st.Y)+d(st.Y,stB.Y)],
+          ['Interest rate  r',nd(st.r,2)+'%'+d(st.r,stB.r,2),1],
+          ['Money supplied  M/P',n0(realM(cur))+d(realM(cur),realM(base))],
+          ['Money demanded at r',n0(cur.Yexo-cur.h*st.r)],
+          ['Money supply  M',n0(cur.M)+d(cur.M,base.M)],
+          ['Price level  P',nd(cur.P,1)+d(cur.P,base.P,1)]];
+  } else {
+    rows=[['Output  Y',n0(st.Y)+d(st.Y,stB.Y),1],
+          ['Interest rate  r',nd(st.r,2)+'%'+d(st.r,stB.r,2),1],
+          ['Consumption  C',n0(C)+d(C,Cb)],
+          ['Investment  I',n0(Iof(cur,st.r))+d(Iof(cur,st.r),Iof(base,stB.r))],
+          ['Real money  M/P',n0(realM(cur))+d(realM(cur),realM(base))],
+          ['Distance from  Ȳ',sg(st.Y-cur.Ybar)]];
+  }
+  document.getElementById('readout').innerHTML=rows.map(r=>
+    `<tr class="${r[2]?'em':''}"><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+}
+
+/* =======================================================================
+   UI
+   ======================================================================= */
+function buildStepTabs(){
+  const host=document.getElementById('steps');
+  STEPS.forEach(s=>{const b=document.createElement('button'); b.className='step'; b.dataset.s=s.n;
+    b.innerHTML=`<div><span class="n">${s.n}</span><span class="t">${s.t}</span></div><div class="d">${s.d}</div>`;
+    b.onclick=()=>goStep(s.n); host.appendChild(b);});
+  document.getElementById('navPrev').onclick=()=>goStep(Math.max(1,step-1));
+  document.getElementById('navNext').onclick=()=>goStep(Math.min(5,step+1));
+  document.getElementById('btnReset').onclick=reset;
+}
+function goStep(n){ if(sweeping){clearInterval(sweeping);sweeping=null;} step=n; reset(); }
+function reset(){
+  if(sweeping){clearInterval(sweeping);sweeping=null;}
+  cur={...base}; traceIS=[]; traceLM=[]; traceAD=[]; showInv=false; render();
+}
+function makeSlider(k,host,isKey){
+  const s=SPEC[k], d=document.createElement('div');
+  d.className='ctl'+(isKey?' key':''); d.dataset.k=k;
+  d.innerHTML=`<div class="lab"><span class="nm"><b>${s.sym}</b> <span>${s.desc}</span></span>
+    <span class="vl" id="v-${k}"></span></div>
+    <input type="range" id="s-${k}" min="${s.min}" max="${s.max}" step="${s.st}">`;
+  host.appendChild(d);
+  d.querySelector('input').addEventListener('input',e=>{cur[k]=parseFloat(e.target.value); render();});
+}
+function buildControls(){
+  const st=S(), c=document.getElementById('controls'), m=document.getElementById('controlsMore');
+  c.innerHTML=''; m.innerHTML='';
+  st.keys.forEach((k,i)=>makeSlider(k,c,i===0 && (step===2||step===3||step===4)));
+  st.more.forEach(k=>makeSlider(k,m));
+  // shock buttons
+  const sh=document.getElementById('shocks'); sh.innerHTML='';
+  st.shocks.forEach(([label,set])=>{const b=document.createElement('button');
+    b.className='btn gold sm'; b.textContent=label;
+    b.onclick=()=>{cur={...base,...set}; render();}; sh.appendChild(b);});
+  if(st.sweep){const b=document.createElement('button'); b.className='btn sm pri';
+    b.textContent = st.sweep==='IS'?'▶ Trace out the IS curve':st.sweep==='LM'?'▶ Trace out the LM curve':'▶ Trace out the AD curve';
+    b.onclick=()=>runSweep(st.sweep); sh.appendChild(b);}
+  // extra option (inventory demo, step 1 only)
+  const eo=document.getElementById('extraOpt');
+  if(step===1){
+    eo.innerHTML=`<div class="chk"><input type="checkbox" id="invChk" ${showInv?'checked':''}>
+      <label for="invChk">Show what happens if firms produce the wrong amount</label></div>
+      <div id="invSlot"></div>`;
+    document.getElementById('invChk').onchange=e=>{showInv=e.target.checked; render();};
+    if(showInv) makeSlider('Yprod',document.getElementById('invSlot'),false);
+  } else eo.innerHTML='';
+}
+function runSweep(kind){
+  if(sweeping){clearInterval(sweeping);sweeping=null;}
+  const key = kind==='IS'?'r':kind==='LM'?'Yexo':'P';
+  const from= kind==='IS'?0.5 : kind==='LM'?1200 : 1.1;
+  const to  = kind==='IS'?9.5 : kind==='LM'?2800 : 3.6;
+  traceIS=[];traceLM=[];traceAD=[];
+  const N=42; let i=0;
+  sweeping=setInterval(()=>{
+    cur[key]=from+(to-from)*i/N; render(); i++;
+    if(i>N){clearInterval(sweeping);sweeping=null; cur[key]=base[key]; render();}
+  },45);
+}
+function syncControls(st){
+  for(const k in SPEC){
+    const sl=document.getElementById('s-'+k), vl=document.getElementById('v-'+k);
+    if(!sl) continue;
+    sl.value=cur[k];
+    vl.textContent=(SPEC[k].dec?nd(cur[k],SPEC[k].dec):n0(cur[k]))+(SPEC[k].unit||'');
+    const ch=Math.abs(cur[k]-base[k])>1e-9;
+    vl.classList.toggle('chg',ch); sl.classList.toggle('hot',ch);
+  }
+  STEPS.forEach(s=>document.querySelector(`.step[data-s="${s.n}"]`).classList.toggle('on',s.n===step));
+  document.getElementById('navPrev').disabled=(step===1);
+  document.getElementById('navNext').disabled=(step===5);
+  document.getElementById('navHint').textContent=S().hint;
+  const shown=S().panels;
+  ['kc','ir','is','mm','lm','islm','ad'].forEach(p=>{
+    const el=document.getElementById('pan-'+p);
+    el.style.display=shown.includes(p)?'block':'none';
+    el.classList.toggle('wide', (p==='kc') || (p==='mm'&&step===3));
+  });
+  document.getElementById('explTitle').textContent=S().title;
+  document.getElementById('expl').innerHTML=S().expl;
+  document.getElementById('notice').innerHTML='<h3>Things to try</h3><ul>'+S().notice.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+}
+
+/* =======================================================================
+   RENDER
+   ======================================================================= */
+let built=false;
+function render(){
+  const st=stateNow(cur), stB=stateNow(base);
+  if(!built){ buildStepTabs(); built=true; }
+  const ckey = step+'|'+showInv;
+  if(document.getElementById('controls').dataset.step!==ckey){
+    buildControls(); document.getElementById('controls').dataset.step=ckey;
+  }
+  // keep traces in sync while sweeping
+  if(step===2 && !traceIS.some(t=>Math.abs(t.r-st.r)<0.15)) traceIS.push({Y:st.Y,r:st.r});
+  if(step===4 && !traceLM.some(t=>Math.abs(t.Y-st.Y)<25)) traceLM.push({Y:st.Y,r:st.r});
+  if(step===5 && !traceAD.some(t=>Math.abs(t.P-cur.P)<0.07)) traceAD.push({Y:st.Y,P:cur.P});
+  if(traceIS.length>120)traceIS.shift(); if(traceLM.length>120)traceLM.shift(); if(traceAD.length>120)traceAD.shift();
+  rescale(st,stB);
+  syncControls(st);
+  const sh=S().panels;
+  if(sh.includes('kc'))  drawKC(st,stB);
+  if(sh.includes('ir'))  drawIR(st,stB);
+  if(sh.includes('is'))  drawIS(st,stB);
+  if(sh.includes('mm'))  drawMM(st,stB);
+  if(sh.includes('lm'))  drawLM(st,stB);
+  if(sh.includes('islm'))drawISLM(st,stB);
+  if(sh.includes('ad'))  drawAD(st,stB);
+  drawBanner(st,stB); drawEq(st,stB); drawReadout(st,stB);
+}
+document.getElementById('controls').dataset.step='0';
+render();
+</script>
+</body>
+</html>
