@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECON 410 · The Solow Model in Five Steps</title>
+<style>
+:root{
+  --navy:#1B3A5C; --gold:#C8912A; --teal:#0E6B5B;
+  --cream:#F2EEE1; --mint:#EAF4F1; --ink:#1F2933; --muted:#5C6B7A; --line:#D9DEE4;
+  --fk:#1B3A5C;     /* production function  f(k)      */
+  --inv:#1F6FB2;    /* actual investment    s·f(k)     */
+  --brk:#C1553B;    /* break-even line      (δ+n+g)k   */
+  --cons:#C8912A;   /* consumption / change arrows      */
+  --gr:#7A4FA3;     /* golden rule / economy B          */
+  --bg:#FBFAF7;
+}
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--ink); font-size:14.5px; line-height:1.55;
+  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif}
+h1,h2,h3{margin:0; font-weight:700}
+button{font-family:inherit; font-size:inherit; cursor:pointer}
+
+/* ---------- header ---------- */
+.topbar{background:var(--navy); color:#fff; padding:10px 22px; border-bottom:3px solid var(--gold);
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.topbar .brand{font-weight:700; letter-spacing:.10em; font-size:11.5px; text-transform:uppercase}
+.topbar .tag{font-size:11.5px; color:#EBD9AE}
+.titleblock{padding:18px 22px 4px}
+.titleblock h1{color:var(--teal); font-size:24px}
+.titleblock .sub{color:var(--muted); font-style:italic; margin-top:5px}
+.rule{width:60px; height:3px; background:var(--gold); margin-top:10px}
+
+/* ---------- the five steps ---------- */
+.steps{display:flex; padding:16px 22px 0; gap:6px; flex-wrap:wrap}
+.step{flex:1; min-width:168px; background:#fff; border:1px solid var(--line); border-radius:8px;
+  padding:9px 12px; text-align:left; color:var(--muted); position:relative}
+.step .n{display:inline-flex; width:21px; height:21px; align-items:center; justify-content:center;
+  border-radius:50%; background:var(--line); color:#fff; font-size:11.5px; font-weight:700; margin-right:7px}
+.step .t{font-weight:700; font-size:13px; color:var(--ink)}
+.step .d{font-size:11px; margin-top:3px; line-height:1.4}
+.step:hover{border-color:var(--teal)}
+.step.on{background:var(--teal); border-color:var(--teal); color:#D6EBE5}
+.step.on .t{color:#fff} .step.on .n{background:rgba(255,255,255,.32)}
+.stepnav{display:flex; gap:8px; padding:12px 22px 0; align-items:center}
+
+/* ---------- layout ---------- */
+.wrap{display:grid; grid-template-columns:296px minmax(0,1fr); gap:16px; padding:14px 22px 40px; align-items:start}
+@media (max-width:1080px){ .wrap{grid-template-columns:1fr} }
+
+.card{background:#fff; border:1px solid var(--line); border-radius:9px; overflow:hidden; margin-bottom:14px}
+.card .hd{background:var(--navy); color:#fff; padding:8px 13px; font-size:11.5px; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase}
+.card .hd.teal{background:var(--teal)} .card .hd.gold{background:var(--gold); color:#2A2000}
+.card .bd{padding:12px 13px}
+.sticky{position:sticky; top:12px}
+
+/* ---------- controls ---------- */
+.ctl{margin-bottom:13px}
+.ctl:last-child{margin-bottom:1px}
+.ctl .lab{display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-bottom:4px}
+.ctl .lab .nm b{font-family:Georgia,serif; font-style:italic; font-size:14.5px; color:var(--navy)}
+.ctl .lab .nm span{font-size:12px; color:var(--muted)}
+.ctl .lab .vl{font-variant-numeric:tabular-nums; font-weight:700; font-size:13px;
+  background:var(--cream); border-radius:4px; padding:1px 7px; min-width:54px; text-align:right}
+.ctl .lab .vl.chg{background:#FFF0CF; color:#7A4B00; box-shadow:inset 0 0 0 1px #E5C27A}
+.ctl.key{background:#F6FBF9; border-left:3px solid var(--teal); border-radius:0 6px 6px 0; padding:8px 10px 9px; margin-left:-3px}
+.ctl .why{font-size:11px; color:var(--muted); font-style:italic; margin-top:3px}
+input[type=range]{width:100%; height:18px; -webkit-appearance:none; background:transparent; margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:5px; background:var(--line); border-radius:3px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:16px; height:16px; border-radius:50%;
+  background:var(--teal); border:2px solid #fff; box-shadow:0 0 0 1px var(--teal); margin-top:-6px}
+input[type=range]::-moz-range-track{height:5px; background:var(--line); border-radius:3px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--teal);border:2px solid #fff}
+input[type=range].hot::-webkit-slider-thumb{background:var(--gold); box-shadow:0 0 0 1px var(--gold)}
+input[type=range].hot::-moz-range-thumb{background:var(--gold)}
+
+.more{border-top:1px solid var(--line); margin-top:6px}
+.more > summary{padding:9px 0 2px; font-size:12px; color:var(--teal); font-weight:600; cursor:pointer; list-style:none}
+.more > summary::-webkit-details-marker{display:none}
+.more > summary::before{content:'▸ '; }
+.more[open] > summary::before{content:'▾ '; }
+
+.btn{background:#fff; border:1px solid var(--line); border-radius:7px; padding:7px 11px; font-size:12.5px}
+.btn:hover{border-color:var(--teal); color:var(--teal)}
+.btn.pri{background:var(--teal); border-color:var(--teal); color:#fff}
+.btn.pri:hover{background:#0B584B}
+.btn.gold{background:var(--gold); border-color:var(--gold); color:#2A2000; font-weight:700}
+.btn.gold:hover{background:#B57F1E}
+.btn.sm{padding:5px 9px; font-size:12px}
+.row{display:flex; gap:7px; flex-wrap:wrap}
+.chk{display:flex; align-items:center; gap:8px; font-size:12.5px; margin-top:9px}
+.chk input{width:15px;height:15px;accent-color:var(--teal)}
+
+/* ---------- banner ---------- */
+.banner{background:var(--cream); border-left:5px solid var(--gold); border-radius:0 9px 9px 0;
+  padding:12px 15px; margin-bottom:14px; font-size:14px; line-height:1.6}
+.banner .vv{font-weight:700; color:#8A5B00}
+.banner.move{background:#F4F9FD; border-left-color:var(--inv)} .banner.move .vv{color:#14507F}
+.banner.calm{background:var(--mint); border-left-color:var(--teal)} .banner.calm .vv{color:#0B584B}
+.banner b{color:var(--navy)}
+
+/* ---------- panels ---------- */
+.panels{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px}
+@media (max-width:820px){ .panels{grid-template-columns:1fr} }
+.pan{background:#fff; border:1px solid var(--line); border-radius:9px; overflow:hidden}
+.pan.wide{grid-column:1/-1}
+.pan .ph{padding:7px 13px; background:var(--mint); border-bottom:1px solid var(--line);
+  display:flex; align-items:baseline; gap:9px; flex-wrap:wrap}
+.pan .ph .pt{font-size:13.5px; font-weight:700; color:var(--teal)}
+.pan .ph .pn{font-size:11.5px; color:var(--muted); font-style:italic}
+.pan .pv{padding:5px}
+.pan svg{width:100%; height:auto; display:block}
+.pan .pf{padding:8px 13px 10px; font-size:12px; color:var(--muted); border-top:1px dashed var(--line); line-height:1.5}
+.pan .pf b{color:var(--ink)}
+.pan .runbar{padding:8px 13px 2px; display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+
+text{font-family:"Segoe UI",Helvetica,Arial,sans-serif}
+.axlab{font-size:11px; fill:var(--muted)}
+.axttl{font-size:11.5px; fill:var(--ink); font-weight:600}
+.ann{font-size:10.5px; fill:var(--muted)}
+.annb{font-size:10.5px; font-weight:700}
+.clab{font-size:12.5px; font-weight:700}
+
+/* ---------- side boxes ---------- */
+.notice{background:var(--mint); border-left:4px solid var(--teal); border-radius:0 7px 7px 0; padding:10px 13px}
+.notice h3{font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--teal); margin-bottom:5px}
+.notice ul{margin:0; padding-left:17px; font-size:12.5px; line-height:1.6}
+.notice li{margin-bottom:4px}
+.notice li:last-child{margin-bottom:0}
+.expl{font-size:13px; line-height:1.65}
+.expl p{margin:0 0 9px} .expl p:last-child{margin:0}
+.expl em{color:var(--navy); font-style:italic}
+table.kv{width:100%; border-collapse:collapse; font-size:12.5px}
+table.kv td{padding:4px 5px; border-bottom:1px solid #F0F2F5}
+table.kv td:first-child{color:var(--muted)}
+table.kv td:last-child{text-align:right; font-weight:700; font-variant-numeric:tabular-nums}
+table.kv tr.em td{background:var(--mint)}
+.up{color:var(--teal)} .dn{color:#B3261E}
+.eq{font-family:Georgia,serif; font-size:13px; line-height:1.9}
+.eq .r{padding:3px 0; border-bottom:1px dotted #EFF1F4}
+.eq .r:last-child{border:none}
+.eq .k{font-family:"Segoe UI",Helvetica,sans-serif; font-size:11px; font-weight:700;
+  letter-spacing:.03em; color:var(--teal); text-transform:uppercase; display:block}
+.hl{background:#FFF4D6; border-radius:3px; padding:0 4px; font-weight:700}
+footer{background:var(--navy); color:#C9D6E2; padding:13px 22px; font-size:12px; font-style:italic}
+footer em{font-style:normal; color:#EBD9AE}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand">ECON 410 · Intermediate Macroeconomics</span>
+  <span style="opacity:.45">·</span>
+  <span class="tag">Section 6 · Student Lab</span>
+</div>
+
+<div class="titleblock">
+  <h1>The Solow model in five steps</h1>
+  <div class="sub">Work through the steps in order. In each one, move a slider or press a button and watch what happens.</div>
+  <div class="rule"></div>
+</div>
+
+<div class="steps" id="steps"></div>
+<div class="stepnav">
+  <button class="btn sm" id="navPrev">◀ Previous step</button>
+  <button class="btn sm pri" id="navNext">Next step ▶</button>
+  <span style="font-size:12px;color:var(--muted)" id="navHint"></span>
+</div>
+
+<div class="wrap">
+
+  <div>
+    <div class="card sticky">
+      <div class="hd teal">Your controls</div>
+      <div class="bd">
+        <div id="controls"></div>
+        <details class="more" id="moreBox">
+          <summary>More parameters (optional)</summary>
+          <div id="controlsMore" style="padding-top:8px"></div>
+        </details>
+      </div>
+      <div class="hd gold" style="border-top:1px solid rgba(0,0,0,.1)">Try a change</div>
+      <div class="bd">
+        <div class="row" id="shocks"></div>
+        <div class="row" style="margin-top:9px">
+          <button class="btn pri" id="btnReset" style="width:100%">↺ Back to the baseline</button>
+        </div>
+        <div id="extraOpt"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="banner" id="banner"></div>
+
+    <div class="card">
+      <div class="hd teal" id="explTitle">What this diagram shows</div>
+      <div class="bd">
+        <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px" id="explGrid">
+          <div class="expl" id="expl"></div>
+          <div class="notice" id="notice"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels" id="panels">
+      <div class="pan wide" id="pan-prod">
+        <div class="ph"><span class="pt">The production function</span><span class="pn">output per worker, y = f(k)</span></div>
+        <div class="pv" id="sv-prod"></div><div class="pf" id="ft-prod"></div>
+      </div>
+      <div class="pan wide" id="pan-solow">
+        <div class="ph"><span class="pt">The Solow diagram</span><span class="pn">investment vs. break-even, and the steady state</span></div>
+        <div class="pv" id="sv-solow"></div><div class="pf" id="ft-solow"></div>
+      </div>
+      <div class="pan" id="pan-time">
+        <div class="ph"><span class="pt">The economy over time</span><span class="pn">capital climbing toward its steady state</span></div>
+        <div class="runbar">
+          <button class="btn pri sm" id="btnRun">▶ Run the economy forward</button>
+          <button class="btn sm" id="btnRunReset">Clear</button>
+          <span style="font-size:11.5px;color:var(--muted)" id="runHint"></span>
+        </div>
+        <div class="pv" id="sv-time"></div><div class="pf" id="ft-time"></div>
+      </div>
+      <div class="pan" id="pan-locus">
+        <div class="ph"><span class="pt">Saving and the steady state</span><span class="pn">the Golden Rule</span></div>
+        <div class="pv" id="sv-locus"></div><div class="pf" id="ft-locus"></div>
+      </div>
+      <div class="pan" id="pan-compare">
+        <div class="ph"><span class="pt">Two economies</span><span class="pn">why steady states differ</span></div>
+        <div class="pv" id="sv-compare"></div><div class="pf" id="ft-compare"></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 264px;gap:14px;margin-top:14px" id="botGrid">
+      <div class="card" style="margin:0">
+        <div class="hd">The numbers behind the picture</div>
+        <div class="bd eq" id="eqbox"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="hd">Where we end up</div>
+        <div class="bd"><table class="kv" id="readout"></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ECON 410 · Section 6.  Output per worker <em>y = A·k<sup>α</sup></em>,&nbsp; change in capital <em>Δk = s·f(k) − (δ + n + g)k</em>,&nbsp;
+  steady state <em>k* = [sA / (δ + n + g)]<sup>1/(1−α)</sup></em>.
+  Baseline: <em>α = 0.33</em>, <em>s = 0.20</em>, <em>δ = 0.10</em>, <em>n = g = 0</em>.
+</footer>
+
+<script>
+/* =======================================================================
+   MODEL — Cobb-Douglas Solow in per-(effective-)worker terms
+   ======================================================================= */
+const BASE = {alpha:0.33, A:1, s:0.20, delta:0.10, n:0, g:0,
+              k:2.83, k0:1, sB:0.40, nB:0};
+let base = {...BASE}, cur = {...BASE};
+let step = 1;
+
+const f    = (p,k) => p.A * Math.pow(Math.max(k,0), p.alpha);     // output per worker
+const mpk  = (p,k) => p.A * p.alpha * Math.pow(Math.max(k,1e-9), p.alpha-1); // marginal product
+const brk  = p => p.delta + p.n + p.g;                            // break-even rate (δ+n+g)
+const sav  = (p,k) => p.s * f(p,k);                               // actual investment at k
+const bre  = (p,k) => brk(p) * k;                                 // break-even investment at k
+const dk   = (p,k) => sav(p,k) - bre(p,k);                        // change in capital
+const kstar= p => Math.pow(p.s*p.A/brk(p), 1/(1-p.alpha));        // steady-state capital
+const ystar= p => f(p, kstar(p));                                 // steady-state output
+const istar= p => p.s*ystar(p);                                   // steady-state investment (= break-even)
+const cstar= p => (1-p.s)*ystar(p);                               // steady-state consumption
+const kgold= p => Math.pow(p.alpha*p.A/brk(p), 1/(1-p.alpha));    // golden-rule capital (mpk = brk)
+const sgold= p => p.alpha;                                        // golden-rule saving rate (Cobb-Douglas)
+const cgold= p => f(p,kgold(p)) - brk(p)*kgold(p);               // max steady-state consumption
+
+/* steady-state output / consumption as a function of the saving rate */
+const ystarS = (p,s) => p.A*Math.pow(s*p.A/brk(p), p.alpha/(1-p.alpha));
+const cstarS = (p,s) => (1-s)*ystarS(p,s);
+
+/* the highlighted point at each step */
+function stateNow(p){
+  const ks=kstar(p), ys=ystar(p);
+  if(step<=2) return {k:p.k, y:f(p,p.k), ks, ys, mode:'move'};
+  return {k:ks, y:ys, ks, ys, mode:'ss'};
+}
+
+/* simulate the transition path k_t (annual steps) */
+function simulate(p, T){
+  const path=[{t:0, k:p.k0, y:f(p,p.k0)}];
+  let k=p.k0;
+  for(let t=1;t<=T;t++){ k = k + dk(p,k); if(k<0)k=0; path.push({t, k, y:f(p,k)}); }
+  return path;
+}
+
+/* =======================================================================
+   PARAMETER + STEP DEFINITIONS
+   ======================================================================= */
+const SPEC = {
+  k     :{sym:'k', desc:'capital per worker (right now)', min:0.2,max:16,st:0.2, dec:1},
+  alpha :{sym:'α', desc:'capital’s share of output', min:0.20,max:0.60,st:0.01,dec:2},
+  A     :{sym:'A', desc:'level of technology (TFP)',      min:0.5,max:2.5,st:0.1, dec:1},
+  s     :{sym:'s', desc:'saving rate',                    min:0.05,max:0.70,st:0.01,dec:2},
+  delta :{sym:'δ', desc:'depreciation rate',              min:0.02,max:0.20,st:0.01,dec:2},
+  n     :{sym:'n', desc:'population growth rate',         min:0,max:0.04,st:0.005,dec:3},
+  g     :{sym:'g', desc:'rate of technological progress', min:0,max:0.04,st:0.005,dec:3},
+  k0    :{sym:'k₀', desc:'capital the economy starts with', min:0.2,max:16,st:0.2,dec:1},
+  sB    :{sym:'sᴮ', desc:'saving rate, economy B',   min:0.05,max:0.70,st:0.01,dec:2},
+  nB    :{sym:'nᴮ', desc:'population growth, economy B',min:0,max:0.04,st:0.005,dec:3}
+};
+
+const STEPS = [
+{ n:1, t:'The production function', d:'What can one worker produce?',
+  panels:['prod'], keys:['k','A','alpha'], more:[], hint:'Slide k and watch the slope flatten.',
+  shocks:[['Better technology  A ↑',{A:1.5}],['More capital per worker',{k:9}],['Capital’s share  α ↑',{alpha:0.5}]],
+  title:'Step 1 · More capital helps, but less and less each time',
+  expl:`<p>Everything starts with one idea: give a worker more machines, tools and buildings, and they
+    produce more. We write output per worker as a function of capital per worker:</p>
+    <p style="text-align:center"><em>y = f(k) = A · k<sup>α</sup></em>,&nbsp; with <em>α</em> between 0 and 1.</p>
+    <p>The curve rises, but it <em>bends over</em>. The first tractor on a farm is transformative; the tenth
+    barely helps. That flattening is <b>diminishing returns to capital</b>, and it is the engine of the whole model.</p>
+    <p>The slope of the curve is the <em>extra</em> output from one more unit of capital — the marginal product,
+    <em>MPK</em>. As <em>k</em> grows, the slope falls. <em>A</em> lifts the whole curve: better technology means more
+    output from the same capital.</p>`,
+  notice:['Slide <i>k</i> to the right. Output keeps rising, but the curve gets <b>flatter</b> — each unit of capital adds less.',
+    'Raise <i>A</i>: the whole curve lifts up. That is what technology does — more output from the same <i>k</i>.',
+    'Raise <i>α</i>: capital matters more, so the curve bends over more slowly.',
+    'This one curve is the backbone of every diagram that follows.'] },
+
+{ n:2, t:'Investment vs. depreciation', d:'When does capital grow?',
+  panels:['solow'], keys:['s','delta','k'], more:['alpha','A'], hint:'Find where the two curves cross.',
+  shocks:[['Saving rate  s ↑',{s:0.35}],['Faster depreciation  δ ↑',{delta:0.15}],['Start with little capital',{k:1}]],
+  title:'Step 2 · Capital is built by saving and worn down by depreciation',
+  expl:`<p>The dark curve is the production function from step 1: output per worker, <em>f(k)</em>. Households
+    save a fraction <em>s</em> of that output and invest it, so investment per worker is <em>s·f(k)</em> —
+    the blue curve, just <em>f(k)</em> scaled down by <em>s</em>. What is left over is consumption.</p>
+    <p>Meanwhile capital wears out. A fraction <em>δ</em> depreciates every year, so replacement needs
+    <em>δk</em> — the straight red line. (Later we will add <em>n</em> and <em>g</em> to this line.)</p>
+    <p>Put them together: <em>Δk = s·f(k) − δk</em>. Where investment is <em>above</em> the red line, capital grows;
+    where it is <em>below</em>, capital shrinks. The gap between the blue and red lines is exactly how fast
+    <em>k</em> is moving.</p>`,
+  notice:['At low <i>k</i>, the blue saving line sits <b>above</b> the red line — new capital outpaces wear, so <i>k</i> grows.',
+    'At high <i>k</i>, saving falls <b>below</b> replacement — capital shrinks back.',
+    'Raise <i>s</i>: the blue line lifts, so capital keeps growing to a higher point.',
+    'Raise <i>δ</i>: the red line steepens, and capital settles lower. Next step pins down exactly where.'] },
+
+{ n:3, t:'The steady state', d:'Where does the economy settle?',
+  panels:['solow','time'], keys:['s','delta','k0'], more:['alpha','A'], hint:'Press Run and watch it converge.',
+  shocks:[['Saving rate  s ↑',{s:0.35}],['Faster depreciation  δ ↑',{delta:0.15}],['Start far below  k*',{k0:0.4}]],
+  title:'Step 3 · The economy comes to rest where investment just covers depreciation',
+  expl:`<p>Capital keeps changing until the two lines meet. At that crossing, saving exactly replaces what wears
+    out — <em>s·f(k*) = δk*</em> — so <em>Δk = 0</em> and the economy stops moving. That is the <b>steady state</b>.</p>
+    <p>Solving gives <em>k* = [sA / δ]<sup>1/(1−α)</sup></em>, and output settles at <em>y* = f(k*)</em>.</p>
+    <p>The steady state is a <em>magnet</em>. Start below it and capital grows toward it; start above and it falls
+    back. Press <b>Run the economy forward</b> and watch a poor economy (little capital) climb to <em>k*</em> — fast
+    at first, then slowing as diminishing returns bite.</p>
+    <p>Notice what raising <em>s</em> does: a permanently higher <em>level</em> of output, but growth eventually
+    stops again. In this model, saving more cannot raise growth forever — that will take step 5.</p>`,
+  notice:['Press <b>Run the economy forward</b> to watch capital climb from <i>k₀</i> to <i>k*</i>.',
+    'Growth is <b>fast when far below</b> <i>k*</i> and slows as it approaches — poorer economies grow faster.',
+    'Raise <i>s</i>: the steady state moves right. Higher level of output, but growth still stops.',
+    'Raise <i>δ</i>: capital wears out faster, so the economy settles at a lower <i>k*</i>.'] },
+
+{ n:4, t:'The Golden Rule', d:'How much saving is best?',
+  panels:['solow','locus'], keys:['s','delta'], more:['alpha','A'], hint:'Press Trace to draw the consumption curve.',
+  sweep:'C',
+  title:'Step 4 · More saving is not always better — there is a best amount',
+  expl:`<p>People do not consume capital; they consume what is left after investment. At the steady state,
+    consumption per worker is the gap between output and break-even investment:
+    <em>c* = f(k*) − δk*</em>.</p>
+    <p>Raise the saving rate and two things fight. A higher <em>s</em> builds a bigger capital stock and more
+    output — good. But it also means saving <em>more</em> and consuming <em>less</em> of that output — bad. At low
+    saving the first effect wins; at high saving the second takes over.</p>
+    <p>Somewhere in between, consumption is as large as it can be. That is the <b>Golden Rule</b>. It happens where
+    the production function is exactly as steep as the break-even line — where <em>MPK = δ</em> — and for this
+    <em>y = Ak<sup>α</sup></em> it lands at the tidy result <em>s = α</em>.</p>
+    <p>Press <b>Trace out consumption</b> to sweep the saving rate and draw the hump. The peak is the Golden Rule.</p>`,
+  notice:['Press <b>Trace out consumption</b> to build the c*(s) curve one dot at a time.',
+    'The curve is <b>hump-shaped</b>: too little saving <i>and</i> too much both leave you with less to consume.',
+    'The peak sits at <b>s = α = 0.33</b>. Our baseline saves only 0.20 — this economy is <i>below</i> the Golden Rule.',
+    'Saving past the peak still raises output, but you consume less of it — that is over-saving.'] },
+
+{ n:5, t:'Growth: people and technology', d:'What makes living standards rise forever?',
+  panels:['solow','compare'], keys:['s','n','g'], more:['delta','alpha','A','sB','nB'], hint:'Turn on n and g, then compare two economies.',
+  title:'Step 5 · Population and technology, and why economies differ',
+  shocks:[['Population growth  n = 2%',{n:0.02}],['Tech progress  g = 2%',{g:0.02}],['Compare a thriftier economy B',{sB:0.5}]],
+  expl:`<p>Two things were missing. First, the workforce grows at rate <em>n</em>, so capital must be spread over
+    more workers. Second, technology improves at rate <em>g</em>, making each worker more effective. Both add to
+    what break-even investment must cover: the red line becomes <em>(δ + n + g)·k</em>, and everything is now
+    measured <em>per effective worker</em>.</p>
+    <p>The steady state still sits where saving meets break-even, at <em>k* = [sA/(δ+n+g)]<sup>1/(1−α)</sup></em>.
+    Faster population growth or depreciation lowers it; here is the punchline: on the balanced growth path,
+    <em>output per worker grows at rate g forever</em>. <b>Only technological progress delivers lasting growth in
+    living standards.</b></p>
+    <p>Finally, why is one country rich and another poor? Compare two economies with different saving rates.
+    They converge to <em>different</em> steady states — the thriftier one ends up richer — even though, once
+    growing, both rise at the same rate <em>g</em>.</p>`,
+  notice:['Turn on <i>n</i> or <i>g</i>: the red break-even line steepens, so <i>k*</i> per effective worker falls.',
+    'Only <i>g</i> raises output <b>per worker</b> in the long run. Saving changes the level, not the growth rate.',
+    'In <b>Two economies</b>, the higher saver reaches a higher steady state — the textbook reason rich and poor differ.',
+    'Both economies still grow at <i>g</i> once they are on their balanced growth path.'] }
+];
+const S = () => STEPS[step-1];
+
+/* =======================================================================
+   SVG PLOT HELPER  (shared with the AD-AS lab)
+   ======================================================================= */
+const NS='http://www.w3.org/2000/svg'; let uid=0;
+const E=(t,at,par)=>{const n=document.createElementNS(NS,t);for(const k in at)if(at[k]!=null)n.setAttribute(k,at[k]);if(par)par.appendChild(n);return n;};
+function Plot(host,cfg){
+  host.innerHTML='';
+  const W=cfg.w||460,H=cfg.h||330;
+  const svg=E('svg',{viewBox:`0 0 ${W} ${H}`},host);
+  const pad={l:56,r:cfg.padr||52,t:18,b:46};
+  const [x0,x1]=cfg.xdom,[y0,y1]=cfg.ydom, iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  const X=v=>pad.l+(v-x0)/(x1-x0)*iw, Y=v=>H-pad.b-(v-y0)/(y1-y0)*ih;
+  const id='c'+(++uid), defs=E('defs',{},svg);
+  E('rect',{x:pad.l,y:pad.t,width:iw,height:ih},E('clipPath',{id},defs));
+  const AR={};
+  [['gold','#C8912A'],['grey','#9AA5B1'],['fk','#1B3A5C'],['inv','#1F6FB2'],['brk','#C1553B'],['gr','#7A4FA3']]
+    .forEach(([k,c])=>{const m=E('marker',{id:k+uid,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:6.5,markerHeight:6.5,orient:'auto-start-reverse'},defs);
+      E('path',{d:'M0,1 L9,5 L0,9 z',fill:c},m); AR[k]=k+uid;});
+  const niceStep=(sp,tg)=>{const raw=sp/Math.max(2,tg),mg=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/mg;
+    return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*mg;};
+  const tv=(lo,hi,tg)=>{const st=niceStep(hi-lo,tg),o=[];for(let v=Math.ceil(lo/st)*st;v<=hi+st*1e-6;v+=st)o.push(Math.abs(v)<st*1e-6?0:v);return o;};
+  const gg=E('g',{},svg);
+  tv(x0,x1,cfg.nx||5).forEach(v=>{E('line',{x1:X(v),y1:pad.t,x2:X(v),y2:H-pad.b,stroke:'#F0F2F5'},gg);
+    E('text',{x:X(v),y:H-pad.b+15,'text-anchor':'middle',class:'axlab'},gg).textContent=cfg.xf?cfg.xf(v):Math.round(v).toLocaleString();});
+  tv(y0,y1,cfg.ny||5).forEach(v=>{E('line',{x1:pad.l,y1:Y(v),x2:W-pad.r,y2:Y(v),stroke:'#F0F2F5'},gg);
+    E('text',{x:pad.l-8,y:Y(v)+4,'text-anchor':'end',class:'axlab'},gg).textContent=cfg.yf?cfg.yf(v):Math.round(v).toLocaleString();});
+  E('line',{x1:pad.l,y1:H-pad.b,x2:W-pad.r+5,y2:H-pad.b,stroke:'#37475A','stroke-width':1.5},svg);
+  E('line',{x1:pad.l,y1:pad.t-5,x2:pad.l,y2:H-pad.b,stroke:'#37475A','stroke-width':1.5},svg);
+  E('text',{x:W-pad.r+5,y:H-pad.b+32,'text-anchor':'end',class:'axttl'},svg).textContent=cfg.xlab||'';
+  E('text',{x:pad.l-7,y:pad.t-8,'text-anchor':'start',class:'axttl'},svg).textContent=cfg.ylab||'';
+  const g=E('g',{'clip-path':`url(#${id})`},svg), gT=E('g',{},svg);
+  const P={X,Y,pad,W,H,x0,x1,y0,y1,AR,
+    poly(pts,s={}){return E('polyline',{points:pts.map(q=>`${X(q[0]).toFixed(1)},${Y(q[1]).toFixed(1)}`).join(' '),
+      fill:'none',stroke:s.c||'#000','stroke-width':s.w||2.4,'stroke-dasharray':s.d||null,
+      'stroke-linejoin':'round',opacity:s.o||1},s.top?gT:g);},
+    line(p1,p2,s={}){return E('line',{x1:X(p1[0]),y1:Y(p1[1]),x2:X(p2[0]),y2:Y(p2[1]),stroke:s.c||'#000',
+      'stroke-width':s.w||2.4,'stroke-dasharray':s.d||null,'stroke-linecap':'round',
+      'marker-end':s.m?`url(#${s.m})`:null,opacity:s.o||1},s.top?gT:g);},
+    fnX(fn,s={},n=140){const q=[];for(let i=0;i<=n;i++){const x=x0+(x1-x0)*i/n,y=fn(x);if(isFinite(y))q.push([x,y]);}return P.poly(q,s);},
+    dot(x,y,s={}){return E('circle',{cx:X(x),cy:Y(y),r:s.r||5.2,fill:s.f||'#fff',stroke:s.c||'#000','stroke-width':s.w||2.3},s.clip?g:gT);},
+    guide(x,y,c='#9AA5B1'){P.line([x0,y],[x,y],{c,w:1.2,d:'3 3',o:.9});P.line([x,y0],[x,y],{c,w:1.2,d:'3 3',o:.9});},
+    txt(x,y,s,st={}){const t=E('text',{x:X(x)+(st.dx||0),y:Y(y)+(st.dy||0),'text-anchor':st.an||'start',
+      class:st.cls||'clab',fill:st.c||'#000'},gT);t.textContent=s;
+      t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.4');t.setAttribute('paint-order','stroke');return t;},
+    px(x,y,s,st={}){const t=E('text',{x,y,'text-anchor':st.an||'start',class:st.cls||'ann',fill:st.c||'#5C6B7A'},gT);
+      t.textContent=s;t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3');t.setAttribute('paint-order','stroke');return t;},
+    band(xa,xb,s={}){E('rect',{x:X(Math.min(xa,xb)),y:pad.t,width:Math.abs(X(xb)-X(xa)),height:ih,fill:s.f||'#C8912A',opacity:s.o||.11},g);}};
+  return P;
+}
+const n0=v=>Math.round(v).toLocaleString();
+const nd=(v,d)=>v.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}).replace('-','−');
+const sg=(v,d=0)=>(v>0?'+':v<0?'−':'')+nd(Math.abs(v),d);
+const pct=(v,d=1)=>nd(v*100,d)+'%';
+
+/* adaptive-but-stable axis ranges */
+let KMAX=12, OMAX=3, TMAX=100;
+function rescale(){
+  const rnd=(v,s)=>Math.ceil(v/s)*s;
+  const ks=[kstar(cur),kgold(cur),kstar(base),cur.k,cur.k0,base.k].filter(v=>isFinite(v)&&v>0);
+  KMAX=Math.min(60,Math.max(6,rnd(Math.max(...ks)*1.45,1)));
+  OMAX=Math.max(1.2,rnd(f(cur,KMAX)*1.08,0.5));
+  const hl=Math.log(2)/Math.max(1e-3,(1-cur.alpha)*brk(cur));  // half-life of convergence
+  TMAX=Math.min(160,Math.max(40,Math.round(hl*6)));
+}
+
+/* =======================================================================
+   DRAWING
+   ======================================================================= */
+function drawProd(st){
+  const p=Plot(document.getElementById('sv-prod'),{w:1000,h:400,xdom:[0,KMAX],ydom:[0,OMAX],
+    xlab:'Capital per worker  k',ylab:'Output per worker  y',nx:6,ny:5,yf:v=>nd(v,1),padr:166});
+  const chg = base.A!==cur.A || base.alpha!==cur.alpha;
+  if(chg){ p.fnX(k=>f(base,k),{c:'#9AA5B1',w:2,d:'6 4'});
+    p.px(p.X(KMAX)+6,p.Y(f(base,KMAX))+4,'before',{cls:'clab',c:'#9AA5B1'}); }
+  p.fnX(k=>f(cur,k),{c:'var(--fk)',w:3});
+  p.px(p.X(KMAX)+6,p.Y(f(cur,KMAX))+(chg?16:4),'y = A·k',{cls:'clab',c:'#1B3A5C'});
+  p.px(p.X(KMAX)+52,p.Y(f(cur,KMAX))+(chg?9:-3),'α',{cls:'annb',c:'#1B3A5C'});
+  const kk=st.k, yy=f(cur,kk), m=mpk(cur,kk);
+  // tangent segment to show the slope (MPK) at the chosen point
+  const dxp=KMAX*0.13, x1=Math.max(0,kk-dxp), x2=Math.min(KMAX,kk+dxp);
+  p.line([x1,yy-m*(kk-x1)],[x2,yy+m*(x2-kk)],{c:'#C8912A',w:2.6,top:true});
+  p.px((p.X(x2)),p.Y(yy+m*(x2-kk))-6,`slope = MPK = ${nd(m,2)}`,{cls:'annb',c:'#8A5B00'});
+  p.guide(kk,yy,'#1B3A5C');
+  p.dot(kk,yy,{c:'var(--fk)',r:6});
+  p.px(p.X(kk),p.Y(0)+32,`k = ${nd(kk,1)}`,{cls:'annb',c:'#1B3A5C',an:'middle'});
+  p.px(p.X(0)-4,p.Y(yy)-8,`y = ${nd(yy,2)}`,{cls:'annb',c:'#1B3A5C',an:'start'});
+  document.getElementById('ft-prod').innerHTML =
+    `<b>y = ${nd(cur.A,1)} · k<sup>${nd(cur.alpha,2)}</sup></b>. At k = ${nd(kk,1)}, output is <b>${nd(yy,2)}</b> and the
+     marginal product is <b>${nd(m,2)}</b>. Push k higher and MPK falls — that is diminishing returns.`;
+}
+
+function drawSolow(st){
+  const narrow = S().panels.length>1;                 // side-by-side with a companion diagram
+  const dim = narrow ? {w:500,h:440,padr:108} : {w:1000,h:452,padr:176};
+  const p=Plot(document.getElementById('sv-solow'),{...dim,xdom:[0,KMAX],ydom:[0,OMAX],
+    xlab:'Capital per worker  k',ylab:'per worker',nx:narrow?5:6,ny:5,yf:v=>nd(v,1)});
+  const L = narrow
+    ? {out:'f(k)', brk:brk(cur)>cur.delta+1e-9?'(δ+n+g)k':'δk', inv:'s·f(k)'}
+    : {out:'output  f(k)', brk:brk(cur)>cur.delta+1e-9?'break-even  (δ+n+g)k':'depreciation  δk', inv:'investment  s·f(k)'};
+  const showGold = step===4;
+  const ks=kstar(cur), ys=ystar(cur), inv=istar(cur);
+  const moved = base.s!==cur.s||base.delta!==cur.delta||base.alpha!==cur.alpha||base.A!==cur.A||base.n!==cur.n||base.g!==cur.g;
+  // production function f(k) — the "first graph", now prominent inside the Solow diagram
+  p.fnX(k=>f(cur,k),{c:'var(--fk)',w:step===2?2.8:2.2,o:step===2?1:.72});
+  p.px(p.X(KMAX)+6,p.Y(f(cur,KMAX))+2,L.out,{cls:'clab',c:'#1B3A5C'});
+  // baseline break-even + saving, if changed
+  if(moved){ p.fnX(k=>sav(base,k),{c:'#9AA5B1',w:1.8,d:'6 4'}); p.line([0,0],[KMAX,bre(base,KMAX)],{c:'#9AA5B1',w:1.8,d:'6 4'}); }
+  // break-even line
+  p.line([0,0],[KMAX,bre(cur,KMAX)],{c:'var(--brk)',w:3});
+  p.px(p.X(KMAX)+6,p.Y(bre(cur,KMAX))+2,L.brk,{cls:'clab',c:'#C1553B'});
+  // saving / investment curve
+  p.fnX(k=>sav(cur,k),{c:'var(--inv)',w:3});
+  p.px(p.X(KMAX)+6,p.Y(sav(cur,KMAX))+2,L.inv,{cls:'clab',c:'#1F6FB2'});
+  // golden-rule marker
+  if(showGold){
+    const kg=kgold(cur);
+    p.line([kg,0],[kg,f(cur,kg)],{c:'var(--gr)',w:1.6,d:'5 3',o:.9});
+    p.dot(kg,bre(cur,kg),{c:'var(--gr)',r:4.6});
+    p.px(p.X(kg),p.Y(0)-7,`golden k=${nd(kg,1)}`,{cls:'annb',c:'#5B3A82',an:'middle'});
+    // consumption gap at current steady state
+    p.line([ks,inv],[ks,ys],{c:'var(--cons)',w:3.4,top:true});
+    p.px(p.X(ks)+7,(p.Y(inv)+p.Y(ys))/2,`c* = ${nd(cstar(cur),2)}`,{cls:'annb',c:'#8A5B00'});
+  }
+  // step 2: output point on f(k), the consumption gap, and the Δk arrow — all in one diagram
+  if(step===2){
+    const kk=st.k, yk=f(cur,kk), ik=sav(cur,kk), bk=bre(cur,kk), grow=ik>bk, near=Math.abs(dk(cur,kk))<0.008;
+    p.guide(kk,yk,'#9AA5B1');
+    // consumption = output minus investment (shaded gap)
+    p.line([kk,ik],[kk,yk],{c:'#2E7D5B',w:7,top:true,o:.26});
+    p.px(p.X(kk)+10,(p.Y(yk)+p.Y(ik))/2,'consumed',{cls:'ann',c:'#256B4C'});
+    // output point on the production function
+    p.dot(kk,yk,{c:'var(--fk)',r:5.6});
+    p.px(p.X(0)+6,p.Y(yk)-8,`output y = ${nd(yk,2)}`,{cls:'annb',c:'#1B3A5C'});
+    // Δk between investment and break-even
+    p.line([kk,Math.min(ik,bk)],[kk,Math.max(ik,bk)],{c:'var(--cons)',w:3,top:true,m:p.AR.gold});
+    p.dot(kk,ik,{c:'var(--inv)',r:5}); p.dot(kk,bk,{c:'var(--brk)',r:4.4});
+    p.px(p.X(kk)+10,(p.Y(ik)+p.Y(bk))/2-(near?11:0), near?'saving ≈ wear → k holds':grow?'saving > wear → k rises':'saving < wear → k falls',{cls:'annb',c:near?'#0B584B':'#8A5B00'});
+    p.px(p.X(kk),p.Y(0)+32,`k = ${nd(kk,1)}`,{cls:'annb',c:'#37475A',an:'middle'});
+  }
+  // steady state marker (steps 3-5)
+  if(step>=3){
+    if(moved){ const ksb=kstar(base); p.dot(ksb,istar(base),{c:'#9AA5B1',r:4.2});
+      if(Math.abs(ksb-ks)>KMAX*0.01) p.line([ksb,OMAX*0.06],[ks,OMAX*0.06],{c:'#C8912A',w:2.6,m:p.AR.gold,top:true}); }
+    p.guide(ks,inv,'#0E6B5B');
+    p.dot(ks,inv,{c:'var(--inv)',r:6.4});
+    p.px(p.X(ks),p.Y(0)+32,`k* = ${nd(ks,1)}`,{cls:'annb',c:'#0B584B',an:'middle'});
+  }
+  document.getElementById('ft-solow').innerHTML =
+    step===2
+    ? `At k = ${nd(st.k,1)}: output <b>${nd(f(cur,st.k),2)}</b> (MPK ${nd(mpk(cur,st.k),2)}) splits into investment
+       <b>${nd(sav(cur,st.k),2)}</b> and consumption <b>${nd((1-cur.s)*f(cur,st.k),2)}</b>. Break-even is
+       <b>${nd(bre(cur,st.k),2)}</b>, so capital is ${Math.abs(dk(cur,st.k))<0.008
+         ? `<b>holding steady</b> — this k is the steady state.`
+         : `<b class="${dk(cur,st.k)>0?'up':'dn'}">${dk(cur,st.k)>0?'growing':'shrinking'}</b> by ${sg(dk(cur,st.k),2)} per year.`}`
+    : `<b>Steady state:</b> s·f(k*) = ${brk(cur)>cur.delta+1e-9?'(δ+n+g)':'δ'}k* gives <b>k* = ${nd(ks,2)}</b>,
+       <b>y* = ${nd(ys,2)}</b>, investment <b>${nd(inv,2)}</b>, consumption <b>c* = ${nd(cstar(cur),2)}</b>.
+       ${step===4?`The Golden Rule saving rate is <b>s = α = ${nd(sgold(cur),2)}</b>.`:''}`;
+}
+
+function drawTime(st){
+  const path=simulate(cur,TMAX);
+  const ks=kstar(cur);
+  const ymax=Math.max(OMAX*0.9, ks*1.15, cur.k0*1.1, path[path.length-1].k*1.1);
+  const p=Plot(document.getElementById('sv-time'),{w:500,h:440,xdom:[0,TMAX],ydom:[0,ymax],
+    xlab:'Years',ylab:'Capital per worker  k',nx:5,ny:5,yf:v=>nd(v,1),padr:60});
+  // steady-state asymptote
+  p.line([0,ks],[TMAX,ks],{c:'#0E6B5B',w:1.6,d:'6 4',o:.8});
+  p.px(p.X(0)+9,p.Y(ks)-8,`steady state  k* = ${nd(ks,1)}`,{cls:'annb',c:'#0B584B',an:'start'});
+  // full faint path for reference
+  p.poly(path.map(q=>[q.t,q.k]),{c:'#BFD9D0',w:1.6});
+  // animated portion
+  const shown=path.slice(0, Math.max(1, Math.min(path.length, timeShown)) );
+  p.poly(shown.map(q=>[q.t,q.k]),{c:'var(--inv)',w:3});
+  const last=shown[shown.length-1];
+  p.dot(last.t,last.k,{c:'var(--inv)',r:5.6});
+  const nearEnd=last.t>TMAX*0.55;
+  p.px(p.X(last.t)+(nearEnd?-9:9),p.Y(last.k)+(nearEnd?-9:4),`year ${last.t}: k = ${nd(last.k,1)}`,{cls:'annb',c:'#14507F',an:nearEnd?'end':'start'});
+  document.getElementById('ft-time').innerHTML =
+    `Starting from <b>k₀ = ${nd(cur.k0,1)}</b>, capital climbs toward <b>k* = ${nd(ks,1)}</b>.
+     Growth is quickest early on and fades as the economy nears its steady state.`;
+  document.getElementById('runHint').textContent =
+    timeShown>=path.length ? 'Arrived. Change a slider and run again.' :
+    timeShown>1 ? 'Running…' : 'Press Run to release the economy from k₀.';
+}
+
+function drawLocus(st){
+  const smax=0.70, ymx=ystarS(cur,smax)*1.06;
+  const p=Plot(document.getElementById('sv-locus'),{w:500,h:440,xdom:[0,smax],ydom:[0,ymx],
+    xlab:'Saving rate  s',ylab:'per worker, in steady state',nx:5,ny:5,xf:v=>nd(v,2),yf:v=>nd(v,1),padr:64});
+  // steady-state output y*(s) — always increasing
+  p.fnX(s=>s<0.01?0:ystarS(cur,s),{c:'var(--fk)',w:2.4,o:.7});
+  p.px(p.X(smax)-4,p.Y(ystarS(cur,smax))-6,'output y*',{cls:'clab',c:'#1B3A5C',an:'end'});
+  // consumption c*(s) — hump, traced
+  if(traceC.length>2){
+    p.poly(traceC.map(q=>[q.s,q.c]),{c:'var(--cons)',w:3});
+    traceC.forEach(q=>p.dot(q.s,q.c,{c:'#C8912A',f:'#FBEBC6',r:2.6,w:1.1,clip:true}));
+    p.px(p.pad.l+9,p.pad.t+14,`${traceC.length} points`,{cls:'annb',c:'#8A5B00'});
+  } else {
+    p.fnX(s=>s<0.01?0:cstarS(cur,s),{c:'var(--cons)',w:3});
+  }
+  p.px(p.X(smax*0.30),p.Y(cstarS(cur,smax*0.30))-9,'consumption c*',{cls:'clab',c:'#8A5B00',an:'middle'});
+  // golden-rule peak
+  const sG=sgold(cur), cG=cgold(cur);
+  p.line([sG,0],[sG,cG],{c:'var(--gr)',w:1.6,d:'5 3',o:.9});
+  p.dot(sG,cG,{c:'var(--gr)',r:5.4});
+  p.px(p.X(sG),p.Y(cG)-11,`Golden Rule  s = ${nd(sG,2)}`,{cls:'annb',c:'#5B3A82',an:'middle'});
+  // current saving rate
+  p.line([cur.s,0],[cur.s,ymx],{c:'#37475A',w:1.4,d:'2 3',o:.7});
+  p.dot(cur.s,cstarS(cur,cur.s),{c:'var(--cons)',r:5});
+  p.px(p.X(cur.s),p.Y(0)+32,`you: s = ${nd(cur.s,2)}`,{cls:'annb',c:'#37475A',an:'middle'});
+  const gap=cur.s-sG;
+  document.getElementById('ft-locus').innerHTML =
+    `At <b>s = ${nd(cur.s,2)}</b>, steady-state consumption is <b>${nd(cstarS(cur,cur.s),2)}</b>.
+     The most you could reach is <b>${nd(cG,2)}</b> at the Golden Rule <b>s = ${nd(sG,2)}</b> —
+     ${Math.abs(gap)<0.005?'you are right on it.':gap<0?`you are saving <b>too little</b>; raising s would lift consumption.`:`you are <b>over-saving</b>; lowering s would raise consumption.`}`;
+}
+
+function drawCompare(st){
+  const pA={...cur}, pB={...cur, s:cur.sB, n:cur.nB};
+  const kA=kstar(pA), kB=kstar(pB);
+  const kmax=Math.min(60,Math.max(6, Math.max(kA,kB,cur.k)*1.4));
+  const omax=Math.max(1.2, f(cur,kmax)*1.05);
+  const p=Plot(document.getElementById('sv-compare'),{w:500,h:440,xdom:[0,kmax],ydom:[0,omax],
+    xlab:'Capital per worker  k',ylab:'per worker',nx:5,ny:5,yf:v=>nd(v,1),padr:64});
+  // break-even lines
+  p.line([0,0],[kmax,brk(pA)*kmax],{c:'var(--brk)',w:2.4});
+  if(pB.n!==pA.n) p.line([0,0],[kmax,brk(pB)*kmax],{c:'#E29A8C',w:2.2,d:'5 3'});
+  p.px(p.X(kmax)-4,p.Y(brk(pA)*kmax)-6,'break-even',{cls:'clab',c:'#C1553B',an:'end'});
+  // saving curves
+  p.fnX(k=>sav(pA,k),{c:'var(--inv)',w:3});
+  p.fnX(k=>sav(pB,k),{c:'var(--gr)',w:3});
+  p.px(p.X(kmax*0.5),p.Y(sav(pA,kmax*0.5))+2,`A: s=${nd(pA.s,2)}`,{cls:'clab',c:'#1F6FB2'});
+  p.px(p.X(kmax*0.5),p.Y(sav(pB,kmax*0.5))-8,`B: s=${nd(pB.s,2)}`,{cls:'clab',c:'#5B3A82'});
+  // steady states
+  p.line([kA,0],[kA,istar(pA)],{c:'#9AA5B1',w:1,d:'2 3',o:.6}); p.line([kB,0],[kB,pB.s*ystar(pB)],{c:'#9AA5B1',w:1,d:'2 3',o:.6});
+  p.dot(kA,istar(pA),{c:'var(--inv)',r:6}); p.px(p.X(kA),p.Y(0)-7,`k*ᴬ=${nd(kA,1)}`,{cls:'annb',c:'#14507F',an:'middle'});
+  p.dot(kB,pB.s*ystar(pB),{c:'var(--gr)',r:6}); p.px(p.X(kB),p.Y(0)-7,`k*ᴮ=${nd(kB,1)}`,{cls:'annb',c:'#5B3A82',an:'middle'});
+  const rich = kB>kA?'B':'A';
+  document.getElementById('ft-compare').innerHTML =
+    `<b>A</b> (s = ${nd(pA.s,2)}) settles at y* = <b>${nd(ystar(pA),2)}</b>; <b>B</b> (s = ${nd(pB.s,2)}) at y* = <b>${nd(ystar(pB),2)}</b>.
+     The higher saver, <b>economy ${rich}</b>, ends up richer — same technology, different steady state.`;
+}
+
+/* =======================================================================
+   BANNER · NUMBERS · READOUT
+   ======================================================================= */
+function changedKeys(list){ return list.filter(k=>Math.abs(cur[k]-base[k])>1e-9); }
+function drawBanner(st){
+  const el=document.getElementById('banner');
+  const nm=k=>SPEC[k].sym;
+  const all=changedKeys(['alpha','A','s','delta','n','g','k','k0','sB','nB']);
+  let cls='calm', h='';
+  if(!all.length){
+    if(step===1) h=`<b>This is the baseline.</b> Output per worker is <b>${nd(f(cur,st.k),2)}</b> at k = ${nd(st.k,1)}.
+      Slide <em>k</em> and watch the curve flatten, or press a button on the left.`;
+    else if(step===2) h=`<b>This is the baseline.</b> At k = ${nd(st.k,1)}, saving is ${nd(sav(cur,st.k),2)} and wear is
+      ${nd(bre(cur,st.k),2)}, so capital is ${dk(cur,st.k)>0?'still growing':'shrinking'}. Move a slider to see what changes.`;
+    else h=`<b>This is the baseline.</b> The economy rests at <b>k* = ${nd(kstar(cur),2)}</b>, output <b>y* = ${nd(ystar(cur),2)}</b>,
+      consumption <b>c* = ${nd(cstar(cur),2)}</b>. Move a slider or press a button and this box will tell you what happened.`;
+    el.className='banner calm'; el.innerHTML=h; return;
+  }
+  if(step<=2){
+    cls='move';
+    if(step===1){
+      if(all.includes('A')||all.includes('alpha')){ cls='';
+        h=`You changed <b>${all.filter(k=>k!=='k').map(nm).join(', ')}</b>. The whole production curve moves —
+           at k = ${nd(st.k,1)}, output is now <b>${nd(f(cur,st.k),2)}</b>.
+           <span class="vv">A shift of the curve itself.</span>`;
+      } else {
+        h=`You moved to <b>k = ${nd(st.k,1)}</b>. Output is <b>${nd(f(cur,st.k),2)}</b>, and the slope (MPK) is
+           <b>${nd(mpk(cur,st.k),2)}</b>. <span class="vv">A movement ALONG the curve — notice the slope keeps falling.</span>`;
+      }
+    } else {
+      const ks=kstar(cur);
+      if(all.some(k=>['s','delta','alpha','A'].includes(k))){ cls='';
+        h=`You changed <b>${all.filter(k=>k!=='k').map(nm).join(', ')}</b>. A line moves, so the crossing point shifts —
+           the economy will now head toward <b>k* = ${nd(ks,2)}</b>.
+           <span class="vv">The steady state itself moved ${ks>kstar(base)?'right':'left'}.</span>`;
+      } else {
+        h=`You moved to <b>k = ${nd(st.k,1)}</b>. Here saving is ${nd(sav(cur,st.k),2)} and wear is ${nd(bre(cur,st.k),2)},
+           so capital is <b>${dk(cur,st.k)>0?'growing':'shrinking'}</b>.
+           <span class="vv">A movement along the diagram toward k* = ${nd(ks,2)}.</span>`;
+      }
+    }
+  } else {
+    const ks=kstar(cur), ksb=kstar(base), ys=ystar(cur), cs=cstar(cur);
+    cls = all.some(k=>['s','delta','alpha','A','n','g'].includes(k)) ? '' : 'move';
+    const parts=[];
+    if(all.includes('s')) parts.push(`higher <em>s</em> lifts the investment curve`);
+    if(all.includes('delta')) parts.push(`higher <em>δ</em> steepens break-even`);
+    if(all.includes('n')||all.includes('g')) parts.push(`<em>n</em> and <em>g</em> steepen break-even to (δ+n+g)k`);
+    h=`You changed <b>${all.map(nm).join(', ')}</b>. ${parts.length?parts.join('; ')+'. ':''}
+       The steady state moves to <b>k* = ${nd(ks,2)}</b> (${sg(ks-ksb,2)}), output <b>y* = ${nd(ys,2)}</b>,
+       consumption <b>c* = ${nd(cs,2)}</b>.`;
+    if(step===5 && (all.includes('n')||all.includes('g'))){
+      h+=` <span class="vv">Per effective worker the economy still settles — but output per worker now grows at g = ${pct(cur.g)} forever.</span>`;
+    } else if(step===4){
+      const gap=cur.s-sgold(cur);
+      h+=` <span class="vv">${Math.abs(gap)<0.005?'You are at the Golden Rule.':gap<0?'Still below the Golden Rule (s = '+nd(sgold(cur),2)+').':'Now above the Golden Rule — over-saving.'}</span>`;
+    } else {
+      h+=` <span class="vv">The whole steady state shifted.</span>`;
+    }
+  }
+  el.className='banner '+cls; el.innerHTML=h;
+}
+
+function drawEq(st){
+  const p=cur, R=(k,b)=>`<div class="r"><span class="k">${k}</span>${b}</div>`;
+  let h='';
+  h+=R('Production', `<em>y = f(k) = ${nd(p.A,1)}·k<sup>${nd(p.alpha,2)}</sup></em>`);
+  if(step===1){
+    h+=R('At your k', `<em>y</em> = ${nd(p.A,1)}·${nd(st.k,1)}<sup>${nd(p.alpha,2)}</sup> = <span class="hl">${nd(f(p,st.k),2)}</span>`);
+    h+=R('Slope (MPK)', `<em>MPK</em> = α·y/k = <span class="hl">${nd(mpk(p,st.k),2)}</span> — falls as k rises`);
+  } else {
+    h+=R('Investment', `<em>i = s·f(k) = ${nd(p.s,2)}·f(k)</em>`);
+    h+=R('Break-even', `<em>(δ+n+g)k = ${nd(brk(p),2)}·k</em>`);
+    h+=R('Change in k', `<em>Δk = s·f(k) − ${nd(brk(p),2)}k</em>`);
+    if(step===2){
+      h+=R('At your k', `Δk = ${nd(sav(p,st.k),2)} − ${nd(bre(p,st.k),2)} = <span class="hl">${sg(dk(p,st.k),2)}</span>`);
+    } else {
+      h+=R('Set Δk = 0', `s·f(k*) = ${nd(brk(p),2)}k* ⇒ <em>k*</em> = [sA/(δ+n+g)]<sup>1/(1−α)</sup> = <span class="hl">${nd(kstar(p),2)}</span>`);
+      h+=R('Output, consumption', `<em>y*</em> = <span class="hl">${nd(ystar(p),2)}</span>, &nbsp; <em>c*</em> = (1−s)y* = <span class="hl">${nd(cstar(p),2)}</span>`);
+      if(step===4) h+=R('Golden Rule', `max c* where MPK = δ+n+g ⇒ <em>s = α = ${nd(sgold(p),2)}</em>`);
+      if(step===5) h+=R('Long-run growth', `output per worker grows at <em>g = ${pct(p.g)}</em>; total output at <em>n+g = ${pct(p.n+p.g)}</em>`);
+    }
+  }
+  document.getElementById('eqbox').innerHTML=h;
+}
+
+function drawReadout(st){
+  const d=(a,b,dec=2)=>Math.abs(a-b)<1e-6?'':` <span class="${a>b?'up':'dn'}">(${sg(a-b,dec)})</span>`;
+  let rows;
+  if(step===1){
+    rows=[['Capital per worker  k',nd(st.k,1),1],
+          ['Output per worker  y',nd(f(cur,st.k),2)+d(f(cur,st.k),f(base,base.k)),1],
+          ['Marginal product  MPK',nd(mpk(cur,st.k),2)],
+          ['Technology  A',nd(cur.A,1)+d(cur.A,base.A,1)],
+          ['Capital’s share  α',nd(cur.alpha,2)+d(cur.alpha,base.alpha)]];
+  } else if(step===2){
+    rows=[['Capital per worker  k',nd(st.k,1),1],
+          ['Investment  s·f(k)',nd(sav(cur,st.k),2)],
+          ['Break-even  δk',nd(bre(cur,st.k),2)],
+          ['Change  Δk',sg(dk(cur,st.k),2),1],
+          ['Saving rate  s',nd(cur.s,2)+d(cur.s,base.s)],
+          ['Depreciation  δ',nd(cur.delta,2)+d(cur.delta,base.delta)]];
+  } else {
+    const ks=kstar(cur), ksb=kstar(base);
+    rows=[['Steady-state capital  k*',nd(ks,2)+d(ks,ksb),1],
+          ['Steady-state output  y*',nd(ystar(cur),2)+d(ystar(cur),ystar(base)),1],
+          ['Consumption  c*',nd(cstar(cur),2)+d(cstar(cur),cstar(base))],
+          ['Investment  i*',nd(istar(cur),2)],
+          ['Golden-Rule  s = α',nd(sgold(cur),2)],
+          [step===5?'Growth of y per worker':'Break-even rate',step===5?pct(cur.g):nd(brk(cur),2)]];
+  }
+  document.getElementById('readout').innerHTML=rows.map(r=>
+    `<tr class="${r[2]?'em':''}"><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+}
+
+/* =======================================================================
+   UI
+   ======================================================================= */
+let traceC=[], timeShown=1, anim=null;
+
+function buildStepTabs(){
+  const host=document.getElementById('steps');
+  STEPS.forEach(s=>{const b=document.createElement('button'); b.className='step'; b.dataset.s=s.n;
+    b.innerHTML=`<div><span class="n">${s.n}</span><span class="t">${s.t}</span></div><div class="d">${s.d}</div>`;
+    b.onclick=()=>goStep(s.n); host.appendChild(b);});
+  document.getElementById('navPrev').onclick=()=>goStep(Math.max(1,step-1));
+  document.getElementById('navNext').onclick=()=>goStep(Math.min(5,step+1));
+  document.getElementById('btnReset').onclick=reset;
+  document.getElementById('btnRun').onclick=runTime;
+  document.getElementById('btnRunReset').onclick=()=>{stopAnim(); timeShown=1; render();};
+}
+function stopAnim(){ if(anim){clearInterval(anim);anim=null;} }
+function goStep(n){ stopAnim(); step=n; reset(); }
+function reset(){
+  stopAnim();
+  cur={...base}; traceC=[]; timeShown=1; render();
+}
+function makeSlider(k,host,isKey){
+  const s=SPEC[k], d=document.createElement('div');
+  d.className='ctl'+(isKey?' key':''); d.dataset.k=k;
+  d.innerHTML=`<div class="lab"><span class="nm"><b>${s.sym}</b> <span>${s.desc}</span></span>
+    <span class="vl" id="v-${k}"></span></div>
+    <input type="range" id="s-${k}" min="${s.min}" max="${s.max}" step="${s.st}">`;
+  host.appendChild(d);
+  d.querySelector('input').addEventListener('input',e=>{cur[k]=parseFloat(e.target.value); if(step===3)timeShown=1; render();});
+}
+function buildControls(){
+  const st=S(), c=document.getElementById('controls'), m=document.getElementById('controlsMore');
+  c.innerHTML=''; m.innerHTML='';
+  st.keys.forEach((k,i)=>makeSlider(k,c,i===0));
+  st.more.forEach(k=>makeSlider(k,m));
+  document.getElementById('moreBox').style.display = st.more.length? 'block':'none';
+  // shock buttons
+  const sh=document.getElementById('shocks'); sh.innerHTML='';
+  (st.shocks||[]).forEach(([label,set])=>{const b=document.createElement('button');
+    b.className='btn gold sm'; b.textContent=label;
+    b.onclick=()=>{cur={...base,...set}; if(step===3)timeShown=1; render();}; sh.appendChild(b);});
+  if(st.sweep){const b=document.createElement('button'); b.className='btn sm pri';
+    b.textContent='▶ Trace out consumption';
+    b.onclick=()=>runSweep(); sh.appendChild(b);}
+  document.getElementById('extraOpt').innerHTML='';
+}
+function runSweep(){
+  stopAnim(); traceC=[];
+  const from=0.03, to=0.68, N=44; let i=0;
+  anim=setInterval(()=>{
+    const s=from+(to-from)*i/N;
+    traceC.push({s, c:cstarS(cur,s)}); i++; render();
+    if(i>N){stopAnim();}
+  },40);
+}
+function runTime(){
+  stopAnim();
+  const path=simulate(cur,TMAX);
+  timeShown=1;
+  anim=setInterval(()=>{
+    timeShown+=Math.max(1,Math.round(path.length/60)); render();
+    if(timeShown>=path.length){timeShown=path.length; stopAnim(); render();}
+  },50);
+}
+function syncControls(st){
+  for(const k in SPEC){
+    const sl=document.getElementById('s-'+k), vl=document.getElementById('v-'+k);
+    if(!sl) continue;
+    sl.value=cur[k];
+    vl.textContent=(SPEC[k].dec?nd(cur[k],SPEC[k].dec):n0(cur[k]))+(SPEC[k].unit||'');
+    const ch=Math.abs(cur[k]-base[k])>1e-9;
+    vl.classList.toggle('chg',ch); sl.classList.toggle('hot',ch);
+  }
+  STEPS.forEach(s=>document.querySelector(`.step[data-s="${s.n}"]`).classList.toggle('on',s.n===step));
+  document.getElementById('navPrev').disabled=(step===1);
+  document.getElementById('navNext').disabled=(step===5);
+  document.getElementById('navHint').textContent=S().hint;
+  const shown=S().panels;
+  ['prod','solow','time','locus','compare'].forEach(pn=>{
+    const el=document.getElementById('pan-'+pn);
+    el.style.display=shown.includes(pn)?'block':'none';
+    el.classList.toggle('wide', shown.includes(pn) && shown.length===1);  // full width only when it is the sole diagram; otherwise side-by-side so both update together
+  });
+  document.getElementById('explTitle').textContent=S().title;
+  document.getElementById('expl').innerHTML=S().expl;
+  document.getElementById('notice').innerHTML='<h3>Things to try</h3><ul>'+S().notice.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+}
+
+/* =======================================================================
+   RENDER
+   ======================================================================= */
+let built=false;
+function render(){
+  const st=stateNow(cur);
+  if(!built){ buildStepTabs(); built=true; }
+  if(document.getElementById('controls').dataset.step!==String(step)){
+    buildControls(); document.getElementById('controls').dataset.step=String(step);
+  }
+  rescale();
+  syncControls(st);
+  const sh=S().panels;
+  if(sh.includes('prod'))    drawProd(st);
+  if(sh.includes('solow'))   drawSolow(st);
+  if(sh.includes('time'))    drawTime(st);
+  if(sh.includes('locus'))   drawLocus(st);
+  if(sh.includes('compare')) drawCompare(st);
+  drawBanner(st); drawEq(st); drawReadout(st);
+}
+document.getElementById('controls').dataset.step='0';
+render();
+</script>
+</body>
+</html>
